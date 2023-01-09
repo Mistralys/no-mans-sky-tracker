@@ -52,7 +52,7 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
     {
         $this->updateResources(
             ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $record),
-            $data->getKey(self::SETTING_RESOURCES)
+            (array)$data->getKey(self::SETTING_RESOURCES)
         );
     }
 
@@ -65,7 +65,7 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
     {
         $this->updateResources(
             ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $this->record),
-            $values[self::SETTING_RESOURCES]
+            (array)$values[self::SETTING_RESOURCES]
         );
     }
 

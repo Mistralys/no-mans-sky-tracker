@@ -63,7 +63,7 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
     protected function _afterSave(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $data) : void
     {
         ClassHelper::requireObjectInstanceOf(OutpostRecord::class, $record)
-            ->updateServicesFromForm($data->getKey(self::SETTING_SERVICES));
+            ->updateServicesFromForm((array)$data->getKey(self::SETTING_SERVICES));
     }
 
     protected function registerSettings() : void
