@@ -1,0 +1,30 @@
+{
+  "planet": {
+    "icon": "globe-europe",
+    "type": "fas"
+  },
+  "solar_system": {
+    "icon": "sun",
+    "type": "fas"
+  },
+  "outpost": {
+    "icon": "campground",
+    "type": "fas"
+  },
+  "resources": {
+    "icon": "shapes",
+    "type": "fas"
+  },
+  "services": {
+    "icon": "truck-monster",
+    "type": "fas"
+  },
+  "overview": {
+    "icon": "list-alt",
+    "type": "far"
+  },
+  "points_of_interest": {
+    "icon": "map-marked-alt",
+    "type": "fas"
+  }
+}
