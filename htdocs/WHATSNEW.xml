@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<whatsnew>
+	<version id="1.0.0">
+		<en>
+			<item category="System">
+				Initial release.
+			</item>
+		</en>
+		<de>
+			<item category="System">
+				Erstes Release.
+			</item>
+		</de>
+		<dev>
+			<item category="System" author="smordziol">
+				Created the first release.
+			</item>
+		</dev>
+	</version>
+</whatsnew>

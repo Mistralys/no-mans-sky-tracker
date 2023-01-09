@@ -1,0 +1,11 @@
+{
+    "main": {
+        "id": "main",
+        "defaultArea": "Settings",
+        "enabled": [
+            "Settings",
+            "Devel",
+            "Translations"
+        ]
+    }
+}

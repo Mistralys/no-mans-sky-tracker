@@ -1,0 +1,24 @@
+# PHPStan / Analysis configuration file
+#
+# @template-version 1.3
+#
+parameters:
+    tmpDir:
+        ./
+    bootstrapFiles: 
+        - ./autoload.php
+        - ./constants.php
+        - ../config.php
+    paths:
+        - ../../assets
+        - ../../themes
+        - ../../vendor/mistralys/application_framework/src
+        - ../assets
+        - ../testsuites
+    ignoreErrors:
+        -
+            message: '#Variable \$this might not be defined.#'
+            path: ../../vendor/mistralys/application_framework/src/themes/*
+        -
+            message: '#Variable \$this might not be defined.#'
+            path: ../../themes
