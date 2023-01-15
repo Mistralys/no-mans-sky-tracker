@@ -8,6 +8,7 @@ use Application_Admin_ScreenInterface;
 use classes\NMSTracker\Outposts\OutpostRecord;
 use DBHelper;
 use DBHelper_BaseRecord;
+use NMSTracker;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetAddOutpostScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetOutpostsScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetPOIsScreen;
@@ -24,6 +25,7 @@ use NMSTracker\SentinelLevels\SentinelLevelRecord;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker_User;
 use UI;
+use UI_Label;
 use UI_PropertiesGrid;
 
 class PlanetRecord extends DBHelper_BaseRecord
@@ -80,6 +82,11 @@ class PlanetRecord extends DBHelper_BaseRecord
     public function isMoon() : bool
     {
         return $this->getRecordBooleanKey(PlanetsCollection::COL_IS_MOON);
+    }
+
+    public function isOwnDiscovery() : bool
+    {
+        return $this->getRecordBooleanKey(PlanetsCollection::COL_IS_OWN_DISCOVERY);
     }
 
     public function getComments() : string
@@ -282,6 +289,18 @@ class PlanetRecord extends DBHelper_BaseRecord
         }
 
         return '';
+    }
+
+    public function getOwnershipBadge() : ?UI_Label
+    {
+        if($this->isOwnDiscovery()) {
+            return UI::label('')
+                ->setIcon(NMSTracker::icon()->ownDiscovery())
+                ->setTooltip(t('You discovered this.'))
+                ->makeSuccess();
+        }
+
+        return null;
     }
 
 
