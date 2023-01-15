@@ -15,7 +15,9 @@ var CustomIcon =
     
     Outpost:function() { return this.SetType('campground', 'fas'); },
     Overview:function() { return this.SetType('list-alt', 'far'); },
+    OwnDiscovery:function() { return this.SetType('star', 'fas'); },
     Planet:function() { return this.SetType('globe-europe', 'fas'); },
+    PlanetType:function() { return this.SetType('globe', 'fas'); },
     PointsOfInterest:function() { return this.SetType('map-marked-alt', 'fas'); },
     Resources:function() { return this.SetType('shapes', 'fas'); },
     Services:function() { return this.SetType('truck-monster', 'fas'); },

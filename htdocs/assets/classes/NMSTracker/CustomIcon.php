@@ -40,7 +40,15 @@ class CustomIcon extends UI_Icon
     /**
      * @return $this
      */
+    public function ownDiscovery() : self { return $this->setType('star', 'fas'); }
+    /**
+     * @return $this
+     */
     public function planet() : self { return $this->setType('globe-europe', 'fas'); }
+    /**
+     * @return $this
+     */
+    public function planetType() : self { return $this->setType('globe', 'fas'); }
     /**
      * @return $this
      */

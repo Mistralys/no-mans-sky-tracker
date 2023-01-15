@@ -26,5 +26,13 @@
   "points_of_interest": {
     "icon": "map-marked-alt",
     "type": "fas"
+  },
+  "own_discovery": {
+    "icon": "star",
+    "type": "fas"
+  },
+  "planet_type": {
+    "icon": "globe",
+    "type": "fas"
   }
 }
