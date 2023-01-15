@@ -119,6 +119,7 @@ trait ViewPlanetScreenTrait
     protected function _handleHelp() : void
     {
         $subtitle = sb();
+        $planet = $this->getPlanet();
 
         $outpost = ClassFactory::createOutposts()->getByRequest();
         if($outpost !== null)
@@ -126,20 +127,23 @@ trait ViewPlanetScreenTrait
             $subtitle
                 ->icon($outpost->getIcon())
                 ->add($outpost->getLabel())
-                ->muted(t('on %1$s', $this->getPlanet()->getLabel()));
+                ->muted(t('on %1$s', $planet->getLabelLinked()));
 
             $this->renderer->getSubtitle()
                 ->addContextElement(
                     UI::button(t('Back'))
                         ->setIcon(UI::icon()->back())
                         ->makeMini()
-                        ->link($this->getPlanet()->getAdminOutpostsURL())
+                        ->link($planet->getAdminOutpostsURL())
                 );
         }
         else
         {
-            $subtitle->add($this->getPlanet()->getLabel());
-            $this->renderer->getSubtitle()->setIcon(NMSTracker::icon()->planet());
+            $subtitle->add($planet->getLabel());
+            $this->renderer
+                ->getSubtitle()
+                ->setIcon(NMSTracker::icon()->planet())
+                ->addBadge($planet->getOwnershipBadge());
         }
 
         $this->renderer
