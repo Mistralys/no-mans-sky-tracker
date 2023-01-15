@@ -81,4 +81,9 @@ class PlanetSettingsScreen
     {
         return $this->record->getLabel();
     }
+
+    protected function resolveTitle() : string
+    {
+        return '';
+    }
 }
