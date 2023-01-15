@@ -31,6 +31,7 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
     public const COL_STAR = 'star';
     public const COL_RACE = 'race';
     public const COL_PRIMARY = 'primary';
+    public const COL_OWN_DISCOVERY = 'own_discovery';
 
     public function getDefaultSubmode() : string
     {
@@ -91,6 +92,7 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
                 self::COL_STAR => $record->getStarType()->getLabelLinked(),
                 self::COL_RACE => $record->getRace()->getLabelLinked(),
                 self::COL_ORBITAL_BODIES => $record->getAmountPlanets(),
+                self::COL_OWN_DISCOVERY => $record->getOwnershipBadge(),
                 self::COL_PLANETS => sb()->linkRight(
                     (string)$entry->getColumnInt($this->filters->getColPlanetCount()->getName()),
                     $record->getAdminPlanetsURL(),
@@ -115,6 +117,9 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
         $this->grid->addColumn(self::COL_STAR, t('Star type'));
 
         $this->grid->addColumn(self::COL_RACE, t('Dominant race'));
+
+        $this->grid->addColumn(self::COL_OWN_DISCOVERY, t('Discovery'))
+            ->alignCenter();
 
         $this->grid->addColumn(self::COL_ORBITAL_BODIES, t('Orbital bodies'))
             ->setSortable(false, SolarSystemsCollection::COL_AMOUNT_PLANETS)

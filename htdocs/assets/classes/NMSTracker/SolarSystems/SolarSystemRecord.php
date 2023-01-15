@@ -7,6 +7,7 @@ namespace NMSTracker\SolarSystems;
 use Application_Admin_ScreenInterface;
 use Application_Request;
 use DBHelper_BaseRecord;
+use NMSTracker;
 use NMSTracker\Area\SolarSystemsScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemAddPlanetScreen;
@@ -21,6 +22,8 @@ use NMSTracker\Races\RaceRecord;
 use NMSTracker\SolarSystemsCollection;
 use NMSTracker\StarTypes\StarTypeRecord;
 use NMSTracker_User;
+use UI;
+use UI_Label;
 use UI_PropertiesGrid;
 
 class SolarSystemRecord extends DBHelper_BaseRecord
@@ -136,6 +139,11 @@ class SolarSystemRecord extends DBHelper_BaseRecord
         return $this->getRecordStringKey(SolarSystemsCollection::COL_COMMENTS);
     }
 
+    public function isOwnDiscovery() : bool
+    {
+        return $this->getRecordBooleanKey(SolarSystemsCollection::COL_IS_OWN_DISCOVERY);
+    }
+
     public function getAmountPlanets() : int
     {
         return $this->getRecordIntKey(SolarSystemsCollection::COL_AMOUNT_PLANETS);
@@ -145,5 +153,17 @@ class SolarSystemRecord extends DBHelper_BaseRecord
     {
         $grid->add(t('Dominant race'), $this->getRace()->getLabelLinked());
         $grid->add(t('Star type'), $this->getStarType()->getLabelLinked());
+    }
+
+    public function getOwnershipBadge() : ?UI_Label
+    {
+        if($this->isOwnDiscovery()) {
+            return UI::label('')
+                ->setIcon(NMSTracker::icon()->ownDiscovery())
+                ->setTooltip(t('You discovered this.'))
+                ->makeSuccess();
+        }
+
+        return null;
     }
 }

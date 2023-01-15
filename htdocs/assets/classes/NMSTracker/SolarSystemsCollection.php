@@ -37,6 +37,7 @@ class SolarSystemsCollection extends DBHelper_BaseCollection
     public const COL_STAR_TYPE_ID = StarTypesCollection::PRIMARY_NAME;
     public const COL_COMMENTS = 'comments';
     public const COL_AMOUNT_PLANETS = 'amount_planets';
+    public const COL_IS_OWN_DISCOVERY = 'is_own_discovery';
 
     public function getRecordClassName() : string
     {

@@ -15,12 +15,16 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
     public const SETTING_SEARCH = 'search';
     public const SETTING_STAR_TYPE = 'star';
     public const SETTING_RACE = 'race';
+    public const SETTING_OWN_DISCOVERY = 'own_discovery';
+    public const DISCOVERY_TYPE_OWN = 'only_own';
+    public const DISCOVERY_TYPE_OTHERS = 'only_others';
 
     protected function registerSettings() : void
     {
         $this->registerSetting(self::SETTING_SEARCH, t('Search'));
         $this->registerSetting(self::SETTING_STAR_TYPE, t('Star type'));
         $this->registerSetting(self::SETTING_RACE, t('Dominant race'));
+        $this->registerSetting(self::SETTING_OWN_DISCOVERY, t('Own discovery?'));
     }
 
     protected function inject_star() : void
@@ -51,12 +55,22 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         }
     }
 
+    protected function inject_own_discovery() : void
+    {
+        $el = $this->addElementSelect(self::SETTING_OWN_DISCOVERY);
+
+        $el->addOption(t('Any'), '');
+        $el->addOption(t('Only my own discoveries'), self::DISCOVERY_TYPE_OWN);
+        $el->addOption(t('Only other people\'s discoveries'), self::DISCOVERY_TYPE_OTHERS);
+    }
+
     protected function _configureFilters() : void
     {
         $this->configureSearch(self::SETTING_SEARCH);
 
         $this->configureStarType($this->getSettingInt(self::SETTING_STAR_TYPE));
         $this->configureRace($this->getSettingInt(self::SETTING_RACE));
+        $this->configureDiscoveries($this->getSettingString(self::SETTING_OWN_DISCOVERY));
     }
 
     private function configureStarType(int $typeID) : void
@@ -80,5 +94,17 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         }
 
         $this->filters->selectRace($collection->getByID($raceID));
+    }
+
+    private function configureDiscoveries(string $discoveryMode) : void
+    {
+        if($discoveryMode === self::DISCOVERY_TYPE_OWN)
+        {
+            $this->filters->selectOwnDiscoveries(true);
+        }
+        else if($discoveryMode === self::DISCOVERY_TYPE_OTHERS)
+        {
+            $this->filters->selectOwnDiscoveries(false);
+        }
     }
 }

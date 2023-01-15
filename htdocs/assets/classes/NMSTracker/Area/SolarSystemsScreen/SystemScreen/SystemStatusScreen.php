@@ -60,6 +60,10 @@ class SystemStatusScreen
 
         $system->injectProperties($grid);
 
+        $grid->addBoolean(t('Own discovery?'), $system->isOwnDiscovery())
+            ->makeYesNo()
+            ->setComment(t('Whether this is your own discovery.'));
+
         $grid->add(t('Discovered planets'), $system->countPlanets().'/'.$system->getAmountPlanets());
         $grid->add(t('Comments'), $system->getComments())
             ->ifEmpty(sb()->muted(t('No comments entered.')));

@@ -6,6 +6,7 @@ namespace NMSTracker\SolarSystems;
 
 use Application_Exception;
 use Application_FilterCriteria_Database_CustomColumn;
+use AppUtils\ConvertHelper;
 use DBHelper_BaseFilterCriteria;
 use DBHelper_StatementBuilder_ValuesContainer;
 use NMSTracker\PlanetsCollection;
@@ -19,6 +20,7 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
     public const CUSTOM_COL_PLANET_COUNT = 'custom_planet_count';
     public const FILTER_RACES = 'races';
     public const FILTER_STAR_TYPES = 'star_types';
+    private ?bool $ownDiscoveries = null;
 
     /**
      * @param StarTypeRecord $starType
@@ -28,6 +30,12 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
     public function selectStarType(StarTypeRecord $starType) : self
     {
         return $this->selectCriteriaValue(self::FILTER_STAR_TYPES, $starType->getID());
+    }
+
+    public function selectOwnDiscoveries(?bool $mode) : self
+    {
+        $this->ownDiscoveries = $mode;
+        return $this;
     }
 
     protected function prepareQuery() : void
@@ -41,6 +49,14 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
             SolarSystemsCollection::COL_STAR_TYPE_ID,
             $this->getCriteriaValues(self::FILTER_STAR_TYPES)
         );
+
+        if(isset($this->ownDiscoveries))
+        {
+            $this->addWhereColumnEquals(
+                SolarSystemsCollection::COL_IS_OWN_DISCOVERY,
+                ConvertHelper::boolStrict2string($this->ownDiscoveries, true)
+            );
+        }
     }
 
     public function withPlanetCounts() : self

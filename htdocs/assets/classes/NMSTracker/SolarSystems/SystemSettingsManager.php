@@ -87,6 +87,14 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectAmountPlanets')
             ));
 
+        $group->registerSetting('own_discovery')
+            ->setStorageName(SolarSystemsCollection::COL_IS_OWN_DISCOVERY)
+            ->setDefaultValue('yes')
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectOwnDiscovery')),
+                array($this, 'injectOwnDiscovery')
+            ));
+
         $group = $this->addGroup(t('Comments'))
             ->setIcon(UI::icon()->comment());
 
@@ -96,6 +104,16 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 Closure::fromCallable(array($this, 'injectComments')),
                 array($this, 'injectComments')
             ));
+    }
+
+    private function injectOwnDiscovery(Application_Formable_RecordSettings_Setting $setting) : \HTML_QuickForm2_Element_Switch
+    {
+        $el = $this->addElementSwitch($setting->getName(), t('Own discovery?'));
+        $el->setComment(t('Is this a personal discovery, or by someone else?'));
+        $el->makeYesNo();
+        $el->setValues('yes', 'no');
+
+        return $el;
     }
 
     private function injectLabel(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
