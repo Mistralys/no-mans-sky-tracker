@@ -30,6 +30,7 @@ use UI;
 class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 {
     public const SETTING_IS_MOON = 'is_moon';
+    public const SETTING_OWN_DISCOVERY = 'own_discovery';
     private SolarSystemRecord $solarSystem;
 
     public function __construct(Application_Formable $formable, DBHelper_BaseCollection $collection, SolarSystemRecord $solarSystem, ?DBHelper_BaseRecord $record = null)
@@ -138,6 +139,14 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectScanComplete')
             ));
 
+        $group->registerSetting(self::SETTING_OWN_DISCOVERY)
+            ->setStorageName(SolarSystemsCollection::COL_IS_OWN_DISCOVERY)
+            ->setDefaultValue('yes')
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectOwnDiscovery')),
+                array($this, 'injectOwnDiscovery')
+            ));
+
         $group = $this->addGroup(t('Comments'))
             ->setIcon(UI::icon()->options());
 
@@ -171,6 +180,16 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
     public function getDefaultSettingName() : string
     {
         return self::SETTING_LABEL;
+    }
+
+    private function injectOwnDiscovery(Application_Formable_RecordSettings_Setting $setting) : \HTML_QuickForm2_Element_Switch
+    {
+        $el = $this->addElementSwitch($setting->getName(), t('Own discovery?'));
+        $el->setComment(t('Is this a personal discovery, or by someone else?'));
+        $el->makeYesNo();
+        $el->setValues('yes', 'no');
+
+        return $el;
     }
 
     private function injectLabel(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
