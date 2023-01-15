@@ -72,6 +72,11 @@ class OutpostRecord extends DBHelper_BaseRecord
         return ClassFactory::createOutpostRoles()->getByID($this->getRoleID());
     }
 
+    public function getComments() : string
+    {
+        return $this->getRecordStringKey(OutpostsCollection::COL_COMMENTS);
+    }
+
     public function countServices() : int
     {
         return $this->getServiceFilters()->countItems();
