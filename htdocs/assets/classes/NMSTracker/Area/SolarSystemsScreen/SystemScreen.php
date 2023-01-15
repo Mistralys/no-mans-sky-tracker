@@ -57,10 +57,13 @@ class SystemScreen extends Application_Admin_Area_Mode_CollectionRecord
 
     protected function _handleHelp() : void
     {
+        $system = $this->getRecord();
+
         $this->renderer
             ->getTitle()
-            ->setText($this->getRecord()->getLabel())
-            ->setIcon(NMSTracker::icon()->solarSystem());
+            ->setText($system->getLabel())
+            ->setIcon(NMSTracker::icon()->solarSystem())
+            ->addBadge($system->getOwnershipBadge());
     }
 
     protected function _handleBreadcrumb() : void
