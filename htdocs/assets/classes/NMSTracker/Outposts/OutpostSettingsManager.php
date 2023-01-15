@@ -33,6 +33,7 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
     public const SETTING_LABEL = 'label';
     public const SETTING_ROLE = 'role';
     public const SETTING_SERVICES = 'services';
+    public const SETTING_COMMENTS = 'comments';
 
     private PlanetRecord $planet;
 
@@ -101,6 +102,25 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
                 Closure::fromCallable(array($this, 'injectServices')),
                 array($this, 'injectServices')
             ));
+
+        $group = $this->addGroup(t('Comments'))
+            ->setIcon(NMSTracker::icon()->comment())
+            ->expand();
+
+        $group->registerSetting(self::SETTING_COMMENTS)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectComments')),
+                array($this, 'injectComments')
+            ));
+    }
+
+    private function injectComments(Application_Formable_RecordSettings_Setting $setting) : \HTML_QuickForm2_Element_Textarea
+    {
+        $el = $this->addElementTextarea($setting->getName(), t('Comments'));
+        $el->addFilterTrim();
+        $el->addClass('input-xxlarge');
+
+        return $el;
     }
 
     private function injectLabel(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText

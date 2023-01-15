@@ -25,6 +25,7 @@ class OutpostsCollection extends DBHelper_BaseCollection
     public const PRIMARY_NAME = 'outpost_id';
 
     public const COL_LABEL = 'label';
+    public const COL_COMMENTS = 'comments';
     public const COL_ROLE_ID = 'outpost_role_id';
     public const COL_PLANET_ID = 'planet_id';
 
