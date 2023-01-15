@@ -54,7 +54,8 @@ class PlanetStatusScreen
                 ->t('Star type:')->add($system->getStarType()->getLabel())
                 ->add('|')
                 ->t('Dominant race:')->add($system->getRace()->getLabel())
-            );;
+            );
+
         $planet->injectProperties($grid);
 
         $grid->addHeader(t('Resources'));
