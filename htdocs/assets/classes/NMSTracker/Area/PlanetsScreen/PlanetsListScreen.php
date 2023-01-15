@@ -29,6 +29,7 @@ use UI_Renderable_Interface;
 class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
 {
     public const URL_NAME = 'planets-list';
+    public const GRID_NAME = 'global-planets-list';
 
     public const COL_LABEL = 'label';
     public const COL_SYSTEM = 'system';
@@ -40,6 +41,11 @@ class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
     public function getURLName() : string
     {
         return self::URL_NAME;
+    }
+
+    public function getGridName() : string
+    {
+        return self::GRID_NAME;
     }
 
     protected function createCollection() : DBHelper_BaseCollection
@@ -72,6 +78,8 @@ class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
             )
         );
     }
+
+
 
     protected function configureColumns() : void
     {
