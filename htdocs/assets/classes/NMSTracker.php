@@ -15,6 +15,7 @@ use AppUtils\ClassHelper;
 use AppUtils\FileHelper\FileInfo;
 use NMSTracker\Area\OutpostsScreen;
 use NMSTracker\Area\PlanetsScreen;
+use NMSTracker\Area\PlanetTypesScreen;
 use NMSTracker\Area\SolarSystemsScreen;
 use NMSTracker\CustomIcon;
 use NMSTracker\PlanetsCollection;
@@ -62,6 +63,7 @@ class NMSTracker extends Application_Driver
             SolarSystemsScreen::URL_NAME => ClassHelper::getClassTypeName(SolarSystemsScreen::class),
             PlanetsScreen::URL_NAME => ClassHelper::getClassTypeName(PlanetsScreen::class),
             OutpostsScreen::URL_NAME => ClassHelper::getClassTypeName(OutpostsScreen::class),
+            PlanetTypesScreen::URL_NAME => ClassHelper::getClassTypeName(PlanetTypesScreen::class),
             Application_Admin_Area_Settings::URL_NAME => ClassHelper::getClassTypeName(NMSTracker_Area_Settings::class),
             Application_Admin_TranslationsArea::URL_NAME => ClassHelper::getClassTypeName(NMSTracker_Area_Translations::class),
         );
