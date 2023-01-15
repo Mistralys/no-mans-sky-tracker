@@ -81,8 +81,8 @@ class PlanetListScreen
         {
             return array(
                 self::COL_LABEL => sb()->add($record->getLabelLinked())->add($record->getMoonIcon()),
-                self::COL_TYPE => $record->getType()->getLabel(),
-                self::COL_SENTINELS => $record->getSentinelLevel()->getLabel(),
+                self::COL_TYPE => $record->getType()->getLabelLinked(),
+                self::COL_SENTINELS => $record->getSentinelLevel()->getLabelLinked(),
                 self::COL_SCAN_COMPLETE => UI::prettyBool($record->isScanComplete())->makeYesNo(),
                 self::COL_OUTPOSTS => sb()->link(
                     (string)$record->countOutposts(),
