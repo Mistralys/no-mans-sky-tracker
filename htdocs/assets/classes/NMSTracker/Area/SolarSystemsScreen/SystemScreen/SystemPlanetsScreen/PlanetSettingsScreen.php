@@ -6,7 +6,7 @@ namespace NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen;
 
 use Application_Admin_Area_Mode_Submode_Action_CollectionEdit;
 use AppUtils\ConvertHelper;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseRecord;
 use NMSTracker\ClassFactory;
 use NMSTracker\Interfaces\Admin\ViewPlanetScreenInterface;
@@ -18,7 +18,7 @@ use NMSTracker_User;
 
 /**
  * @property NMSTracker_User $user
- * @property PlanetRecord $record
+ * @property \NMSTracker\Planets\PlanetRecord $record
  */
 class PlanetSettingsScreen
     extends Application_Admin_Area_Mode_Submode_Action_CollectionEdit

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen;
 
 use Application_Admin_Area_Mode_Submode_Action_CollectionList;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseCollection;
 use DBHelper_BaseFilterCriteria_Record;
 use DBHelper_BaseRecord;
@@ -124,6 +124,10 @@ class PlanetListScreen
 
     protected function configureActions() : void
     {
+        $this->filterSettings->addHiddenVar(
+            SolarSystemsCollection::PRIMARY_NAME,
+            (string)$this->getSolarSystem()->getID()
+        );
     }
 
     public function getBackOrCancelURL() : string

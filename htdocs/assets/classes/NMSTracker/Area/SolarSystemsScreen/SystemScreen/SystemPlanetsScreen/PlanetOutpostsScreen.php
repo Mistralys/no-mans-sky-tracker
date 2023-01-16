@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen;
 
 use Application_Admin_Area_Mode_Submode_Action_CollectionList;
-use classes\NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Outposts\OutpostRecord;
 use DBHelper_BaseCollection;
 use DBHelper_BaseFilterCriteria_Record;
 use DBHelper_BaseRecord;

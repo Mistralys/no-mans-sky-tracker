@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace NMSTracker\Interfaces\Admin;
 
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 
 /**
  * @see ViewPlanetScreenTrait

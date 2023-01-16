@@ -6,7 +6,7 @@ namespace NMSTracker;
 
 use Application_Formable;
 use Application_Interfaces_Formable;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseCollection;
 use NMSTracker\Planets\PlanetFilterCriteria;
 use NMSTracker\Planets\PlanetFilterSettings;

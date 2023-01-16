@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen;
 
 use Application_Admin_Area_Mode_Submode_Action_CollectionRecord;
-use classes\NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Outposts\OutpostRecord;
 use DBHelper_BaseCollection;
 use NMSTracker;
 use NMSTracker\ClassFactory;
@@ -15,7 +15,7 @@ use NMSTracker\Interfaces\Admin\ViewPlanetScreenTrait;
 use NMSTracker\Interfaces\Admin\ViewSystemScreenTrait;
 
 /**
- * @property OutpostRecord $record
+ * @property \NMSTracker\Outposts\OutpostRecord $record
  */
 class OutpostStatusScreen
     extends Application_Admin_Area_Mode_Submode_Action_CollectionRecord

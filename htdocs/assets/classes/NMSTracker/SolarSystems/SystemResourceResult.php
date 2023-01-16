@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\SolarSystems;
 
 use Application_Exception_DisposableDisposed;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_Exception;
 use NMSTracker\ClassFactory;
 use NMSTracker\Resources\ResourceRecord;

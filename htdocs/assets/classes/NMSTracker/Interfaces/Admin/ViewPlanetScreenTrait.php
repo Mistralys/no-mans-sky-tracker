@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace NMSTracker\Interfaces\Admin;
 
-use classes\NMSTracker\Outposts\OutpostRecord;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Planets\PlanetRecord;
 use NMSTracker;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\OutpostSettingsScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\OutpostStatusScreen;

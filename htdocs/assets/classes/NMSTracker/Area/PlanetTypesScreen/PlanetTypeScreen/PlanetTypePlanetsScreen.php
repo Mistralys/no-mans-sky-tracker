@@ -6,7 +6,7 @@ namespace NMSTracker\Area\PlanetTypesScreen\PlanetTypeScreen;
 
 use Application_Admin_Area_Mode_Submode_CollectionList;
 use AppUtils\ClassHelper;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseCollection;
 use DBHelper_BaseFilterCriteria_Record;
 use DBHelper_BaseRecord;

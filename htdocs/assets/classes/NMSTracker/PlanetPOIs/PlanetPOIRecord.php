@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace NMSTracker\PlanetPOIs;
 
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseRecord;
 use NMSTracker\ClassFactory;
 use NMSTracker\PlanetPOIsCollection;

@@ -6,7 +6,7 @@ namespace NMSTracker\Area\SolarSystemsScreen\SystemScreen;
 
 use Application_Admin_Area_Mode_Submode_CollectionCreate;
 use AppUtils\ClassHelper;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseRecord;
 use NMSTracker\ClassFactory;
 use NMSTracker\Interfaces\Admin\ViewSystemScreenInterface;

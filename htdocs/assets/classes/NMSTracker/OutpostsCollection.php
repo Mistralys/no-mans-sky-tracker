@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace NMSTracker;
 
 use Application_Formable;
-use classes\NMSTracker\Outposts\OutpostRecord;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseCollection;
 use NMSTracker\Outposts\OutpostFilterCriteria;
 use NMSTracker\Outposts\OutpostFilterSettings;

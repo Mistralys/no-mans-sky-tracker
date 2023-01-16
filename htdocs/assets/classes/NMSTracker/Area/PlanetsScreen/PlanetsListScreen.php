@@ -9,7 +9,7 @@ use AppUtils\ClassHelper;
 use AppUtils\ClassHelper\ClassNotExistsException;
 use AppUtils\ClassHelper\ClassNotImplementsException;
 use AppUtils\ConvertHelper_Exception;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseCollection;
 use DBHelper_BaseFilterCriteria_Record;
 use DBHelper_BaseRecord;
@@ -17,6 +17,7 @@ use NMSTracker;
 use NMSTracker\Area\PlanetsScreen;
 use NMSTracker\ClassFactory;
 use NMSTracker\Planets\PlanetFilterCriteria;
+use NMSTracker\PlanetsCollection;
 use NMSTracker_User;
 use UI;
 use UI_Renderable_Interface;
@@ -48,6 +49,9 @@ class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
         return self::GRID_NAME;
     }
 
+    /**
+     * @return PlanetsCollection
+     */
     protected function createCollection() : DBHelper_BaseCollection
     {
         return ClassFactory::createPlanets();
@@ -78,8 +82,6 @@ class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
             )
         );
     }
-
-
 
     protected function configureColumns() : void
     {

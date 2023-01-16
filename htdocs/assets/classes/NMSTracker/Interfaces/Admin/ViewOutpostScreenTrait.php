@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace NMSTracker\Interfaces\Admin;
 
-use classes\NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Outposts\OutpostRecord;
 use NMSTracker\ClassFactory;
 use NMSTracker\PlanetsCollection;
 use NMSTracker\SolarSystemsCollection;

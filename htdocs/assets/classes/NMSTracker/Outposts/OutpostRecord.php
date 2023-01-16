@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace classes\NMSTracker\Outposts;
+namespace NMSTracker\Outposts;
 
 use Application_Admin_ScreenInterface;
 use Application_Exception_DisposableDisposed;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper;
 use DBHelper_BaseRecord;
 use DBHelper_Exception;

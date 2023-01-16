@@ -10,7 +10,7 @@ use Application_Formable_RecordSettings_Setting;
 use Application_Formable_RecordSettings_ValueSet;
 use AppUtils\ClassHelper;
 use AppUtils\NamedClosure;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Planets\PlanetRecord;
 use Closure;
 use DBHelper_BaseCollection;
 use DBHelper_BaseRecord;

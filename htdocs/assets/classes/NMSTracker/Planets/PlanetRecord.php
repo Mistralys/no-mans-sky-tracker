@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace classes\NMSTracker\Planets;
+namespace NMSTracker\Planets;
 
 use Application_Admin_ScreenInterface;
-use classes\NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Outposts\OutpostRecord;
 use DBHelper;
 use DBHelper_BaseRecord;
 use NMSTracker;
@@ -23,6 +23,7 @@ use NMSTracker\Resources\ResourceRecord;
 use NMSTracker\ResourcesCollection;
 use NMSTracker\SentinelLevels\SentinelLevelRecord;
 use NMSTracker\SolarSystems\SolarSystemRecord;
+use NMSTracker\SolarSystemsCollection;
 use NMSTracker_User;
 use UI;
 use UI_Label;
@@ -110,7 +111,7 @@ class PlanetRecord extends DBHelper_BaseRecord
     {
         return ClassFactory::createResources()
             ->getFilterCriteria()
-            ->includeIDs($this->getResourceIDs(), false);
+            ->selectPlanet($this);
     }
 
     public function getResourceIDs() : array
@@ -247,6 +248,7 @@ class PlanetRecord extends DBHelper_BaseRecord
             PlanetsCollection::TABLE_RESOURCES,
             array(
                 PlanetsCollection::PRIMARY_NAME => $this->getID(),
+                SolarSystemsCollection::PRIMARY_NAME => $this->getSolarSystemID(),
                 ResourcesCollection::PRIMARY_NAME => $resource->getID()
             )
         );
