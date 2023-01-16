@@ -6,6 +6,7 @@ namespace NMSTracker;
 
 use AppUtils\ClassHelper;
 use DBHelper;
+use NMSTracker\Resources\ResourceTypesCollection;
 
 class ClassFactory
 {
@@ -95,5 +96,10 @@ class ClassFactory
             StarTypesCollection::class,
             DBHelper::createCollection(StarTypesCollection::class)
         );
+    }
+
+    public static function createResourceTypes() : ResourceTypesCollection
+    {
+        return ResourceTypesCollection::getInstance();
     }
 }
