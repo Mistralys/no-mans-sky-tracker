@@ -6,7 +6,7 @@ namespace NMSTracker\Area\OutpostsScreen;
 
 use Application_Admin_Area_Mode_CollectionList;
 use AppUtils\ClassHelper;
-use classes\NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Outposts\OutpostRecord;
 use DBHelper_BaseCollection;
 use DBHelper_BaseFilterCriteria_Record;
 use DBHelper_BaseRecord;
@@ -25,6 +25,8 @@ use NMSTracker_User;
 class OutpostsListsScreen extends Application_Admin_Area_Mode_CollectionList
 {
     public const URL_NAME = 'outposts-list';
+    public const GRID_NAME = 'global-outposts-list';
+
     public const COL_LABEL = 'label';
     public const COL_SYSTEM = 'system';
     public const COL_PLANET = 'planet';
@@ -35,6 +37,11 @@ class OutpostsListsScreen extends Application_Admin_Area_Mode_CollectionList
     public function getURLName() : string
     {
         return self::URL_NAME;
+    }
+
+    public function getGridName() : string
+    {
+        return self::GRID_NAME;
     }
 
     /**
