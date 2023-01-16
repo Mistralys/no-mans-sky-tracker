@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace NMSTracker\Area\SolarSystemsScreen\SystemScreen;
 
 use Application_Admin_Area_Mode_Submode;
+use Application_Admin_Area_Mode_Submode_CollectionList;
+use AppUtils\ClassHelper;
+use DBHelper_BaseCollection;
+use DBHelper_BaseFilterCriteria_Record;
+use DBHelper_BaseRecord;
+use NMSTracker\ClassFactory;
 use NMSTracker\Interfaces\Admin\ViewSystemScreenInterface;
 use NMSTracker\Interfaces\Admin\ViewSystemScreenTrait;
 use NMSTracker\Resources\ResourceFilterCriteria;
+use NMSTracker\Resources\ResourceRecord;
+use NMSTracker\ResourcesCollection;
+use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystems\SystemResourceResult;
 use NMSTracker\SolarSystemsCollection;
 use UI_DataGrid;
@@ -16,7 +25,7 @@ use UI_DataGrid;
  * @property ResourceFilterCriteria $filters
  */
 class SystemResourcesScreen
-    extends Application_Admin_Area_Mode_Submode
+    extends Application_Admin_Area_Mode_Submode_CollectionList
     implements ViewSystemScreenInterface
 {
     use ViewSystemScreenTrait;
@@ -24,23 +33,11 @@ class SystemResourcesScreen
     public const URL_NAME = 'system-resources';
     public const COL_LABEL = 'label';
     public const COL_PLANETS = 'planets';
-
-    private UI_DataGrid $grid;
+    public const COL_OUTPOSTS = 'outposts';
 
     public function getURLName() : string
     {
         return self::URL_NAME;
-    }
-
-    protected function _handleActions() : bool
-    {
-        if(parent::_handleActions() === false) {
-            return false;
-        }
-
-        $this->createDataGrid();
-
-        return true;
     }
 
     protected function _handleHelp() : void
@@ -50,44 +47,18 @@ class SystemResourcesScreen
             ->setAbstract(t('These are all resources available on the planets in the system.'));
     }
 
-    protected function _renderContent()
+    protected function getEntryData(DBHelper_BaseRecord $record, DBHelper_BaseFilterCriteria_Record $entry) : array
     {
-        return $this->renderer
-            ->appendDataGrid($this->grid, $this->compileEntries())
-            ->makeWithoutSidebar();
-    }
-
-    private function compileEntries() : array
-    {
-        $entries = array();
-        $results = $this->getSolarSystem()->getResources()->getResults();
-
-        foreach($results as $result)
-        {
-            $entries[] = $this->getEntryData($result);
-        }
-
-        return $entries;
-    }
-
-    protected function getEntryData(SystemResourceResult $record) : array
-    {
-        return array(
-            self::COL_LABEL => $record->getResource()->getLabel(),
-            self::COL_PLANETS => $this->renderPlanets($record)
+        $resource = ClassHelper::requireObjectInstanceOf(
+            ResourceRecord::class,
+            $record
         );
-    }
 
-    protected function createDataGrid() : void
-    {
-        $this->grid = $this->getUI()->createDataGrid('system_resources');
-
-        $this->grid->addColumn(self::COL_LABEL, t('Name'))
-            ->setSortingString();
-
-        $this->grid->addColumn(self::COL_PLANETS, t('Planets'));
-
-        $this->grid->addHiddenVar(SolarSystemsCollection::PRIMARY_NAME, (string)$this->getSolarSystem()->getID());
+        return array(
+            self::COL_LABEL => $resource->getLabelLinked(),
+            self::COL_PLANETS => $this->renderPlanets($resource),
+            self::COL_OUTPOSTS => $this->renderOutposts($resource)
+        );
     }
 
     public function getNavigationTitle() : string
@@ -100,20 +71,64 @@ class SystemResourcesScreen
         return t('System resources overview');
     }
 
-    private function renderPlanets(SystemResourceResult $record) : string
+    private function renderPlanets(ResourceRecord $record) : string
     {
-        $planets = $record->getPlanets();
-
-        foreach($planets as $planet)
-        {
-            $items[] = $planet->getLabelLinked();
-        }
-
-        return implode(', ', $items);
+        return $record->getPlanetFilters()
+            ->selectSolarSystem($this->getSolarSystem())
+            ->getContainer()
+            ->createBulletRenderer()
+            ->render();
     }
 
-    public function getDefaultAction() : string
+    /**
+     * @return ResourcesCollection
+     */
+    protected function createCollection() : DBHelper_BaseCollection
     {
-        return '';
+        return ClassFactory::createResources();
+    }
+
+    protected function configureFilters() : void
+    {
+        $this->filters->selectSolarSystem($this->getSolarSystem());
+    }
+
+    protected function configureColumns() : void
+    {
+        $this->grid->addColumn(self::COL_LABEL, t('Label'));
+
+        $this->grid->addColumn(self::COL_PLANETS, t('Planets'));
+
+        $this->grid->addColumn(self::COL_OUTPOSTS, t('Outposts'));
+
+        $this->grid->addHiddenVar(
+            SolarSystemsCollection::PRIMARY_NAME,
+            (string)$this->getSolarSystem()->getID()
+        );
+
+        $this->filterSettings->addHiddenVar(
+            SolarSystemsCollection::PRIMARY_NAME,
+            (string)$this->getSolarSystem()->getID()
+        );
+    }
+
+    protected function configureActions() : void
+    {
+    }
+
+    public function getBackOrCancelURL() : string
+    {
+        return $this->getSolarSystem()->getAdminResourcesURL();
+    }
+
+    private function renderOutposts(ResourceRecord $resource) : string
+    {
+        return $resource
+            ->getOutpostFilters()
+            ->selectSolarSystem($this->getSolarSystem())
+            ->getContainer()
+            ->createBulletRenderer()
+            ->makeWithPlanetName()
+            ->render();
     }
 }
