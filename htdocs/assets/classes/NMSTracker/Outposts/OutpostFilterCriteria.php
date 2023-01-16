@@ -6,8 +6,8 @@ namespace NMSTracker\Outposts;
 
 use Application_Exception;
 use Application_FilterCriteria_Database_CustomColumn;
-use classes\NMSTracker\Outposts\OutpostRecord;
-use classes\NMSTracker\Planets\PlanetRecord;
+use NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseFilterCriteria;
 use DBHelper_StatementBuilder_ValuesContainer;
 use NMSTracker\Area\SolarSystemsScreen;
@@ -16,6 +16,9 @@ use NMSTracker\OutpostsCollection;
 use NMSTracker\OutpostServices\OutpostServiceRecord;
 use NMSTracker\OutpostServicesCollection;
 use NMSTracker\PlanetsCollection;
+use NMSTracker\Resources\ResourceRecord;
+use NMSTracker\SentinelLevels\SentinelLevelRecord;
+use NMSTracker\SentinelLevelsCollection;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystemsCollection;
 
@@ -29,23 +32,16 @@ class OutpostFilterCriteria extends DBHelper_BaseFilterCriteria
     public const FILTER_SOLAR_SYSTEMS = 'solar_systems';
     public const FILTER_ROLES = 'roles';
     public const FILTER_SERVICES = 'services';
-
-    /**
-     * @param PlanetRecord $planet
-     * @return $this
-     * @throws Application_Exception
-     */
-    public function selectPlanet(PlanetRecord $planet) : self
-    {
-        return $this->selectCriteriaValue(
-            self::FILTER_PLANETS,
-            $planet->getID()
-        );
-    }
+    public const FILTER_SENTINEL_LEVELS = 'sentinels';
 
     public function withServiceCounts() : self
     {
         return $this->addSelectColumn($this->getColServicesCount()->getPrimarySelectValue());
+    }
+
+    public function getContainer() : OutpostsContainer
+    {
+        return OutpostsContainer::create($this);
     }
 
     public function getColLabel() : string
@@ -57,6 +53,8 @@ class OutpostFilterCriteria extends DBHelper_BaseFilterCriteria
     {
         return $this->getCustomColumn(self::CUSTOM_COL_SERVICE_COUNT);
     }
+
+    // region: Selecting filters
 
     /**
      * @param SolarSystemRecord $solarSystem
@@ -83,6 +81,38 @@ class OutpostFilterCriteria extends DBHelper_BaseFilterCriteria
         return $this->selectCriteriaValue(self::FILTER_SERVICES, $service->getID());
     }
 
+    public function selectResource(ResourceRecord $resource) : self
+    {
+        $planets = $resource->getPlanetFilters()->getItemsObjects();
+
+        foreach($planets as $planet)
+        {
+            $this->selectPlanet($planet);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param PlanetRecord $planet
+     * @return $this
+     * @throws Application_Exception
+     */
+    public function selectPlanet(PlanetRecord $planet) : self
+    {
+        return $this->selectCriteriaValue(
+            self::FILTER_PLANETS,
+            $planet->getID()
+        );
+    }
+
+    public function selectSentinelLevel(SentinelLevelRecord $level) : self
+    {
+        return $this->selectCriteriaValue(self::FILTER_SENTINEL_LEVELS, $level->getID());
+    }
+
+    // endregion
+
     public function getColPlanetID() : string
     {
         return (string)$this->statement('{planets}.{planet_primary}');
@@ -90,16 +120,6 @@ class OutpostFilterCriteria extends DBHelper_BaseFilterCriteria
 
     protected function prepareQuery() : void
     {
-        $this->addWhereColumnIN(
-            $this->getColPlanetID(),
-            $this->getCriteriaValues(self::FILTER_PLANETS)
-        );
-
-        $this->addWhereColumnIN(
-            OutpostsCollection::COL_ROLE_ID,
-            $this->getCriteriaValues(self::FILTER_ROLES)
-        );
-
         $this->addJoinStatement("
             JOIN
                 {table_planets} AS {planets}
@@ -107,37 +127,45 @@ class OutpostFilterCriteria extends DBHelper_BaseFilterCriteria
                 {planets}.{planet_primary} = {table_outposts}.{planet_primary}
         ");
 
-        $this->addWhereColumnIN(
-            (string)$this->statement("{planets}.{system_primary}"),
-            $this->getCriteriaValues(self::FILTER_SOLAR_SYSTEMS)
-        );
+        $this->configurePlanets();
+        $this->configureRoles();
+        $this->configureSolarSystems();
+        $this->configureServices();
+        $this->configureSentinelLevels();
+    }
 
+    private function configureServices() : void
+    {
         $serviceIDs = $this->getCriteriaValues(self::FILTER_SERVICES);
+
+        if(empty($serviceIDs))
+        {
+            return;
+        }
 
         // To ensure we find all entries that have all the selected
         // service IDs, we must look up the services for each service
         // individually, and connect the where statements.
-        if(!empty($serviceIDs))
+
+        $parts = array();
+        foreach($serviceIDs as $serviceID)
         {
-            $parts = array();
-            foreach($serviceIDs as $serviceID)
-            {
-                $parts[] = $this->statement(sprintf("
-                    {table_outposts}.{outpost_primary}
-                    IN
-                    (
-                        SELECT
-                            {table_services}.{outpost_primary}
-                        FROM
-                            {table_services}
-                        WHERE
-                            {table_services}.{service_primary} = %s
-                    )",
-                    $serviceID
-                ));
-            }
-            $this->addWhere('('.implode(' AND ', $parts).')');
+            $parts[] = $this->statement(sprintf("
+                {table_outposts}.{outpost_primary}
+                IN
+                (
+                    SELECT
+                        {table_services}.{outpost_primary}
+                    FROM
+                        {table_services}
+                    WHERE
+                        {table_services}.{service_primary} = %s
+                )",
+                $serviceID
+            ));
         }
+
+        $this->addWhere('('.implode(' AND ', $parts).')');
     }
 
     protected function _initCustomColumns() : void
@@ -174,6 +202,51 @@ class OutpostFilterCriteria extends DBHelper_BaseFilterCriteria
             ->field('{service_primary}', OutpostServicesCollection::PRIMARY_NAME)
             ->field('{outpost_label}', OutpostsCollection::COL_LABEL)
             ->field('{planet_primary}', PlanetsCollection::PRIMARY_NAME)
-            ->field('{system_primary}', SolarSystemsCollection::PRIMARY_NAME);
+            ->field('{system_primary}', SolarSystemsCollection::PRIMARY_NAME)
+            ->field('{sentinel_primary}', SentinelLevelsCollection::PRIMARY_NAME);
+    }
+
+    /**
+     * @return void
+     * @throws Application_Exception
+     */
+    protected function configureSolarSystems() : void
+    {
+        $this->addWhereColumnIN(
+            (string)$this->statement("{planets}.{system_primary}"),
+            $this->getCriteriaValues(self::FILTER_SOLAR_SYSTEMS)
+        );
+    }
+
+    /**
+     * @return void
+     * @throws Application_Exception
+     */
+    protected function configureRoles() : void
+    {
+        $this->addWhereColumnIN(
+            OutpostsCollection::COL_ROLE_ID,
+            $this->getCriteriaValues(self::FILTER_ROLES)
+        );
+    }
+
+    /**
+     * @return void
+     * @throws Application_Exception
+     */
+    protected function configurePlanets() : void
+    {
+        $this->addWhereColumnIN(
+            $this->getColPlanetID(),
+            $this->getCriteriaValues(self::FILTER_PLANETS)
+        );
+    }
+
+    private function configureSentinelLevels() : void
+    {
+        $this->addWhereColumnIN(
+            (string)$this->statement("{planets}.{sentinel_primary}"),
+            $this->getCriteriaValues(self::FILTER_SENTINEL_LEVELS)
+        );
     }
 }

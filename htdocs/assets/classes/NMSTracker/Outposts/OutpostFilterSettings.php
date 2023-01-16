@@ -17,12 +17,14 @@ class OutpostFilterSettings extends DBHelper_BaseFilterSettings
     public const SETTING_SEARCH = 'search';
     public const SETTING_ROLE = 'role';
     public const SETTING_SERVICES = 'services';
+    public const SETTING_SENTINEL_LEVEL = 'sentinels';
 
     protected function registerSettings() : void
     {
         $this->registerSetting(self::SETTING_SEARCH, t('Search'));
         $this->registerSetting(self::SETTING_ROLE, t('Role'));
         $this->registerSetting(self::SETTING_SERVICES, t('Services'));
+        $this->registerSetting(self::SETTING_SENTINEL_LEVEL, t('Sentinel level'));
     }
 
     protected function inject_role() : void
@@ -54,11 +56,26 @@ class OutpostFilterSettings extends DBHelper_BaseFilterSettings
         }
     }
 
+    protected function inject_sentinels() : void
+    {
+        $el = $this->addElementSelect(self::SETTING_SENTINEL_LEVEL);
+
+        $el->addOption(t('Any'), '');
+
+        $levels = ClassFactory::createSentinelLevels()->getAll();
+
+        foreach($levels as $level)
+        {
+            $el->addOption($level->getLabel(), (string)$level->getID());
+        }
+    }
+
     protected function _configureFilters() : void
     {
         $this->configureSearch(self::SETTING_SEARCH);
         $this->configureRole($this->getSettingInt(self::SETTING_ROLE));
         $this->configureServices($this->getArraySetting(self::SETTING_SERVICES));
+        $this->configureSentinelLevel($this->getSettingInt(self::SETTING_SENTINEL_LEVEL));
     }
 
     private function configureRole(int $roleID) : void
@@ -91,5 +108,17 @@ class OutpostFilterSettings extends DBHelper_BaseFilterSettings
                 $this->filters->selectService($collection->getByID($serviceID));
             }
         }
+    }
+
+    private function configureSentinelLevel(int $levelID) : void
+    {
+        $collection = ClassFactory::createSentinelLevels();
+
+        if($levelID === 0 || !$collection->idExists($levelID))
+        {
+            return;
+        }
+
+        $this->filters->selectSentinelLevel($collection->getByID($levelID));
     }
 }
