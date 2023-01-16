@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\Area\SolarSystemsScreen\SystemScreen;
 
 use Application_Admin_Area_Mode_Submode_CollectionList;
-use classes\NMSTracker\Outposts\OutpostRecord;
+use NMSTracker\Outposts\OutpostRecord;
 use DBHelper_BaseCollection;
 use DBHelper_BaseFilterCriteria_Record;
 use DBHelper_BaseRecord;
@@ -15,6 +15,7 @@ use NMSTracker\Interfaces\Admin\ViewSystemScreenTrait;
 use NMSTracker\Outposts\OutpostFilterCriteria;
 use NMSTracker\OutpostsCollection;
 use NMSTracker\PlanetsCollection;
+use NMSTracker\SolarSystemsCollection;
 use NMSTracker_User;
 
 /**
@@ -27,6 +28,7 @@ class SystemOutpostsScreen
     use ViewSystemScreenTrait;
 
     public const URL_NAME = 'system-outposts';
+
     public const COL_LABEL = 'label';
     public const COL_PLANET = 'planet';
     public const COL_ROLE = 'role';
@@ -86,7 +88,9 @@ class SystemOutpostsScreen
     protected function configureActions() : void
     {
         $this->grid->enableLimitOptionsDefault();
-        $this->grid->addHiddenVar(PlanetsCollection::PRIMARY_NAME, (string)$this->getSolarSystem()->getID());
+
+        $this->grid->addHiddenVar(SolarSystemsCollection::PRIMARY_NAME, (string)$this->getSolarSystem()->getID());
+        $this->filterSettings->addHiddenVar(SolarSystemsCollection::PRIMARY_NAME, (string)$this->getSolarSystem()->getID());
     }
 
     public function getBackOrCancelURL() : string
