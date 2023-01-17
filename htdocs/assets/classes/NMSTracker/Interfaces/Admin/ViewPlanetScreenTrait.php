@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace NMSTracker\Interfaces\Admin;
 
+use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetAddPOIScreen;
+use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetPOISettingsScreen;
 use NMSTracker\Outposts\OutpostRecord;
 use NMSTracker\Planets\PlanetRecord;
 use NMSTracker;
@@ -79,6 +81,11 @@ trait ViewPlanetScreenTrait
         {
             $this->tabs->selectTab($this->tabs->getTabByName(PlanetOutpostsScreen::URL_NAME));
         }
+
+        if($this instanceof PlanetAddPOIScreen || $this instanceof PlanetPOISettingsScreen)
+        {
+            $this->tabs->selectTab($this->tabs->getTabByName(PlanetPOIsScreen::URL_NAME));
+        }
     }
 
     private function _handleOutpostTabs(OutpostRecord $outpost) : void
@@ -120,8 +127,9 @@ trait ViewPlanetScreenTrait
     {
         $subtitle = sb();
         $planet = $this->getPlanet();
-
         $outpost = ClassFactory::createOutposts()->getByRequest();
+        $poi = ClassFactory::createPlanetPOIs()->getByRequest();
+
         if($outpost !== null)
         {
             $subtitle
@@ -135,6 +143,21 @@ trait ViewPlanetScreenTrait
                         ->setIcon(UI::icon()->back())
                         ->makeMini()
                         ->link($planet->getAdminOutpostsURL())
+                );
+        }
+        else if ($poi !== null)
+        {
+            $subtitle
+                ->icon($poi->getIcon())
+                ->add($poi->getLabel())
+                ->muted(t('on %1$s', $planet->getLabelLinked()));
+
+            $this->renderer->getSubtitle()
+                ->addContextElement(
+                    UI::button(t('Back'))
+                        ->setIcon(UI::icon()->back())
+                        ->makeMini()
+                        ->link($planet->getAdminPOIsURL())
                 );
         }
         else

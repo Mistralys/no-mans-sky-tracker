@@ -18,7 +18,7 @@ use NMSTracker_User;
 
 /**
  * @property NMSTracker_User $user
- * @property \NMSTracker\Planets\PlanetRecord $record
+ * @property PlanetRecord $record
  */
 class PlanetSettingsScreen
     extends Application_Admin_Area_Mode_Submode_Action_CollectionEdit

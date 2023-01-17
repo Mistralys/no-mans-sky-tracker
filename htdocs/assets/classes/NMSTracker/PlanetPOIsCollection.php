@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace NMSTracker;
 
+use Application_Formable;
 use DBHelper_BaseCollection;
 use NMSTracker\PlanetPOIs\PlanetPOIFilterCriteria;
 use NMSTracker\PlanetPOIs\PlanetPOIFilterSettings;
 use NMSTracker\PlanetPOIs\PlanetPOIRecord;
+use NMSTracker\PlanetPOIs\PlanetPOISettingsManager;
+use NMSTracker\Planets\PlanetRecord;
 
 /**
  * @method PlanetPOIRecord getByID(int $record_id)
@@ -23,8 +26,9 @@ class PlanetPOIsCollection extends DBHelper_BaseCollection
 
     public const COL_LABEL = 'label';
     public const COL_PLANET_ID = PlanetsCollection::PRIMARY_NAME;
-    public const COL_COORDINATE_A = 'coord_a';
-    public const COL_COORDINATE_B = 'coord_b';
+    public const COL_COORDINATE_LONGITUDE = 'longitude';
+    public const COL_COORDINATE_LATITUDE = 'latitude';
+    public const COL_COMMENTS = 'comments';
 
     public function getRecordClassName() : string
     {
@@ -81,5 +85,15 @@ class PlanetPOIsCollection extends DBHelper_BaseCollection
     public function getRecordProperties() : array
     {
         return array();
+    }
+
+    public function createSettingsManagerAdd(Application_Formable $formable, PlanetRecord $planet) : PlanetPOISettingsManager
+    {
+        return new PlanetPOISettingsManager($formable, $this, $planet);
+    }
+
+    public function createSettingsManagerEdit(Application_Formable $formable, PlanetPOIRecord $poi) : PlanetPOISettingsManager
+    {
+        return new PlanetPOISettingsManager($formable, $this, $poi->getPlanet(), $poi);
     }
 }

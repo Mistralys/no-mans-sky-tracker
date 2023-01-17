@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\Planets;
 
 use Application_Admin_ScreenInterface;
+use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetAddPOIScreen;
 use NMSTracker\Outposts\OutpostRecord;
 use DBHelper;
 use DBHelper_BaseRecord;
@@ -161,6 +162,13 @@ class PlanetRecord extends DBHelper_BaseRecord
     public function getAdminPOIsURL(array $params=array()) : string
     {
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_ACTION] = PlanetPOIsScreen::URL_NAME;
+
+        return $this->getAdminURL($params);
+    }
+
+    public function getAdminCreatePOIURL(array $params=array()) : string
+    {
+        $params[Application_Admin_ScreenInterface::REQUEST_PARAM_ACTION] = PlanetAddPOIScreen::URL_NAME;
 
         return $this->getAdminURL($params);
     }
