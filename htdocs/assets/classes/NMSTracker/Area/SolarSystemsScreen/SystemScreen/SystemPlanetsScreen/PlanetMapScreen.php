@@ -273,16 +273,14 @@ EOT;
         ));
 
         $scale = $this->getPlanet()->getMapScale();
-        $latitude = ceil($scale->getLatitude()->getValue() + $scale->getLatitude()->addPercent(5)->getValue());
-        $longitude = ceil($scale->getLongitude()->getValue() + $scale->getLongitude()->addPercent(5)->getValue());
 
         // Must be on load to work properly.
         $this->ui->addJavascriptOnload(sprintf(
             $this->chartConfig,
-            $latitude * -1, // ymin
-            $latitude, // ymax
-            $longitude * -1, // xmin
-            $longitude // xmax
+            $scale['latitudeMin'], // ymin
+            $scale['latitudeMax'], // ymax
+            $scale['longitudeMin'], // xmin
+            $scale['longitudeMax'] // xmax
         ));
 
         $this->ui->addJavascriptOnload(sprintf(

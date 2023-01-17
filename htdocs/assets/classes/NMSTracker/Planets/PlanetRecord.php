@@ -343,39 +343,37 @@ class PlanetRecord extends DBHelper_BaseRecord
      * Retrieves the maximum latitude and longitude values
      * registered by planet POIs and outposts, in any direction.
      *
-     * @return POICoordinates
+     * @return array{longitudeMax:float,longitudeMin:float,latitudeMax:float,latitudeMin:float}
      */
-    public function getMapScale() : POICoordinates
+    public function getMapScale() : array
     {
-        $longitude = 0;
-        $latitude = 0;
+        $longitudeMax = -9000;
+        $longitudeMin = 9000;
+        $latitudeMax = -9000;
+        $latitudeMin = 9000;
 
-        $outposts = $this->getOutposts();
-        foreach($outposts as $outpost)
+        $items = array_merge($this->getOutposts(), $this->getPOIs());
+        foreach($items as $item)
         {
-            $valLongitude = abs($outpost->getLongitude());
-            $valLatitude = abs($outpost->getLatitude());
+            $valLongitude = $item->getLongitude();
+            $valLatitude = $item->getLatitude();
 
-            if($valLatitude > $latitude) { $latitude = $valLatitude; }
-            if($valLongitude > $longitude) { $longitude = $valLongitude; }
+            if($valLatitude > $latitudeMax) { $latitudeMax = $valLatitude; }
+            if($valLongitude > $longitudeMax) { $longitudeMax = $valLongitude; }
+            if($valLatitude < $latitudeMin) { $latitudeMin = $valLatitude; }
+            if($valLongitude < $longitudeMin) { $longitudeMin = $valLongitude; }
         }
 
-        $pois = $this->getPOIs();
-        foreach($pois as $poi)
-        {
-            $valLongitude = abs($poi->getLongitude());
-            $valLatitude = abs($poi->getLatitude());
+        if($longitudeMax === -9000) { $longitudeMax = 0; }
+        if($longitudeMin === 9000) { $longitudeMin = 0; }
+        if($latitudeMax === -9000) { $latitudeMax = 0; }
+        if($latitudeMin === -9000) { $latitudeMin = 0; }
 
-            if($valLatitude > $latitude) { $latitude = $valLatitude; }
-            if($valLongitude > $longitude) { $longitude = $valLongitude; }
-        }
-
-        if($longitude === 0) { $longitude = 300; }
-        if($latitude === 0) { $latitude = 300; }
-
-        if($longitude < 50) { $longitude = 50; }
-        if($latitude < 50) { $latitude = 50; }
-
-        return new POICoordinates($longitude, $latitude);
+        return array(
+            'longitudeMax' => ceil($longitudeMax),
+            'longitudeMin' => floor($longitudeMin),
+            'latitudeMax' => ceil($latitudeMax),
+            'latitudeMin' => floor($latitudeMin)
+        );
     }
 }
