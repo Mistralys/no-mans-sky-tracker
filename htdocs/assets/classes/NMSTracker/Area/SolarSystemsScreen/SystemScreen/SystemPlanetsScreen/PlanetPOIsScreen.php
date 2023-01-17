@@ -22,7 +22,6 @@ use NMSTracker\PlanetPOIsCollection;
 use NMSTracker\PlanetsCollection;
 use NMSTracker\SolarSystemsCollection;
 use UI_DataGrid_Action;
-use UI_DataGrid_Action_Confirm;
 
 /**
  * @property PlanetPOIFilterCriteria $filters
@@ -59,10 +58,7 @@ class PlanetPOIsScreen
 
     public function getAbstract() : string
     {
-        return t(
-            'See the article regarding %1$s to know how to use the coordinates.',
-            sb()->link(t('planetary coordinates'), 'https://nomanssky.fandom.com/wiki/Planetary_coordinates', true)
-        );
+        return '';
     }
 
     protected function _handleSidebar() : void
