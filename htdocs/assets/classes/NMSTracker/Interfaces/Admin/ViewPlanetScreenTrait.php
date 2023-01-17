@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\Interfaces\Admin;
 
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetAddPOIScreen;
+use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetMapScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetPOISettingsScreen;
 use NMSTracker\Outposts\OutpostRecord;
 use NMSTracker\Planets\PlanetRecord;
@@ -72,6 +73,10 @@ trait ViewPlanetScreenTrait
         $this->tabs->appendTab(t('POIs'), PlanetPOIsScreen::URL_NAME)
             ->makeLinked($planet->getAdminPOIsURL())
             ->setIcon(NMSTracker::icon()->pointsOfInterest());
+
+        $this->tabs->appendTab(t('Map'), PlanetMapScreen::URL_NAME)
+            ->makeLinked($planet->getAdminMapURL())
+            ->setIcon(NMSTracker::icon()->map());
 
         $this->tabs->appendTab(t('Settings'), PlanetSettingsScreen::URL_NAME)
             ->makeLinked($planet->getAdminSettingsURL())
