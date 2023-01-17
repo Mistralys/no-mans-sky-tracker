@@ -32,6 +32,10 @@ class CustomIcon extends UI_Icon
     /**
      * @return $this
      */
+    public function coordinates() : self { return $this->setType('arrows-alt'); }
+    /**
+     * @return $this
+     */
     public function outpost() : self { return $this->setType('campground', 'fas'); }
     /**
      * @return $this
