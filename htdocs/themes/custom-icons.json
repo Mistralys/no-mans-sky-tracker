@@ -34,5 +34,9 @@
   "planet_type": {
     "icon": "globe",
     "type": "fas"
+  },
+  "coordinates": {
+    "icon": "arrows-alt",
+    "type": ""
   }
 }
