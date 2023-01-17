@@ -6,6 +6,7 @@ namespace NMSTracker\Outposts;
 
 use Application_Admin_ScreenInterface;
 use Application_Exception_DisposableDisposed;
+use NMSTracker\PlanetPOIs\POICoordinates;
 use NMSTracker\Planets\PlanetRecord;
 use DBHelper;
 use DBHelper_BaseRecord;
@@ -70,6 +71,29 @@ class OutpostRecord extends DBHelper_BaseRecord
     public function getRole() : OutpostRoleRecord
     {
         return ClassFactory::createOutpostRoles()->getByID($this->getRoleID());
+    }
+
+    public function getCoordinates() : ?POICoordinates
+    {
+         $longitude = $this->getLongitude();
+         $latitude = $this->getLatitude();
+
+         if($longitude !== 0.0 && $latitude !== 0.0)
+         {
+             return new POICoordinates($longitude, $latitude);
+         }
+
+         return null;
+    }
+
+    public function getLongitude() : float
+    {
+        return $this->getRecordFloatKey(OutpostsCollection::COL_LONGITUDE);
+    }
+
+    public function getLatitude() : float
+    {
+        return $this->getRecordFloatKey(OutpostsCollection::COL_LATITUDE);
     }
 
     public function getComments() : string

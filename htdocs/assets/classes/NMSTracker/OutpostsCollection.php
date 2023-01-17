@@ -28,6 +28,8 @@ class OutpostsCollection extends DBHelper_BaseCollection
     public const COL_COMMENTS = 'comments';
     public const COL_ROLE_ID = 'outpost_role_id';
     public const COL_PLANET_ID = 'planet_id';
+    public const COL_LONGITUDE = 'longitude';
+    public const COL_LATITUDE = 'latitude';
 
     public function getRecordClassName() : string
     {

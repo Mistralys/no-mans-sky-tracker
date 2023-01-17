@@ -34,6 +34,8 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
     public const SETTING_ROLE = 'role';
     public const SETTING_SERVICES = 'services';
     public const SETTING_COMMENTS = 'comments';
+    public const SETTING_LONGITUDE = 'longitude';
+    public const SETTING_LATITUDE = 'latitude';
 
     private PlanetRecord $planet;
 
@@ -108,10 +110,51 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
             ->expand();
 
         $group->registerSetting(self::SETTING_COMMENTS)
+            ->setStorageName(OutpostsCollection::COL_COMMENTS)
             ->setCallback(NamedClosure::fromClosure(
                 Closure::fromCallable(array($this, 'injectComments')),
                 array($this, 'injectComments')
             ));
+
+        $group = $this->addGroup(t('Coordinates'))
+            ->setIcon(NMSTracker::icon()->coordinates())
+            ->setAbstract(t('These optional planetary coordinates are used to display the outpost in relation to other POIs (points of interest) on the planet, when available.'));
+
+        $group->registerSetting(self::SETTING_LONGITUDE)
+            ->setStorageName(OutpostsCollection::COL_LONGITUDE)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectLongitude')),
+                array($this, 'injectLongitude')
+            ));
+
+        $group->registerSetting(self::SETTING_LATITUDE)
+            ->setStorageName(OutpostsCollection::COL_LATITUDE)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectLatitude')),
+                array($this, 'injectLatitude')
+            ));
+    }
+
+    private function injectLongitude(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
+    {
+        $el = $this->addElementText($setting->getName(), t('Longitude'));
+        $el->addFilterTrim();
+        $el->addClass('input-small');
+
+        $this->addRuleFloat($el, -9000);
+
+        return $el;
+    }
+
+    private function injectLatitude(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
+    {
+        $el = $this->addElementText($setting->getName(), t('Latitude'));
+        $el->addFilterTrim();
+        $el->addClass('input-small');
+
+        $this->addRuleFloat($el, -9000);
+
+        return $el;
     }
 
     private function injectComments(Application_Formable_RecordSettings_Setting $setting) : \HTML_QuickForm2_Element_Textarea
