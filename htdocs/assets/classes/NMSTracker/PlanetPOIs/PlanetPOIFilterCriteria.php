@@ -9,6 +9,9 @@ use DBHelper_StatementBuilder_ValuesContainer;
 use NMSTracker\PlanetPOIsCollection;
 use NMSTracker\Planets\PlanetRecord;
 
+/**
+ * @method PlanetPOIRecord[] getItemsObjects()
+ */
 class PlanetPOIFilterCriteria extends DBHelper_BaseFilterCriteria
 {
     public const DEFAULT_SORT_KEY = PlanetPOIsCollection::COL_LABEL;
