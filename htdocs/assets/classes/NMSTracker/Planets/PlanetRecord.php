@@ -6,6 +6,7 @@ namespace NMSTracker\Planets;
 
 use Application_Admin_ScreenInterface;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetAddPOIScreen;
+use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetMapScreen;
 use NMSTracker\Outposts\OutpostRecord;
 use DBHelper;
 use DBHelper_BaseRecord;
@@ -17,6 +18,9 @@ use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetSe
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemPlanetsScreen\PlanetStatusScreen;
 use NMSTracker\ClassFactory;
 use NMSTracker\Outposts\OutpostFilterCriteria;
+use NMSTracker\PlanetPOIs\PlanetPOIFilterCriteria;
+use NMSTracker\PlanetPOIs\PlanetPOIRecord;
+use NMSTracker\PlanetPOIs\POICoordinates;
 use NMSTracker\PlanetsCollection;
 use NMSTracker\PlanetTypes\PlanetTypeRecord;
 use NMSTracker\Resources\ResourceFilterCriteria;
@@ -162,6 +166,13 @@ class PlanetRecord extends DBHelper_BaseRecord
     public function getAdminPOIsURL(array $params=array()) : string
     {
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_ACTION] = PlanetPOIsScreen::URL_NAME;
+
+        return $this->getAdminURL($params);
+    }
+
+    public function getAdminMapURL(array $params=array()) : string
+    {
+        $params[Application_Admin_ScreenInterface::REQUEST_PARAM_ACTION] = PlanetMapScreen::URL_NAME;
 
         return $this->getAdminURL($params);
     }
@@ -313,5 +324,58 @@ class PlanetRecord extends DBHelper_BaseRecord
         return null;
     }
 
+    /**
+     * @return PlanetPOIRecord[]
+     */
+    public function getPOIs() : array
+    {
+        return $this->getPOIFilters()->getItemsObjects();
+    }
 
+    public function getPOIFilters() : PlanetPOIFilterCriteria
+    {
+        return ClassFactory::createPlanetPOIs()
+            ->getFilterCriteria()
+            ->selectPlanet($this);
+    }
+
+    /**
+     * Retrieves the maximum latitude and longitude values
+     * registered by planet POIs and outposts, in any direction.
+     *
+     * @return POICoordinates
+     */
+    public function getMapScale() : POICoordinates
+    {
+        $longitude = 0;
+        $latitude = 0;
+
+        $outposts = $this->getOutposts();
+        foreach($outposts as $outpost)
+        {
+            $valLongitude = abs($outpost->getLongitude());
+            $valLatitude = abs($outpost->getLatitude());
+
+            if($valLatitude > $latitude) { $latitude = $valLatitude; }
+            if($valLongitude > $longitude) { $longitude = $valLongitude; }
+        }
+
+        $pois = $this->getPOIs();
+        foreach($pois as $poi)
+        {
+            $valLongitude = abs($poi->getLongitude());
+            $valLatitude = abs($poi->getLatitude());
+
+            if($valLatitude > $latitude) { $latitude = $valLatitude; }
+            if($valLongitude > $longitude) { $longitude = $valLongitude; }
+        }
+
+        if($longitude === 0) { $longitude = 300; }
+        if($latitude === 0) { $latitude = 300; }
+
+        if($longitude < 50) { $longitude = 50; }
+        if($latitude < 50) { $latitude = 50; }
+
+        return new POICoordinates($longitude, $latitude);
+    }
 }
