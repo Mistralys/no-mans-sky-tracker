@@ -34,8 +34,8 @@ class POICoordinates
          return (string)sb()->mono(sprintf(
              '%s %s %s',
              NMSTracker::icon()->move(),
-             $this->formatNumber($this->getLongitude()->getNumber()),
-             $this->formatNumber($this->getLatitude()->getNumber())
+             $this->formatNumber($this->getLongitude()->getValue()),
+             $this->formatNumber($this->getLatitude()->getValue())
          ));
      }
 
