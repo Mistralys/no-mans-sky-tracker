@@ -38,5 +38,9 @@
   "coordinates": {
     "icon": "arrows-alt",
     "type": ""
+  },
+  "map": {
+    "icon": "map",
+    "type": "far"
   }
 }

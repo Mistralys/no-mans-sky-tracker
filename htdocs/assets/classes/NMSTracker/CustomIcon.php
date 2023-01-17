@@ -36,6 +36,10 @@ class CustomIcon extends UI_Icon
     /**
      * @return $this
      */
+    public function map() : self { return $this->setType('map', 'far'); }
+    /**
+     * @return $this
+     */
     public function outpost() : self { return $this->setType('campground', 'fas'); }
     /**
      * @return $this
