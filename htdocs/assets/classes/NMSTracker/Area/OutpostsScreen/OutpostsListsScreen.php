@@ -33,6 +33,7 @@ class OutpostsListsScreen extends Application_Admin_Area_Mode_CollectionList
     public const COL_ROLE = 'role';
     public const COL_SENTINELS = 'sentinels';
     public const COL_RESOURCES = 'resources';
+    public const COL_COORDINATES = 'coordinates';
 
     public function getURLName() : string
     {
@@ -57,13 +58,20 @@ class OutpostsListsScreen extends Application_Admin_Area_Mode_CollectionList
         $outpost = ClassHelper::requireObjectInstanceOf(OutpostRecord::class, $record);
         $planet = $outpost->getPlanet();
 
+        $coordLabel = '';
+        $coordinates = $outpost->getCoordinates();
+        if($coordinates !== null) {
+            $coordLabel = $coordinates->toListLabel();
+        }
+
         return array(
             self::COL_LABEL => $outpost->getLabelLinked(),
             self::COL_SYSTEM => $outpost->getSolarSystem()->getLabelLinked(),
             self::COL_PLANET => $planet->getLabelLinked(),
             self::COL_ROLE => $outpost->getRole()->getLabelLinked(),
             self::COL_SENTINELS => $planet->getSentinelLevel()->getLabelLinked(),
-            self::COL_RESOURCES => $planet->getResourceFilters()->getContainer()->renderBulletList()
+            self::COL_RESOURCES => $planet->getResourceFilters()->getContainer()->renderBulletList(),
+            self::COL_COORDINATES => $coordLabel
         );
     }
 
@@ -79,6 +87,9 @@ class OutpostsListsScreen extends Application_Admin_Area_Mode_CollectionList
         $this->grid->addColumn(self::COL_ROLE, t('Role'));
 
         $this->grid->addColumn(self::COL_SENTINELS, t('Sentinels'));
+
+        $this->grid->addColumn(self::COL_COORDINATES, t('Coordinates'))
+            ->setNowrap();
 
         $this->grid->addColumn(self::COL_RESOURCES, t('Resources'));
 
