@@ -10,6 +10,7 @@ use DBHelper_BaseRecord;
 use NMSTracker\Area\ResourcesScreen\ResourceScreen;
 use NMSTracker\Area\ResourcesScreen\ResourceScreen\ResourceOutpostsScreen;
 use NMSTracker\Area\ResourcesScreen\ResourceScreen\ResourcePlanetsScreen;
+use NMSTracker\Area\ResourcesScreen\ResourceScreen\ResourceStationsScreen;
 use NMSTracker\ClassFactory;
 use NMSTracker\Outposts\OutpostFilterCriteria;
 use NMSTracker\Planets\PlanetFilterCriteria;
@@ -46,13 +47,6 @@ class ResourceRecord extends DBHelper_BaseRecord
             $this->getLabel(),
             $this->getAdminPlanetsURL()
         );
-    }
-
-    public function getSolarSystemFilters() : SolarSystemFilterCriteria
-    {
-        return ClassFactory::createSolarSystems()
-            ->getFilterCriteria()
-            ->selectResource($this);
     }
 
     public function getPlanetFilters() : PlanetFilterCriteria
@@ -99,6 +93,17 @@ class ResourceRecord extends DBHelper_BaseRecord
     public function getAdminOutpostsURL(array $params=array()) : string
     {
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_SUBMODE] = ResourceOutpostsScreen::URL_NAME;
+
+        return $this->getAdminURL($params);
+    }
+
+    /**
+     * @param array<string,string|number|Interface_Stringable|NULL> $params
+     * @return string
+     */
+    public function getAdminStationsURL(array $params=array()) : string
+    {
+        $params[Application_Admin_ScreenInterface::REQUEST_PARAM_SUBMODE] = ResourceStationsScreen::URL_NAME;
 
         return $this->getAdminURL($params);
     }

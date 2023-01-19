@@ -7,6 +7,7 @@ namespace NMSTracker\Resources;
 use NMSTracker\Resources\Types\Harvestable;
 use NMSTracker\Resources\Types\Mineral;
 use NMSTracker\Resources\Types\Specialty;
+use NMSTracker\Resources\Types\Tradeable;
 
 class ResourceTypesCollection
 {
@@ -15,6 +16,7 @@ class ResourceTypesCollection
     public const TYPE_MINERAL = 'mineral';
     public const TYPE_HARVESTABLE = 'harvestable';
     public const TYPE_SPECIALTY = 'specialty';
+    public const TYPE_TRADEABLE = 'tradeable';
 
     private static ?ResourceTypesCollection $instance = null;
 
@@ -37,7 +39,8 @@ class ResourceTypesCollection
         $this->types = array(
             new Mineral(),
             new Harvestable(),
-            new Specialty()
+            new Specialty(),
+            new Tradeable()
         );
 
         usort($this->types, static function (BaseResourceType $a, BaseResourceType $b) : int {

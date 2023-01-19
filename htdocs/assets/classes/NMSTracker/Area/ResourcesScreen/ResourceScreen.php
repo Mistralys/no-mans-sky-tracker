@@ -68,5 +68,11 @@ class ResourceScreen
             $resource->getAdminOutpostsURL()
         )
             ->setIcon(NMSTracker::icon()->outpost());
+
+        $this->subnav->addURL(
+            t('Space stations'),
+            $resource->getAdminStationsURL()
+        )
+            ->setIcon(NMSTracker::icon()->spaceStation());
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace NMSTracker\Resources;
 
+use Application_Exception;
+use NMSTracker\ClassFactory;
 use NMSTracker\Outposts\OutpostRecord;
 use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseFilterCriteria;
@@ -12,41 +14,66 @@ use NMSTracker\PlanetsCollection;
 use NMSTracker\ResourcesCollection;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystemsCollection;
+use NMSTracker\SpaceStations\BaseStationOfferType;
+use NMSTracker\SpaceStations\SpaceStationRecord;
+use NMSTracker\SpaceStationsCollection;
 
 /**
  * @method ResourceRecord[] getItemsObjects()
  */
 class ResourceFilterCriteria extends DBHelper_BaseFilterCriteria
 {
-    public const FILTER_INCLUDE_IDS = 'include_ids';
-    public const FILTER_SOLAR_SYSTEMS = 'solar_systems';
-    public const JOIN_PLANETS_RESOURCES = 'planets_resources';
-    public const FILTER_PLANETS = 'planets';
-    public const FILTER_RESOURCE_TYPES = 'resource_types';
-
-    public function selectType(BaseResourceType $resourceType) : self
-    {
-        return $this->selectCriteriaValue(self::FILTER_RESOURCE_TYPES, $resourceType->getID());
-    }
-
-    protected function getCountColumn() : string
-    {
-        return $this->getColID();
-    }
+    // region: C - Applying filters
 
     protected function prepareQuery() : void
     {
         $this->makeDistinct();
 
-        $this->addWhereColumnIN(
-            $this->statement('{table_resources}.{resource_primary}'),
-            $this->getCriteriaValues(self::FILTER_INCLUDE_IDS)
-        );
+        $this->applyFilterResourceTypes();
+        $this->applyFilterSolarSystems();
+        $this->applyFilterPlanets();
+        $this->applyFilterSpaceStations();
+        $this->applyFilterStationOfferTypes();
+
+        $this->addGroupByStatement('{table_resources}.{resource_primary}');
+    }
+
+    private function applyFilterSpaceStations() : void
+    {
+        if(!$this->hasCriteriaValues(self::FILTER_SPACE_STATIONS))
+        {
+            return;
+        }
+
+        $this->requireJoin(self::JOIN_SPACE_STATIONS);
 
         $this->addWhereColumnIN(
-            $this->statement('{table_resources}.{field_type}'),
-            $this->getCriteriaValues(self::FILTER_RESOURCE_TYPES)
+            $this->statement('{table_station_resources}.{station_primary}'),
+            $this->getCriteriaValues(self::FILTER_SPACE_STATIONS)
         );
+    }
+
+    private function applyFilterStationOfferTypes() : void
+    {
+        if(!$this->hasCriteriaValues(self::FILTER_STATION_OFFER_TYPES))
+        {
+            return;
+        }
+
+        $this->requireJoin(self::JOIN_SPACE_STATIONS);
+
+        $this->addWhereColumnIN(
+            $this->statement('{table_station_resources}.{station_offer_type}'),
+            $this->getCriteriaValues(self::FILTER_STATION_OFFER_TYPES)
+        );
+    }
+
+    private function applyFilterSolarSystems() : void
+    {
+        if(!$this->hasCriteriaValues(self::FILTER_SOLAR_SYSTEMS))
+        {
+            return;
+        }
 
         $this->requireJoin(self::JOIN_PLANETS_RESOURCES);
 
@@ -54,30 +81,46 @@ class ResourceFilterCriteria extends DBHelper_BaseFilterCriteria
             $this->statement('{table_planet_resources}.{system_primary}'),
             $this->getCriteriaValues(self::FILTER_SOLAR_SYSTEMS)
         );
+    }
+
+    private function applyFilterPlanets() : void
+    {
+        if(!$this->hasCriteriaValues(self::FILTER_PLANETS))
+        {
+            return;
+        }
+
+        $this->requireJoin(self::JOIN_PLANETS_RESOURCES);
 
         $this->addWhereColumnIN(
             $this->statement('{table_planet_resources}.{planet_primary}'),
             $this->getCriteriaValues(self::FILTER_PLANETS)
         );
-
-        $this->addGroupByStatement('{table_resources}.{resource_primary}');
     }
 
-    public function getColLabel() : string
-    {
-        return (string)$this->statement('{table_resources}.{field_label}');
-    }
+    // endregion
 
-    public function getColID() : string
-    {
-        return (string)$this->statement('{table_resources}.{resource_primary}');
-    }
+    // region: X - Configuration
+
+    public const JOIN_PLANETS_RESOURCES = 'planets_resources';
+    public const JOIN_SPACE_STATIONS = 'join_space_stations';
+    public const FILTER_SOLAR_SYSTEMS = 'solar_systems';
+    public const FILTER_PLANETS = 'planets';
+    public const FILTER_RESOURCE_TYPES = 'resource_types';
+    public const FILTER_SPACE_STATIONS = 'space_stations';
+    public const FILTER_STATION_OFFER_TYPES = 'station_offer_type';
 
     protected function _registerJoins() : void
     {
+        $this->registerJoinPlanetResources();
+        $this->registerJoinStationResources();
+    }
+
+    private function registerJoinPlanetResources() : void
+    {
         $this->registerJoin(
             self::JOIN_PLANETS_RESOURCES,
-             $this->statement("
+            $this->statement("
                 LEFT JOIN
                     {table_planet_resources}
                 ON
@@ -86,43 +129,50 @@ class ResourceFilterCriteria extends DBHelper_BaseFilterCriteria
         );
     }
 
+    private function registerJoinStationResources() : void
+    {
+        $this->registerJoin(
+            self::JOIN_SPACE_STATIONS,
+            $this->statement("
+                LEFT JOIN
+                    {table_station_resources}
+                ON
+                    {table_station_resources}.{resource_primary}={table_resources}.{resource_primary}
+            ")
+        );
+    }
+
     protected function _registerStatementValues(DBHelper_StatementBuilder_ValuesContainer $container) : void
     {
         $container
             ->table('{table_resources}', ResourcesCollection::TABLE_NAME)
             ->table('{table_planet_resources}', PlanetsCollection::TABLE_RESOURCES)
+            ->table('{table_station_resources}', SpaceStationsCollection::TABLE_RESOURCES)
 
             ->field('{resource_primary}', ResourcesCollection::PRIMARY_NAME)
             ->field('{planet_primary}', PlanetsCollection::PRIMARY_NAME)
             ->field('{system_primary}', SolarSystemsCollection::PRIMARY_NAME)
+            ->field('{station_primary}', SpaceStationsCollection::PRIMARY_NAME)
+            ->field('{station_offer_type}', SpaceStationsCollection::COL_RESOURCE_OFFER_TYPE)
             ->field('{field_label}', ResourcesCollection::COL_LABEL)
             ->field('{field_type}', ResourcesCollection::COL_TYPE);
     }
 
-    public function includeID(int $id) : self
+    // endregion
+
+    // region: A - Selecting filters
+
+    public function selectSpaceStation(SpaceStationRecord $station) : self
     {
         return $this->selectCriteriaValue(
-            self::FILTER_INCLUDE_IDS,
-            $id
+            self::FILTER_SPACE_STATIONS,
+            $station->getID()
         );
     }
 
-    /**
-     * @param int[] $ids
-     * @return $this
-     */
-    public function includeIDs(array $ids, bool $allowEmpty) : self
+    public function selectStationOfferType(BaseStationOfferType $type) : self
     {
-        if(empty($ids) && !$allowEmpty) {
-            $ids = array(PHP_INT_MIN);
-        }
-
-        foreach($ids as $id)
-        {
-            $this->includeID($id);
-        }
-
-        return $this;
+        return $this->selectCriteriaValue(self::FILTER_STATION_OFFER_TYPES, $type->getID());
     }
 
     public function selectSolarSystem(SolarSystemRecord $solarSystem) : self
@@ -141,13 +191,59 @@ class ResourceFilterCriteria extends DBHelper_BaseFilterCriteria
         );
     }
 
+    public function selectResourceType(BaseResourceType $resourceType) : self
+    {
+        return $this->selectCriteriaValue(self::FILTER_RESOURCE_TYPES, $resourceType->getID());
+    }
+
     public function selectOutpost(OutpostRecord $outpost) : self
     {
         return $this->selectPlanet($outpost->getPlanet());
     }
 
+    public function selectTradeCommodities() : self
+    {
+        return $this->selectResourceType(
+            ClassFactory::createResourceTypes()
+                ->getByID(ResourceTypesCollection::TYPE_TRADEABLE)
+        );
+    }
+
+    // endregion
+
+    // region: B - Utility methods
+
+    public function getColLabel() : string
+    {
+        return (string)$this->statement('{table_resources}.{field_label}');
+    }
+
+    public function getColID() : string
+    {
+        return (string)$this->statement('{table_resources}.{resource_primary}');
+    }
+
+    protected function getCountColumn() : string
+    {
+        return $this->getColID();
+    }
+
     public function getContainer() : ResourceContainer
     {
         return ResourceContainer::create($this);
+    }
+
+    // endregion
+
+    /**
+     * @return void
+     * @throws Application_Exception
+     */
+    protected function applyFilterResourceTypes() : void
+    {
+        $this->addWhereColumnIN(
+            $this->statement('{table_resources}.{field_type}'),
+            $this->getCriteriaValues(self::FILTER_RESOURCE_TYPES)
+        );
     }
 }

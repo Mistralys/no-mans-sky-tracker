@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace NMSTracker\Resources;
 
+use NMSTracker\ClassFactory;
+
 class ResourceContainer
 {
     /**
@@ -75,5 +77,24 @@ class ResourceContainer
         }
 
         return $this;
+    }
+
+    /**
+     * @param array<int,int|string> $ids
+     * @return $this
+     */
+    public function addIDs(array $ids) : self
+    {
+        foreach($ids as $id)
+        {
+            $this->addID((int)$id);
+        }
+
+        return $this;
+    }
+
+    public function addID(int $id) : self
+    {
+        return $this->addResource(ClassFactory::createResources()->getByID($id));
     }
 }
