@@ -3,13 +3,19 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 09, 2023 at 06:24 PM
+-- Generation Time: Jan 19, 2023 at 09:28 PM
 -- Server version: 10.3.10-MariaDB
 -- PHP Version: 7.4.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `nms_tracker`
@@ -154,14 +160,6 @@ CREATE TABLE `known_users` (
 `email` varchar(254) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `known_users`
---
-
-INSERT INTO `known_users` (`user_id`, `foreign_id`, `firstname`, `lastname`, `email`) VALUES
-(1, '__system', 'NMS', 'Tracker', 'info@mistralys.eu'),
-(2, '1234567890', 'Sample', 'User', 'info@mistralys.eu'),;
-
 -- --------------------------------------------------------
 
 --
@@ -236,7 +234,10 @@ CREATE TABLE `outposts` (
 `outpost_id` int(11) UNSIGNED NOT NULL,
 `planet_id` int(11) UNSIGNED NOT NULL,
 `label` varchar(160) NOT NULL,
-`outpost_role_id` int(11) UNSIGNED NOT NULL
+`comments` mediumtext NOT NULL DEFAULT '',
+`outpost_role_id` int(11) UNSIGNED NOT NULL,
+`longitude` decimal(11,2) DEFAULT 0.00,
+`latitude` decimal(11,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -266,10 +267,11 @@ CREATE TABLE `outpost_roles` (
 --
 
 INSERT INTO `outpost_roles` (`outpost_role_id`, `label`) VALUES
-(3, 'Beachhead'),
+(3, 'Beachhead vs. Sentinels'),
 (4, 'Main home base'),
+(2, 'Mining Outpost'),
 (1, 'Outpost'),
-(2, 'Oxygen factory');
+(5, 'Sightseeing');
 
 -- --------------------------------------------------------
 
@@ -297,8 +299,9 @@ INSERT INTO `outpost_services` (`outpost_service_id`, `label`) VALUES
 (13, 'Exocraft: Nautilus'),
 (14, 'Exocraft: Nomad'),
 (12, 'Exocraft: Roamer'),
-(1, 'Gas Collector'),
 (2, 'Landing Pad'),
+(1, 'Mining: Gas Collector'),
+(15, 'Mining: Mineral Extractor'),
 (4, 'Refining'),
 (3, 'Signal Booster');
 
@@ -315,6 +318,7 @@ CREATE TABLE `planets` (
 `planet_type_id` int(11) UNSIGNED NOT NULL,
 `sentinel_level_id` int(11) UNSIGNED NOT NULL,
 `is_moon` enum('yes','no') NOT NULL DEFAULT 'no',
+`is_own_discovery` enum('yes','no') NOT NULL DEFAULT 'yes',
 `scan_complete` enum('yes','no') NOT NULL DEFAULT 'no',
 `comments` mediumtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -327,6 +331,7 @@ CREATE TABLE `planets` (
 
 CREATE TABLE `planets_resources` (
 `planet_id` int(11) UNSIGNED NOT NULL,
+`solar_system_id` int(11) UNSIGNED NOT NULL,
 `resource_id` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -340,8 +345,9 @@ CREATE TABLE `planet_pois` (
 `planet_poi_id` int(11) UNSIGNED NOT NULL,
 `planet_id` int(11) UNSIGNED NOT NULL,
 `label` varchar(160) NOT NULL,
-`coord_a` decimal(10,0) NOT NULL,
-`coord_b` decimal(10,0) NOT NULL
+`comments` mediumtext NOT NULL,
+`longitude` decimal(10,2) NOT NULL,
+`latitude` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Coordinates for planetary points of interest';
 
 -- --------------------------------------------------------
@@ -361,28 +367,49 @@ CREATE TABLE `planet_types` (
 
 INSERT INTO `planet_types` (`planet_type_id`, `label`) VALUES
 (7, 'Abandoned'),
+(26, 'Acidic'),
+(37, 'Arid'),
+(24, 'Basalt'),
 (21, 'Bleak'),
+(29, 'Blighted'),
 (1, 'Boiling'),
 (4, 'Contaminated'),
+(32, 'Corrosive'),
+(42, 'Endless Morass'),
+(35, 'Fiery'),
 (13, 'Flame-Ruptured'),
+(44, 'Foggy'),
+(33, 'Fractured'),
 (6, 'Freezing'),
 (3, 'Frostbound'),
+(25, 'Frozen'),
 (23, 'Fungal'),
+(39, 'Glacial'),
 (15, 'Hiemal'),
+(40, 'High Radio Source'),
+(31, 'Hot'),
 (18, 'Humid'),
 (20, 'Hyperborean'),
 (11, 'Icebound'),
 (16, 'Icy'),
+(43, 'Lost Green Planet'),
 (5, 'Marshy'),
+(36, 'Molten'),
 (17, 'Noxious'),
 (9, 'Ossified'),
 (12, 'Overgrown'),
+(27, 'Paradise'),
+(34, 'Poison'),
 (22, 'Rainy'),
+(30, 'Stellar Corruption'),
 (14, 'Supercritical'),
 (19, 'Swamp'),
+(45, 'Tectonic'),
 (10, 'Temperate'),
 (2, 'Toxic'),
-(8, 'Tropical');
+(8, 'Tropical'),
+(28, 'Vermillion Globe'),
+(38, 'Viridescent');
 
 -- --------------------------------------------------------
 
@@ -413,38 +440,79 @@ INSERT INTO `races` (`race_id`, `label`) VALUES
 
 CREATE TABLE `resources` (
 `resource_id` int(11) UNSIGNED NOT NULL,
-`label` varchar(160) NOT NULL
+`label` varchar(160) NOT NULL,
+`type` enum('mineral','harvestable','collectible','specialty','tradeable') NOT NULL DEFAULT 'mineral'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `resources`
 --
 
-INSERT INTO `resources` (`resource_id`, `label`) VALUES
-(21, 'Activated Copper'),
-(6, 'Ammonia'),
-(14, 'Ancient Bones'),
-(16, 'Cactus Flesh'),
-(24, 'Cadmium'),
-(22, 'Cobalt'),
-(2, 'Copper'),
-(10, 'Dioxite'),
-(15, 'Faecium'),
-(9, 'Frost Crystal'),
-(5, 'Fungal Mold'),
-(11, 'Gamma Root'),
-(20, 'Gold'),
-(13, 'Magnetised Ferrite'),
-(18, 'Paraffinium'),
-(3, 'Phosphorus'),
-(17, 'Pyrite'),
-(8, 'Salt'),
-(23, 'Salvageable Scrap'),
-(4, 'Silver'),
-(7, 'Sodium'),
-(1, 'Solanium'),
-(19, 'Star Bulb'),
-(12, 'Uranium');
+INSERT INTO `resources` (`resource_id`, `label`, `type`) VALUES
+(1, 'Solanium', 'harvestable'),
+(2, 'Copper', 'mineral'),
+(3, 'Phosphorus', 'mineral'),
+(4, 'Silver', 'mineral'),
+(5, 'Fungal Mold', 'harvestable'),
+(6, 'Ammonia', 'mineral'),
+(7, 'Sodium', 'mineral'),
+(8, 'Salt', 'mineral'),
+(9, 'Frost Crystal', 'harvestable'),
+(10, 'Dioxite', 'mineral'),
+(11, 'Gamma Root', 'harvestable'),
+(12, 'Uranium', 'mineral'),
+(13, 'Magnetised Ferrite', 'mineral'),
+(14, 'Ancient Bones', 'specialty'),
+(15, 'Faecium', 'mineral'),
+(16, 'Cactus Flesh', 'harvestable'),
+(17, 'Pyrite', 'mineral'),
+(18, 'Paraffinium', 'mineral'),
+(19, 'Star Bulb', 'harvestable'),
+(20, 'Gold', 'mineral'),
+(21, 'Activated Copper', 'mineral'),
+(22, 'Cobalt', 'mineral'),
+(23, 'Salvageable Scrap', 'specialty'),
+(24, 'Cadmium', 'mineral'),
+(25, 'Activated Cadmium', 'mineral'),
+(26, 'Hexaberry', 'harvestable'),
+(27, 'Collectible: Electric Cube', 'specialty'),
+(28, 'Storm Crystals', 'harvestable'),
+(29, 'Emeril', 'mineral'),
+(30, 'Spark Canister', 'tradeable'),
+(31, 'Industrial-Grade Battery', 'tradeable'),
+(32, 'Ohmic Gel', 'tradeable'),
+(33, 'Experimental Power Fluid', 'tradeable'),
+(34, 'Fusion Core', 'tradeable'),
+(35, 'Decomissioned Circuits', 'tradeable'),
+(36, 'Welding Soap', 'tradeable'),
+(37, 'Ion Capacitor', 'tradeable'),
+(38, 'Autonomous Positioning Unit', 'tradeable'),
+(39, 'Quantum Accelerator', 'tradeable'),
+(40, 'Non-Stick Piston', 'tradeable'),
+(41, 'Enormous Metal Cog', 'tradeable'),
+(42, 'Fusion Accelerant', 'tradeable'),
+(43, 'Dirt', 'tradeable'),
+(44, 'Unrefined Pyrite Grease', 'tradeable'),
+(45, 'Bromide Salt', 'tradeable'),
+(46, 'Polychromatic Zirconium', 'tradeable'),
+(47, 'Re-Latticed Arc Crystal', 'tradeable'),
+(48, 'Nanotube Crate', 'tradeable'),
+(49, 'Self-Repairing Heridium', 'tradeable'),
+(50, 'Optical Solvent', 'tradeable'),
+(51, '5D Torus', 'tradeable'),
+(52, 'Decrypted User Data', 'tradeable'),
+(53, 'Star Silk', 'tradeable'),
+(54, 'Comet Droplets', 'tradeable'),
+(55, 'Ion Sphere', 'tradeable'),
+(56, 'Teleport Coordinators', 'tradeable'),
+(57, 'De-Scented Bottles', 'tradeable'),
+(58, 'Neutron Microscope', 'tradeable'),
+(59, 'Instability Injector', 'tradeable'),
+(60, 'Organic Piping', 'tradeable'),
+(61, 'Neural Duct', 'tradeable'),
+(62, 'Mesh Decouplers', 'tradeable'),
+(63, 'Holographic Crankshaft', 'tradeable'),
+(64, 'Vector Compressors', 'tradeable');
 
 -- --------------------------------------------------------
 
@@ -464,11 +532,15 @@ CREATE TABLE `sentinel_levels` (
 INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`) VALUES
 (3, 'Attentive'),
 (8, 'Enforcing'),
+(11, 'Ever present'),
 (7, 'Frequent'),
+(9, 'High security'),
 (1, 'None'),
 (4, 'Observant'),
+(12, 'Regular Patrols'),
 (6, 'Require Obedience'),
 (5, 'Require Orthodoxy'),
+(10, 'Unwavering'),
 (2, 'Zealous');
 
 -- --------------------------------------------------------
@@ -483,7 +555,33 @@ CREATE TABLE `solar_systems` (
 `label` varchar(120) NOT NULL,
 `race_id` int(11) UNSIGNED NOT NULL,
 `comments` mediumtext NOT NULL,
-`amount_planets` int(11) UNSIGNED NOT NULL DEFAULT 0
+`amount_planets` int(11) UNSIGNED NOT NULL DEFAULT 0,
+`is_own_discovery` enum('yes','no') NOT NULL DEFAULT 'yes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `space_stations`
+--
+
+CREATE TABLE `space_stations` (
+`space_station_id` int(11) UNSIGNED NOT NULL,
+`label` varchar(160) NOT NULL,
+`solar_system_id` int(11) UNSIGNED NOT NULL,
+`comments` mediumtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `space_stations_resources`
+--
+
+CREATE TABLE `space_stations_resources` (
+`space_station_id` int(11) UNSIGNED NOT NULL,
+`resource_id` int(11) UNSIGNED NOT NULL,
+`offer_type` enum('buying','selling') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -642,7 +740,9 @@ ALTER TABLE `outposts`
 ADD PRIMARY KEY (`outpost_id`),
 ADD KEY `label` (`label`),
 ADD KEY `role_id` (`outpost_role_id`),
-ADD KEY `planet_id` (`planet_id`);
+ADD KEY `planet_id` (`planet_id`),
+ADD KEY `longitude` (`longitude`),
+ADD KEY `latitude` (`latitude`);
 
 --
 -- Indexes for table `outposts_services`
@@ -676,14 +776,17 @@ ADD KEY `planet_type_id` (`planet_type_id`),
 ADD KEY `sentinel_level_id` (`sentinel_level_id`),
 ADD KEY `scan_complete` (`scan_complete`),
 ADD KEY `solar_system_id` (`solar_system_id`),
-ADD KEY `is_moon` (`is_moon`);
+ADD KEY `is_moon` (`is_moon`),
+ADD KEY `is_own_discovery` (`is_own_discovery`);
 
 --
 -- Indexes for table `planets_resources`
 --
 ALTER TABLE `planets_resources`
+ADD PRIMARY KEY (`planet_id`,`resource_id`),
 ADD KEY `planet_id` (`planet_id`),
-ADD KEY `resource_id` (`resource_id`);
+ADD KEY `resource_id` (`resource_id`),
+ADD KEY `solar_system_id` (`solar_system_id`);
 
 --
 -- Indexes for table `planet_pois`
@@ -691,8 +794,8 @@ ADD KEY `resource_id` (`resource_id`);
 ALTER TABLE `planet_pois`
 ADD PRIMARY KEY (`planet_poi_id`),
 ADD KEY `label` (`label`),
-ADD KEY `coord_a` (`coord_a`),
-ADD KEY `coord_b` (`coord_b`),
+ADD KEY `coord_a` (`longitude`),
+ADD KEY `coord_b` (`latitude`),
 ADD KEY `planet_id` (`planet_id`);
 
 --
@@ -714,7 +817,9 @@ ADD KEY `label` (`label`);
 --
 ALTER TABLE `resources`
 ADD PRIMARY KEY (`resource_id`),
-ADD KEY `label` (`label`);
+ADD UNIQUE KEY `label_2` (`label`),
+ADD KEY `label` (`label`),
+ADD KEY `type` (`type`);
 
 --
 -- Indexes for table `sentinel_levels`
@@ -731,7 +836,26 @@ ADD PRIMARY KEY (`solar_system_id`),
 ADD KEY `name` (`label`),
 ADD KEY `race_id` (`race_id`),
 ADD KEY `star_type_id` (`star_type_id`),
-ADD KEY `amount_planets` (`amount_planets`);
+ADD KEY `amount_planets` (`amount_planets`),
+ADD KEY `own_discovery` (`is_own_discovery`);
+
+--
+-- Indexes for table `space_stations`
+--
+ALTER TABLE `space_stations`
+ADD PRIMARY KEY (`space_station_id`),
+ADD KEY `label` (`label`),
+ADD KEY `solar_system_id` (`solar_system_id`);
+
+--
+-- Indexes for table `space_stations_resources`
+--
+ALTER TABLE `space_stations_resources`
+ADD PRIMARY KEY (`space_station_id`,`resource_id`),
+ADD UNIQUE KEY `space_station_id_2` (`space_station_id`,`resource_id`,`offer_type`),
+ADD KEY `space_station_id` (`space_station_id`),
+ADD KEY `resource_id` (`resource_id`),
+ADD KEY `offer_type` (`offer_type`);
 
 --
 -- Indexes for table `star_types`
@@ -791,7 +915,7 @@ MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `known_users`
 --
 ALTER TABLE `known_users`
-MODIFY `user_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=655;
+MODIFY `user_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `media`
@@ -815,13 +939,13 @@ MODIFY `outpost_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `outpost_roles`
 --
 ALTER TABLE `outpost_roles`
-MODIFY `outpost_role_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+MODIFY `outpost_role_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `outpost_services`
 --
 ALTER TABLE `outpost_services`
-MODIFY `outpost_service_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+MODIFY `outpost_service_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `planets`
@@ -839,7 +963,7 @@ MODIFY `planet_poi_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `planet_types`
 --
 ALTER TABLE `planet_types`
-MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `races`
@@ -851,19 +975,25 @@ MODIFY `race_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 -- AUTO_INCREMENT for table `resources`
 --
 ALTER TABLE `resources`
-MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `sentinel_levels`
 --
 ALTER TABLE `sentinel_levels`
-MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `solar_systems`
 --
 ALTER TABLE `solar_systems`
 MODIFY `solar_system_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `space_stations`
+--
+ALTER TABLE `space_stations`
+MODIFY `space_station_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `star_types`
@@ -943,7 +1073,8 @@ ADD CONSTRAINT `planets_ibfk_3` FOREIGN KEY (`sentinel_level_id`) REFERENCES `se
 --
 ALTER TABLE `planets_resources`
 ADD CONSTRAINT `planets_resources_ibfk_1` FOREIGN KEY (`planet_id`) REFERENCES `planets` (`planet_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `planets_resources_ibfk_2` FOREIGN KEY (`resource_id`) REFERENCES `resources` (`resource_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `planets_resources_ibfk_2` FOREIGN KEY (`resource_id`) REFERENCES `resources` (`resource_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `planets_resources_ibfk_3` FOREIGN KEY (`solar_system_id`) REFERENCES `solar_systems` (`solar_system_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `planet_pois`
@@ -959,6 +1090,19 @@ ADD CONSTRAINT `solar_systems_ibfk_1` FOREIGN KEY (`race_id`) REFERENCES `races`
 ADD CONSTRAINT `solar_systems_ibfk_2` FOREIGN KEY (`star_type_id`) REFERENCES `star_types` (`star_type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `space_stations`
+--
+ALTER TABLE `space_stations`
+ADD CONSTRAINT `space_stations_ibfk_1` FOREIGN KEY (`solar_system_id`) REFERENCES `solar_systems` (`solar_system_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `space_stations_resources`
+--
+ALTER TABLE `space_stations_resources`
+ADD CONSTRAINT `space_stations_resources_ibfk_1` FOREIGN KEY (`resource_id`) REFERENCES `resources` (`resource_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `space_stations_resources_ibfk_2` FOREIGN KEY (`space_station_id`) REFERENCES `space_stations` (`space_station_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `uploads`
 --
 ALTER TABLE `uploads`
@@ -970,3 +1114,7 @@ ADD CONSTRAINT `uploads_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `known_users`
 ALTER TABLE `user_settings`
 ADD CONSTRAINT `user_settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `known_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
