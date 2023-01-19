@@ -102,4 +102,12 @@ class ClassFactory
     {
         return ResourceTypesCollection::getInstance();
     }
+
+    public static function createSpaceStations() : SpaceStationsCollection
+    {
+        return ClassHelper::requireObjectInstanceOf(
+            SpaceStationsCollection::class,
+            DBHelper::createCollection(SpaceStationsCollection::class)
+        );
+    }
 }
