@@ -19,6 +19,7 @@ use NMSTracker\Area\PlanetTypesScreen;
 use NMSTracker\Area\POIsScreen;
 use NMSTracker\Area\ResourcesScreen;
 use NMSTracker\Area\SolarSystemsScreen;
+use NMSTracker\Area\SpaceStationsScreen;
 use NMSTracker\CustomIcon;
 use NMSTracker\PlanetsCollection;
 use NMSTracker\SolarSystemsCollection;
@@ -65,6 +66,7 @@ class NMSTracker extends Application_Driver
             SolarSystemsScreen::URL_NAME => ClassHelper::getClassTypeName(SolarSystemsScreen::class),
             PlanetsScreen::URL_NAME => ClassHelper::getClassTypeName(PlanetsScreen::class),
             OutpostsScreen::URL_NAME => ClassHelper::getClassTypeName(OutpostsScreen::class),
+            SpaceStationsScreen::URL_NAME => ClassHelper::getClassTypeName(SpaceStationsScreen::class),
             ResourcesScreen::URL_NAME => ClassHelper::getClassTypeName(ResourcesScreen::class),
             POIsScreen::URL_NAME => ClassHelper::getClassTypeName(POIsScreen::class),
             PlanetTypesScreen::URL_NAME => ClassHelper::getClassTypeName(PlanetTypesScreen::class),
