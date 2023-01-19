@@ -80,7 +80,7 @@ class PlanetPOIRecord extends DBHelper_BaseRecord
      * @param array<string,string|number|Interface_Stringable|NULL> $params
      * @return string
      */
-    private function getAdminSettingsURL(array $params=array()) : string
+    public function getAdminSettingsURL(array $params=array()) : string
     {
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_ACTION] = PlanetPOISettingsScreen::URL_NAME;
 
@@ -91,7 +91,7 @@ class PlanetPOIRecord extends DBHelper_BaseRecord
      * @param array<string,string|number|Interface_Stringable|NULL> $params
      * @return string
      */
-    private function getAdminURL(array $params=array()) : string
+    public function getAdminURL(array $params=array()) : string
     {
         $params[PlanetPOIsCollection::PRIMARY_NAME] = $this->getID();
 
