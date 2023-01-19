@@ -29,30 +29,39 @@ class POICoordinates
         return $this->latitude;
     }
 
-     public function toList() : string
-     {
-         return (string)sb()->mono(sprintf(
-             '%s %s %s',
-             NMSTracker::icon()->move(),
-             $this->formatNumber($this->getLongitude()->getValue()),
-             $this->formatNumber($this->getLatitude()->getValue())
-         ));
-     }
+    public function toListLabel() : string
+    {
+        return (string)sb()->mono(sprintf(
+            '%s %s x %s',
+            NMSTracker::icon()->move(),
+            $this->getLongitude()->getValue(),
+            $this->getLatitude()->getValue()
+        ));
+    }
 
-     private function formatNumber(float $number) : string
-     {
-         $string = number_format($number, 2, '.', '');
-         $parts = explode('.', $string);
-         $length = 5;
+    public function toIndentedLabel() : string
+    {
+        return (string)sb()->mono(sprintf(
+            '%s %s %s',
+            NMSTracker::icon()->move(),
+            $this->formatNumber($this->getLongitude()->getValue()),
+            $this->formatNumber($this->getLatitude()->getValue())
+        ));
+    }
 
-         return str_replace(
-             '#',
-             '&#160;',
-             sprintf(
+    private function formatNumber(float $number) : string
+    {
+        $string = number_format($number, 2, '.', '');
+        $parts = explode('.', $string);
+        $length = 5;
+        return str_replace(
+            '#',
+            '&#160;',
+            sprintf(
                 '%s.%s',
                 str_pad($parts[0], $length, '#', STR_PAD_LEFT),
                 $parts[1]
             )
-         );
-     }
+        );
+    }
 }
