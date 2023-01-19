@@ -85,6 +85,13 @@ class OutpostFilterCriteria extends DBHelper_BaseFilterCriteria
     {
         $planets = $resource->getPlanetFilters()->getItemsObjects();
 
+        // No planets? Then we have to force the filter
+        // to not find any planets, otherwise the filter
+        // will have no effect.
+        if(empty($planets)) {
+            return $this->selectCriteriaValue(self::FILTER_PLANETS, '-999');
+        }
+
         foreach($planets as $planet)
         {
             $this->selectPlanet($planet);
