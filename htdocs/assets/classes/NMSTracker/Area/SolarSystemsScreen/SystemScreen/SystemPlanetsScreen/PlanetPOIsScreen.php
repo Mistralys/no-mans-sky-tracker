@@ -81,7 +81,7 @@ class PlanetPOIsScreen
         return array(
             self::COL_PRIMARY => $poi->getID(),
             self::COL_LABEL => $poi->getLabelLinked(),
-            self::COL_COORDS => $poi->getCoords()->toList()
+            self::COL_COORDS => $poi->getCoords()->toIndentedLabel()
         );
     }
 
