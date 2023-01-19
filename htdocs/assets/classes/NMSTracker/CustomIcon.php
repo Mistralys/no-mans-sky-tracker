@@ -73,6 +73,10 @@ class CustomIcon extends UI_Icon
      * @return $this
      */
     public function solarSystem() : self { return $this->setType('sun', 'fas'); }
+    /**
+     * @return $this
+     */
+    public function spaceStation() : self { return $this->setType('satellite', 'fas'); }
     
     // endregion
 }

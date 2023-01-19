@@ -42,5 +42,9 @@
   "map": {
     "icon": "map",
     "type": "far"
+  },
+  "space_station": {
+    "icon": "satellite",
+    "type": "fas"
   }
 }
