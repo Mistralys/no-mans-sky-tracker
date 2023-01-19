@@ -24,6 +24,7 @@ class NMSTracker_User extends Application_User_Extended
     public const GROUP_MANAGE_PLANETS = 'planets';
     public const GROUP_SOLAR_SYSTEMS = 'solar_systems';
     public const GROUP_OUTPOSTS = 'outposts';
+    public const GROUP_SPACE_STATIONS = 'space_stations';
 
     public const RIGHT_VIEW_SOLAR_SYSTEMS = 'view_solar_sytems';
     public const RIGHT_VIEW_PLANETS = 'view_planets';
@@ -40,13 +41,17 @@ class NMSTracker_User extends Application_User_Extended
     public const RIGHT_VIEW_POIS = 'view_pois';
     public const RIGHT_CREATE_POIS = 'create_pois';
     public const RIGHT_EDIT_POIS = 'edit_pois';
+    public const RIGHT_VIEW_SPACE_STATIONS = 'view_space_stations';
+    public const RIGHT_CREATE_SPACE_STATIONS = 'create_space_stations';
+    public const RIGHT_EDIT_SPACE_STATIONS = 'edit_space_stations';
 
     public function getRightGroups(): array
     {
         return array(
             self::GROUP_SOLAR_SYSTEMS => t('Manage solar systems'),
             self::GROUP_MANAGE_PLANETS => t('Manage planets'),
-            self::GROUP_OUTPOSTS => t('Manage outposts')
+            self::GROUP_OUTPOSTS => t('Manage outposts'),
+            self::GROUP_SPACE_STATIONS => t('Manage space stations')
         );
     }
 
@@ -80,6 +85,13 @@ class NMSTracker_User extends Application_User_Extended
         $group->registerRight(self::RIGHT_CREATE_OUTPOSTS, t('Add outposts'));
     }
 
+    protected function registerRights_space_stations(Application_User_Rights_Group $group) : void
+    {
+        $group->registerRight(self::RIGHT_VIEW_SPACE_STATIONS, t('View space stations'));
+        $group->registerRight(self::RIGHT_EDIT_SPACE_STATIONS, t('Edit space stations'));
+        $group->registerRight(self::RIGHT_CREATE_SPACE_STATIONS, t('Add space stations'));
+    }
+
     protected function registerRoles(): void
     {
         $manager = $this->getRightsManager();
@@ -91,18 +103,21 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_VIEW_OUTPOSTS,
                 self::RIGHT_VIEW_PLANET_TYPES,
                 self::RIGHT_VIEW_POIS,
+                self::RIGHT_VIEW_SPACE_STATIONS,
 
                 self::RIGHT_EDIT_PLANETS,
                 self::RIGHT_EDIT_SOLAR_SYSTEMS,
                 self::RIGHT_EDIT_OUTPOSTS,
                 self::RIGHT_EDIT_PLANET_TYPES,
                 self::RIGHT_EDIT_POIS,
+                self::RIGHT_EDIT_SPACE_STATIONS,
 
                 self::RIGHT_CREATE_PLANETS,
                 self::RIGHT_CREATE_SOLAR_SYSTEMS,
                 self::RIGHT_CREATE_OUTPOSTS,
                 self::RIGHT_CREATE_PLANET_TYPES,
-                self::RIGHT_CREATE_POIS
+                self::RIGHT_CREATE_POIS,
+                self::RIGHT_CREATE_SPACE_STATIONS
             );
     }
 
@@ -122,5 +137,8 @@ class NMSTracker_User extends Application_User_Extended
     public function canViewPOIs() : bool { return $this->can(self::RIGHT_VIEW_POIS); }
     public function canCreatePOIs() : bool { return $this->can(self::RIGHT_CREATE_POIS); }
     public function canEditPOIs() : bool { return $this->can(self::RIGHT_EDIT_POIS); }
+    public function canViewSpaceStations() : bool { return $this->can(self::RIGHT_VIEW_SPACE_STATIONS); }
+    public function canCreateSpaceStations() : bool { return $this->can(self::RIGHT_CREATE_SPACE_STATIONS); }
+    public function canEditSpaceStations() : bool { return $this->can(self::RIGHT_EDIT_SPACE_STATIONS); }
     // endregion
 }
