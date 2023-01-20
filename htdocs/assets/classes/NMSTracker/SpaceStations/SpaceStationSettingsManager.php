@@ -14,6 +14,7 @@ use Closure;
 use DBHelper_BaseRecord;
 use HTML_QuickForm2_Element_ExpandableSelect;
 use HTML_QuickForm2_Element_InputText;
+use HTML_QuickForm2_Element_Select;
 use HTML_QuickForm2_Element_Textarea;
 use NMSTracker;
 use NMSTracker\ClassFactory;
@@ -31,6 +32,7 @@ class SpaceStationSettingsManager extends Application_Formable_RecordSettings_Ex
     public const SETTING_COMMENTS = 'comments';
     public const SETTING_SELL_OFFERS = 'sell_offers';
     public const SETTING_BUY_OFFERS = 'buy_offers';
+    public const SETTING_SOLAR_SYSTEM = 'solar_system';
 
     public function __construct(Application_Formable $formable, SpaceStationsCollection $collection, ?SpaceStationRecord $record = null)
     {
@@ -86,6 +88,14 @@ class SpaceStationSettingsManager extends Application_Formable_RecordSettings_Ex
                 array($this, 'injectLabel')
             ));
 
+        $group->registerSetting(self::SETTING_SOLAR_SYSTEM)
+            ->setStorageName(SpaceStationsCollection::COL_SOLAR_SYSTEM_ID)
+            ->makeRequired()
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectSolarSystem')),
+                array($this, 'injectSolarSystem')
+            ));
+
         $group->registerSetting(self::SETTING_COMMENTS)
             ->setStorageName(SpaceStationsCollection::COL_COMMENTS)
             ->setCallback(NamedClosure::fromClosure(
@@ -109,6 +119,20 @@ class SpaceStationSettingsManager extends Application_Formable_RecordSettings_Ex
                 Closure::fromCallable(array($this, 'injectBuyOffers')),
                 array($this, 'injectBuyOffers')
             ));
+    }
+
+    private function injectSolarSystem(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select
+    {
+        $el = $this->addElementSelect($setting->getName(), t('Solar system'));
+
+        $systems = ClassFactory::createSolarSystems()->getAll();
+
+        foreach($systems as $system)
+        {
+            $el->addOption($system->getLabel(), (string)$system->getID());
+        }
+
+        return $el;
     }
 
     private function injectLabel(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
