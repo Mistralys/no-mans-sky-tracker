@@ -18,6 +18,7 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
     public const SETTING_OWN_DISCOVERY = 'own_discovery';
     public const DISCOVERY_TYPE_OWN = 'only_own';
     public const DISCOVERY_TYPE_OTHERS = 'only_others';
+    public const SETTING_CLUSTER = 'cluster';
 
     protected function registerSettings() : void
     {
@@ -25,6 +26,7 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         $this->registerSetting(self::SETTING_STAR_TYPE, t('Star type'));
         $this->registerSetting(self::SETTING_RACE, t('Dominant race'));
         $this->registerSetting(self::SETTING_OWN_DISCOVERY, t('Own discovery?'));
+        $this->registerSetting(self::SETTING_CLUSTER, t('Cluster'));
     }
 
     protected function inject_star() : void
@@ -34,6 +36,20 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         $el->addOption(t('Any'), '');
 
         $items = ClassFactory::createStarTypes()->getAll();
+
+        foreach($items as $item)
+        {
+            $el->addOption($item->getLabel(), $item->getID());
+        }
+    }
+
+    protected function inject_cluster() : void
+    {
+        $el = $this->addElementSelect(self::SETTING_CLUSTER);
+
+        $el->addOption(t('Any'), '');
+
+        $items = ClassFactory::createClusters()->getAll();
 
         foreach($items as $item)
         {
@@ -71,6 +87,7 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         $this->configureStarType($this->getSettingInt(self::SETTING_STAR_TYPE));
         $this->configureRace($this->getSettingInt(self::SETTING_RACE));
         $this->configureDiscoveries($this->getSettingString(self::SETTING_OWN_DISCOVERY));
+        $this->configureCluster($this->getSettingInt(self::SETTING_CLUSTER));
     }
 
     private function configureStarType(int $typeID) : void
@@ -106,5 +123,17 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         {
             $this->filters->selectOwnDiscoveries(false);
         }
+    }
+
+    private function configureCluster(int $clusterID) : void
+    {
+        $collection = ClassFactory::createClusters();
+
+        if($clusterID === 0 || !$collection->idExists($clusterID))
+        {
+            return;
+        }
+
+        $this->filters->selectCluster($collection->getByID($clusterID));
     }
 }
