@@ -17,6 +17,7 @@ use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemResourcesScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemSettingsScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemStatusScreen;
 use NMSTracker\ClassFactory;
+use NMSTracker\Clusters\ClusterRecord;
 use NMSTracker\Planets\PlanetFilterCriteria;
 use NMSTracker\Races\RaceRecord;
 use NMSTracker\SolarSystemsCollection;
@@ -40,6 +41,16 @@ class SolarSystemRecord extends DBHelper_BaseRecord
             $this->getAdminViewURL(),
             NMSTracker_User::RIGHT_VIEW_SOLAR_SYSTEMS
         );
+    }
+
+    public function getClusterID() : int
+    {
+        return $this->getRecordIntKey(SolarSystemsCollection::COL_CLUSTER_ID);
+    }
+
+    public function getCluster() : ClusterRecord
+    {
+        return ClassFactory::createClusters()->getByID($this->getClusterID());
     }
 
     public function getStarTypeID() : int
