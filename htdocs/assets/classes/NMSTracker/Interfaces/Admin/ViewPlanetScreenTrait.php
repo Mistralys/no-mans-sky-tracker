@@ -62,7 +62,7 @@ trait ViewPlanetScreenTrait
 
     private function _handlePlanetTabs(PlanetRecord $planet) : void
     {
-        $this->tabs->appendTab(t('Overview'), PlanetStatusScreen::URL_NAME)
+        $this->tabs->appendTab(t('Planet overview'), PlanetStatusScreen::URL_NAME)
             ->makeLinked($planet->getAdminStatusURL())
             ->setIcon(NMSTracker::icon()->overview());
 
