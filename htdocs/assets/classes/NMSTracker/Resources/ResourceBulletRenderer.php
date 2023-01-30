@@ -25,12 +25,7 @@ class ResourceBulletRenderer extends UI_Renderable
         $services = $this->container->getAll();
 
         if(empty($services)) {
-            return (string)$this->getUI()->createMessage('')
-                ->setMessage(t('No resources have been registered.'))
-                ->makeSlimLayout()
-                ->makeNotDismissable()
-                ->makeInfo()
-                ->enableIcon();
+            return $this->renderEmpty();
         }
 
         $items = array();
@@ -40,5 +35,15 @@ class ResourceBulletRenderer extends UI_Renderable
         }
 
         return '<ul class="unstyled"><li>'.implode('</li><li>', $items).'</li></ul>';
+    }
+
+    private function renderEmpty() : string
+    {
+        return (string)$this->getUI()->createMessage('')
+            ->setMessage(t('No resources present.'))
+            ->makeSlimLayout()
+            ->makeNotDismissable()
+            ->makeInfo()
+            ->enableIcon();
     }
 }
