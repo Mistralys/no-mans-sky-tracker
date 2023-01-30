@@ -71,27 +71,21 @@ class PlanetStatusScreen
 
     private function renderResources() : string
     {
-        $resources = $this->getPlanet()->getResources();
-        $items = array();
-
-        foreach($resources as $resource)
-        {
-            $items[] = $resource->getLabel();
-        }
-
-        return (string)sb()->ul($items);
+        return $this
+            ->getPlanet()
+            ->getResourceFilters()
+            ->getContainer()
+            ->createBulletListRenderer()
+            ->render();
     }
 
     private function renderOutposts() : string
     {
-        $outposts = $this->getPlanet()->getOutposts();
-        $items = array();
-
-        foreach ($outposts as $outpost)
-        {
-            $items[] = $outpost->getLabelLinked();
-        }
-
-        return (string)sb()->ul($items);
+        return $this
+            ->getPlanet()
+            ->getOutpostFilters()
+            ->getContainer()
+            ->createBulletRenderer()
+            ->render();
     }
 }
