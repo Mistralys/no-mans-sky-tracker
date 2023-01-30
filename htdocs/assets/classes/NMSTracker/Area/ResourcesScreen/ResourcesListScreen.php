@@ -104,4 +104,11 @@ class ResourcesListScreen extends Application_Admin_Area_Mode_CollectionList
     {
         return t('Global resources list');
     }
+
+    protected function _handleHelp() : void
+    {
+        $this->renderer
+            ->getTitle()
+            ->setIcon(ClassFactory::createResources()->getIcon());
+    }
 }

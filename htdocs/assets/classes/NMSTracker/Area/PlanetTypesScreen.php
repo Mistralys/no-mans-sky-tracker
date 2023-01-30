@@ -6,7 +6,9 @@ namespace NMSTracker\Area;
 
 use Application_Admin_Area;
 use NMSTracker\Area\PlanetTypesScreen\PlanetTypesListScreen;
+use NMSTracker\ClassFactory;
 use NMSTracker_User;
+use UI_Icon;
 
 /**
  * @property NMSTracker_User $user
@@ -23,6 +25,11 @@ class PlanetTypesScreen extends Application_Admin_Area
     public function getNavigationGroup() : string
     {
         return t('Manage');
+    }
+
+    public function getNavigationIcon() : ?UI_Icon
+    {
+        return ClassFactory::createPlanetTypes()->getIcon();
     }
 
     public function isUserAllowed() : bool

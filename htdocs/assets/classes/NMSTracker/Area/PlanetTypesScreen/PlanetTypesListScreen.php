@@ -100,4 +100,11 @@ class PlanetTypesListScreen extends Application_Admin_Area_Mode_CollectionList
     {
         return APP_URL;
     }
+
+    protected function _handleHelp() : void
+    {
+        $this->renderer
+            ->getTitle()
+            ->setIcon($this->createCollection()->getIcon());
+    }
 }
