@@ -9,6 +9,7 @@ use Application_Driver;
 use Application_Formable;
 use AppUtils\Interface_Stringable;
 use DBHelper_BaseCollection;
+use NMSTracker;
 use NMSTracker\Area\PlanetTypesScreen;
 use NMSTracker\Area\PlanetTypesScreen\CreatePlanetTypeScreen;
 use NMSTracker\Area\PlanetTypesScreen\PlanetTypesListScreen;
@@ -16,6 +17,7 @@ use NMSTracker\PlanetTypes\PlanetTypeFilterCriteria;
 use NMSTracker\PlanetTypes\PlanetTypeFilterSettings;
 use NMSTracker\PlanetTypes\PlanetTypeRecord;
 use NMSTracker\PlanetTypes\PlanetTypeSettingsManager;
+use UI_Icon;
 
 /**
  * @method PlanetTypeRecord getByID(int $record_id)
@@ -127,5 +129,10 @@ class PlanetTypesCollection extends DBHelper_BaseCollection
     public function createSettingsManager(Application_Formable $formable, ?PlanetTypeRecord $record) : PlanetTypeSettingsManager
     {
         return new PlanetTypeSettingsManager($formable, $this, $record);
+    }
+
+    public function getIcon() : UI_Icon
+    {
+        return NMSTracker::icon()->planetType();
     }
 }
