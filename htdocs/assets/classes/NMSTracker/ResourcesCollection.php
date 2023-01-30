@@ -9,11 +9,13 @@ use Application_Driver;
 use AppUtils\Interface_Stringable;
 use DBHelper_BaseCollection;
 use DBHelper_BaseRecord;
+use NMSTracker;
 use NMSTracker\Area\ResourcesScreen;
 use NMSTracker\Area\ResourcesScreen\ResourcesListScreen;
 use NMSTracker\Resources\ResourceFilterCriteria;
 use NMSTracker\Resources\ResourceFilterSettings;
 use NMSTracker\Resources\ResourceRecord;
+use UI_Icon;
 
 /**
  * @method ResourceRecord getByID(int $record_id)
@@ -109,5 +111,10 @@ class ResourcesCollection extends DBHelper_BaseCollection
         return Application_Driver::getInstance()
             ->getRequest()
             ->buildURL($params);
+    }
+
+    public function getIcon() : UI_Icon
+    {
+        return NMSTracker::icon()->resources();
     }
 }
