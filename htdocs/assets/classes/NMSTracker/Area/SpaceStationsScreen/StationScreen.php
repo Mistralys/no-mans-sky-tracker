@@ -59,8 +59,8 @@ class StationScreen
     {
         $station = $this->getSpaceStation();
 
-        $this->subnav->addURL(t('Status'), $station->getAdminStatusURL())
-            ->setIcon(NMSTracker::icon()->status());
+        $this->subnav->addURL(t('Station overview'), $station->getAdminStatusURL())
+            ->setIcon(NMSTracker::icon()->overview());
 
         $this->subnav->addURL(t('Settings'), $station->getAdminSettingsURL())
             ->setIcon(NMSTracker::icon()->settings());
