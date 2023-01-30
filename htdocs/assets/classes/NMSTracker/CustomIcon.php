@@ -32,6 +32,10 @@ class CustomIcon extends UI_Icon
     /**
      * @return $this
      */
+    public function cluster() : self { return $this->setType('cookie', 'fas'); }
+    /**
+     * @return $this
+     */
     public function coordinates() : self { return $this->setType('arrows-alt'); }
     /**
      * @return $this

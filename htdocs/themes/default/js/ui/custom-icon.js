@@ -13,6 +13,7 @@ var CustomIcon =
 {
     // region: Icon methods
     
+    Cluster:function() { return this.SetType('cookie', 'fas'); },
     Coordinates:function() { return this.SetType('arrows-alt'); },
     Map:function() { return this.SetType('map', 'far'); },
     Outpost:function() { return this.SetType('campground', 'fas'); },

@@ -25,6 +25,7 @@ class NMSTracker_User extends Application_User_Extended
     public const GROUP_SOLAR_SYSTEMS = 'solar_systems';
     public const GROUP_OUTPOSTS = 'outposts';
     public const GROUP_SPACE_STATIONS = 'space_stations';
+    public const GROUP_CLUSTERS = 'clusters';
 
     public const RIGHT_VIEW_SOLAR_SYSTEMS = 'view_solar_sytems';
     public const RIGHT_VIEW_PLANETS = 'view_planets';
@@ -44,6 +45,9 @@ class NMSTracker_User extends Application_User_Extended
     public const RIGHT_VIEW_SPACE_STATIONS = 'view_space_stations';
     public const RIGHT_CREATE_SPACE_STATIONS = 'create_space_stations';
     public const RIGHT_EDIT_SPACE_STATIONS = 'edit_space_stations';
+    public const RIGHT_VIEW_CLUSTERS = 'view_clusters';
+    public const RIGHT_EDIT_CLUSTERS = 'edit_clusters';
+    public const RIGHT_CREATE_CLUSTERS = 'create_clusters';
 
     public function getRightGroups(): array
     {
@@ -51,8 +55,16 @@ class NMSTracker_User extends Application_User_Extended
             self::GROUP_SOLAR_SYSTEMS => t('Manage solar systems'),
             self::GROUP_MANAGE_PLANETS => t('Manage planets'),
             self::GROUP_OUTPOSTS => t('Manage outposts'),
-            self::GROUP_SPACE_STATIONS => t('Manage space stations')
+            self::GROUP_SPACE_STATIONS => t('Manage space stations'),
+            self::GROUP_CLUSTERS => t('Solar system clusters')
         );
+    }
+
+    protected function registerRights_clusters(Application_User_Rights_Group $group) : void
+    {
+        $group->registerRight(self::RIGHT_VIEW_CLUSTERS, t('View solar system clusters'));
+        $group->registerRight(self::RIGHT_EDIT_CLUSTERS, t('Edit solar system clusters'));
+        $group->registerRight(self::RIGHT_CREATE_CLUSTERS, t('Create solar system clusters'));
     }
 
 
@@ -104,6 +116,7 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_VIEW_PLANET_TYPES,
                 self::RIGHT_VIEW_POIS,
                 self::RIGHT_VIEW_SPACE_STATIONS,
+                self::RIGHT_VIEW_CLUSTERS,
 
                 self::RIGHT_EDIT_PLANETS,
                 self::RIGHT_EDIT_SOLAR_SYSTEMS,
@@ -111,13 +124,15 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_EDIT_PLANET_TYPES,
                 self::RIGHT_EDIT_POIS,
                 self::RIGHT_EDIT_SPACE_STATIONS,
+                self::RIGHT_EDIT_CLUSTERS,
 
                 self::RIGHT_CREATE_PLANETS,
                 self::RIGHT_CREATE_SOLAR_SYSTEMS,
                 self::RIGHT_CREATE_OUTPOSTS,
                 self::RIGHT_CREATE_PLANET_TYPES,
                 self::RIGHT_CREATE_POIS,
-                self::RIGHT_CREATE_SPACE_STATIONS
+                self::RIGHT_CREATE_SPACE_STATIONS,
+                self::RIGHT_CREATE_CLUSTERS
             );
     }
 
@@ -140,5 +155,8 @@ class NMSTracker_User extends Application_User_Extended
     public function canViewSpaceStations() : bool { return $this->can(self::RIGHT_VIEW_SPACE_STATIONS); }
     public function canCreateSpaceStations() : bool { return $this->can(self::RIGHT_CREATE_SPACE_STATIONS); }
     public function canEditSpaceStations() : bool { return $this->can(self::RIGHT_EDIT_SPACE_STATIONS); }
+    public function canViewClusters() : bool { return $this->can(self::RIGHT_VIEW_CLUSTERS); }
+    public function canEditClusters() : bool { return $this->can(self::RIGHT_EDIT_CLUSTERS); }
+    public function canCreateClusters() : bool { return $this->can(self::RIGHT_CREATE_CLUSTERS); }
     // endregion
 }

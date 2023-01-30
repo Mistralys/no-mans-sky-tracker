@@ -46,5 +46,9 @@
   "space_station": {
     "icon": "satellite",
     "type": "fas"
+  },
+  "cluster": {
+    "icon": "cookie",
+    "type": "fas"
   }
 }

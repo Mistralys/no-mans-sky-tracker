@@ -110,4 +110,12 @@ class ClassFactory
             DBHelper::createCollection(SpaceStationsCollection::class)
         );
     }
+
+    public static function createClusters() : ClustersCollection
+    {
+        return ClassHelper::requireObjectInstanceOf(
+            ClustersCollection::class,
+            DBHelper::createCollection(ClustersCollection::class)
+        );
+    }
 }
