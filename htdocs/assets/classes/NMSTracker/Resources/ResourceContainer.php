@@ -17,9 +17,9 @@ class ResourceContainer
     {
     }
 
-    public function renderBulletList() : string
+    public function createBulletListRenderer() : ResourceBulletRenderer
     {
-        return (new ResourceBulletRenderer($this))->render();
+        return new ResourceBulletRenderer($this);
     }
 
     /**
