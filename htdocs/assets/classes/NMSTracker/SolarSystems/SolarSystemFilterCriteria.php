@@ -9,6 +9,7 @@ use Application_FilterCriteria_Database_CustomColumn;
 use AppUtils\ConvertHelper;
 use DBHelper_BaseFilterCriteria;
 use DBHelper_StatementBuilder_ValuesContainer;
+use NMSTracker\Clusters\ClusterRecord;
 use NMSTracker\PlanetsCollection;
 use NMSTracker\Races\RaceRecord;
 use NMSTracker\RacesCollection;
@@ -20,6 +21,7 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
     public const CUSTOM_COL_PLANET_COUNT = 'custom_planet_count';
     public const FILTER_RACES = 'races';
     public const FILTER_STAR_TYPES = 'star_types';
+    public const FILTER_CLUSTERS = 'clusters';
     private ?bool $ownDiscoveries = null;
 
     /**
@@ -50,6 +52,11 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
             $this->getCriteriaValues(self::FILTER_STAR_TYPES)
         );
 
+        $this->addWhereColumnIN(
+            SolarSystemsCollection::COL_CLUSTER_ID,
+            $this->getCriteriaValues(self::FILTER_CLUSTERS)
+        );
+
         if(isset($this->ownDiscoveries))
         {
             $this->addWhereColumnEquals(
@@ -77,6 +84,11 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
     public function selectRace(RaceRecord $race) : self
     {
         return $this->selectCriteriaValue(self::FILTER_RACES, $race->getID());
+    }
+
+    public function selectCluster(ClusterRecord $record) : self
+    {
+        return $this->selectCriteriaValue(self::FILTER_CLUSTERS, $record->getID());
     }
 
     protected function _initCustomColumns() : void
