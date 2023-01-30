@@ -173,6 +173,7 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
         $el->addClass('input-xxlarge');
 
         $this->makeLengthLimited($el, 0, 160);
+        $this->addRuleNameOrTitle($el);
 
         return $el;
     }
