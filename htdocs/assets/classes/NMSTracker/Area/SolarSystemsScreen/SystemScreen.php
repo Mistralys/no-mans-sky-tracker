@@ -77,10 +77,10 @@ class SystemScreen extends Application_Admin_Area_Mode_CollectionRecord
         $record = $this->getRecord();
 
         $this->subnav->addURL(
-            t('Status'),
+            t('System overview'),
             $record->getAdminStatusURL()
         )
-            ->setIcon(UI::icon()->status());
+            ->setIcon(NMSTracker::icon()->overview());
 
         $this->subnav->addURL(
             t('Planets'),
