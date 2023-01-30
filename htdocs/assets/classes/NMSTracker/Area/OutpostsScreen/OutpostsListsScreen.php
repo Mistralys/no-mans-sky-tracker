@@ -70,7 +70,7 @@ class OutpostsListsScreen extends Application_Admin_Area_Mode_CollectionList
             self::COL_PLANET => $planet->getLabelLinked(),
             self::COL_ROLE => $outpost->getRole()->getLabelLinked(),
             self::COL_SENTINELS => $planet->getSentinelLevel()->getLabelLinked(),
-            self::COL_RESOURCES => $planet->getResourceFilters()->getContainer()->renderBulletList(),
+            self::COL_RESOURCES => $planet->getResourceFilters()->getContainer()->createBulletListRenderer()->render(),
             self::COL_COORDINATES => $coordLabel
         );
     }
