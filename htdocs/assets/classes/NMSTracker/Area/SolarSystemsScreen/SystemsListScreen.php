@@ -32,6 +32,7 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
     public const COL_RACE = 'race';
     public const COL_PRIMARY = 'primary';
     public const COL_OWN_DISCOVERY = 'own_discovery';
+    public const COL_CLUSTER = 'cluster';
 
     public function getDefaultSubmode() : string
     {
@@ -97,7 +98,8 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
                     (string)$entry->getColumnInt($this->filters->getColPlanetCount()->getName()),
                     $record->getAdminPlanetsURL(),
                     NMSTracker_User::RIGHT_VIEW_SOLAR_SYSTEMS
-                )
+                ),
+                self::COL_CLUSTER => $record->getCluster()->getLabelLinked()
             );
         }
 
@@ -128,6 +130,8 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
         $this->grid->addColumn(self::COL_PLANETS, t('Discovered planets'))
             ->alignRight()
             ->setSortable(false, $this->filters->getColPlanetCount()->getName());
+
+        $this->grid->addColumn(self::COL_CLUSTER, t('Cluster'));
     }
 
     protected function configureActions() : void
