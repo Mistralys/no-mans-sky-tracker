@@ -15,7 +15,7 @@ use NMSTracker\Interfaces\Admin\ViewPlanetScreenTrait;
 use NMSTracker\Interfaces\Admin\ViewSystemScreenTrait;
 
 /**
- * @property \NMSTracker\Outposts\OutpostRecord $record
+ * @property OutpostRecord $record
  */
 class OutpostStatusScreen
     extends Application_Admin_Area_Mode_Submode_Action_CollectionRecord
