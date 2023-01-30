@@ -30,6 +30,11 @@ class OutpostsBulletRenderer extends UI_Renderable
     protected function _render() : string
     {
         $outposts = $this->container->getAll();
+
+        if(empty($outposts)) {
+            return $this->renderEmpty();
+        }
+
         $items = array();
 
         foreach($outposts as $outpost)
@@ -40,6 +45,17 @@ class OutpostsBulletRenderer extends UI_Renderable
         return (string)HTMLTag::create('ul')
             ->addClass('unstyled')
             ->setContent('<li>'.implode('</li><li>', $items).'</li>');
+    }
+
+    private function renderEmpty() : string
+    {
+        return (string)$this
+            ->getUI()
+            ->createMessage(t('No outposts present.'))
+            ->makeNotDismissable()
+            ->makeSlimLayout()
+            ->makeInfo()
+            ->enableIcon();
     }
 
     private function renderOutpost(OutpostRecord $outpost) : string
