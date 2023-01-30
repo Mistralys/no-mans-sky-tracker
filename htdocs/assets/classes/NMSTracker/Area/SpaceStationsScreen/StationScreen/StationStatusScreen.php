@@ -42,19 +42,19 @@ class StationStatusScreen
         $solarSystem = $station->getSolarSystem();
         $grid = $this->ui->createPropertiesGrid();
 
-        $grid->add(t('Solar system'), $solarSystem->getLabel());
-        $grid->add(t('Star type'), $solarSystem->getStarType()->getLabel());
-        $grid->add(t('Dominant race'), $solarSystem->getRace()->getLabel());
+        $grid->add(t('Solar system'), $solarSystem->getLabelLinked());
+        $grid->add(t('Star type'), $solarSystem->getStarType()->getLabelLinked());
+        $grid->add(t('Dominant race'), $solarSystem->getRace()->getLabelLinked());
 
         $grid->addHeader(t('Comments'));
         $grid->addMerged($station->getComments())
             ->ifEmpty(sb()->muted(t('No comments entered.')));
 
         $grid->addHeader(t('Sale offers'));
-        $grid->addMerged($station->getSellOffers()->renderBulletList());
+        $grid->addMerged($station->getSellOffers()->createBulletListRenderer()->render());
 
         $grid->addHeader(t('Buy offers'));
-        $grid->addMerged($station->getBuyOffers()->renderBulletList());
+        $grid->addMerged($station->getBuyOffers()->createBulletListRenderer()->render());
 
         return $this->renderer
             ->appendContent($grid)
