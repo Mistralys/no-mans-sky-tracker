@@ -163,6 +163,8 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
         $el->addFilterTrim();
         $el->addClass('input-xxlarge');
 
+        $this->addRuleNoHTML($el);
+
         return $el;
     }
 
