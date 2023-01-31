@@ -10,4 +10,14 @@ filtering tools.
 
 - Local webserver
 - PHP 7.4+
-- Composer
+- [Composer](https://getcomposer.org/)
+- MySQL or MariaDB database
+
+## Installation
+
+1) Clone locally into a webserver's webroot.
+2) Run `composer install` to install the dependencies.
+3) Import the file `sql/new-install.sql` into a database.
+4) Rename `htdocs/config.dist.php` to `htdocs/config.php`.
+5) Edit the configuration settings as needed.
+6) Point your browser to the application's `htdocs` folder.
