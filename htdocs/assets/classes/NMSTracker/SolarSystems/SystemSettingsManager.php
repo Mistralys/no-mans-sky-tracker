@@ -13,6 +13,7 @@ use DBHelper_BaseCollection;
 use DBHelper_BaseRecord;
 use HTML_QuickForm2_Element_InputText;
 use HTML_QuickForm2_Element_Select;
+use HTML_QuickForm2_Element_Switch;
 use HTML_QuickForm2_Element_Textarea;
 use NMSTracker\ClassFactory;
 use NMSTracker\SolarSystemsCollection;
@@ -27,6 +28,9 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
     public const SETTING_RACE = 'race';
     public const SETTING_STAR = 'star';
     public const SETTING_COMMENTS = 'comments';
+    public const SETTING_PLANETS = 'planets';
+    public const SETTING_OWN_DISCOVERY = 'own_discovery';
+    public const SETTING_CLUSTER = 'cluster';
 
     public function __construct(Application_Formable $formable, DBHelper_BaseCollection $collection, ?DBHelper_BaseRecord $record = null)
     {
@@ -63,6 +67,14 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectLabel')
             ));
 
+        $group->registerSetting(self::SETTING_CLUSTER)
+            ->setStorageName(SolarSystemsCollection::COL_CLUSTER_ID)
+            ->makeRequired()
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectCluster')),
+                array($this, 'injectCluster')
+            ));
+
         $group->registerSetting(self::SETTING_STAR)
             ->setStorageName(SolarSystemsCollection::COL_STAR_TYPE_ID)
             ->makeRequired()
@@ -79,7 +91,7 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectRace')
             ));
 
-        $group->registerSetting('planets')
+        $group->registerSetting(self::SETTING_PLANETS)
             ->setStorageName(SolarSystemsCollection::COL_AMOUNT_PLANETS)
             ->makeRequired()
             ->setCallback(NamedClosure::fromClosure(
@@ -87,7 +99,7 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectAmountPlanets')
             ));
 
-        $group->registerSetting('own_discovery')
+        $group->registerSetting(self::SETTING_OWN_DISCOVERY)
             ->setStorageName(SolarSystemsCollection::COL_IS_OWN_DISCOVERY)
             ->setDefaultValue('yes')
             ->setCallback(NamedClosure::fromClosure(
@@ -106,7 +118,23 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
             ));
     }
 
-    private function injectOwnDiscovery(Application_Formable_RecordSettings_Setting $setting) : \HTML_QuickForm2_Element_Switch
+    private function injectCluster(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select
+    {
+        $el = $this->addElementSelect($setting->getName(), t('Cluster'));
+
+        $el->addOption(t('Please select...'), '');
+
+        $clusters = ClassFactory::createClusters()->getAll();
+
+        foreach ($clusters as $cluster)
+        {
+            $el->addOption($cluster->getLabel(), (string)$cluster->getID());
+        }
+
+        return $el;
+    }
+
+    private function injectOwnDiscovery(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Switch
     {
         $el = $this->addElementSwitch($setting->getName(), t('Own discovery?'));
         $el->setComment(t('Is this a personal discovery, or by someone else?'));

@@ -42,6 +42,7 @@ class StationStatusScreen
         $solarSystem = $station->getSolarSystem();
         $grid = $this->ui->createPropertiesGrid();
 
+        $solarSystem->getCluster()->injectCommonProperties($grid);
         $grid->add(t('Solar system'), $solarSystem->getLabelLinked());
         $grid->add(t('Star type'), $solarSystem->getStarType()->getLabelLinked());
         $grid->add(t('Dominant race'), $solarSystem->getRace()->getLabelLinked());

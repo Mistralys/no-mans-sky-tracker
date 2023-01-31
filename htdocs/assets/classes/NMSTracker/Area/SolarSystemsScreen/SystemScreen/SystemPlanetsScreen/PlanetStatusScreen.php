@@ -49,6 +49,8 @@ class PlanetStatusScreen
 
         $grid = $this->ui->createPropertiesGrid();
 
+        $system->getCluster()->injectCommonProperties($grid);
+
         $grid->add(t('Solar system'), $system->getLabelLinked())
             ->setComment(sb()
                 ->t('Star type:')->add($system->getStarType()->getLabel())

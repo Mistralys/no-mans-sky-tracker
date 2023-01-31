@@ -67,6 +67,7 @@ class OutpostStatusScreen
         $grid->add(t('Role'), $outpost->getRole()->getLabelLinked());
 
         $grid->addHeader(NMSTracker::icon()->planet().' '.t('Planet'));
+        $system->getCluster()->injectCommonProperties($grid);
         $grid->add(
             t('Planet name'),
             t(

@@ -33,6 +33,7 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
     public const COL_PRIMARY = 'primary';
     public const COL_OWN_DISCOVERY = 'own_discovery';
     public const COL_CLUSTER = 'cluster';
+    public const COL_CORE_DISTANCE = 'core_distance';
 
     public function getDefaultSubmode() : string
     {
@@ -99,7 +100,8 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
                     $record->getAdminPlanetsURL(),
                     NMSTracker_User::RIGHT_VIEW_SOLAR_SYSTEMS
                 ),
-                self::COL_CLUSTER => $record->getCluster()->getLabelLinked()
+                self::COL_CLUSTER => $record->getCluster()->getLabelLinked(),
+                self::COL_CORE_DISTANCE => $record->getCluster()->getCoreDistancePretty()
             );
         }
 
@@ -127,17 +129,21 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
             ->setSortable(false, SolarSystemsCollection::COL_AMOUNT_PLANETS)
             ->alignRight();
 
-        $this->grid->addColumn(self::COL_PLANETS, t('Discovered planets'))
+        $this->grid->addColumn(self::COL_PLANETS, t('Planets'))
             ->alignRight()
             ->setSortable(false, $this->filters->getColPlanetCount()->getName());
 
         $this->grid->addColumn(self::COL_CLUSTER, t('Cluster'));
+
+        $this->grid->addColumn(self::COL_CORE_DISTANCE, t('Core distance'))
+            ->setSortable(false, $this->filters->getColDistanceToCore()->getSecondarySelectValue());
     }
 
     protected function configureActions() : void
     {
         $this->grid->enableLimitOptionsDefault();
         $this->grid->enableMultiSelect(self::COL_PRIMARY);
+        $this->grid->enableColumnControls();
 
         $this->grid->addConfirmAction(
             'delete',

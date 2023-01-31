@@ -30,6 +30,8 @@ class StationsListScreen extends Application_Admin_Area_Mode_CollectionList
     public const COL_SOLAR_SYSTEM = 'solar_system';
     public const COL_SALE_OFFERS = 'sale_offers';
     public const COL_BUY_OFFERS = 'buy_offers';
+    public const COL_CLUSTER = 'cluster';
+    public const COL_CORE_DISTANCE = 'core_distance';
 
     public function getURLName() : string
     {
@@ -54,6 +56,8 @@ class StationsListScreen extends Application_Admin_Area_Mode_CollectionList
         return array(
             self::COL_LABEL => $station->getLabelLinked(),
             self::COL_SOLAR_SYSTEM => $station->getSolarSystem()->getLabelLinked(),
+            self::COL_CLUSTER => $station->getSolarSystem()->getCluster()->getLabelLinked(),
+            self::COL_CORE_DISTANCE => $station->getSolarSystem()->getCluster()->getCoreDistancePretty(),
             self::COL_SALE_OFFERS => count($station->getSellOfferIDs()),
             self::COL_BUY_OFFERS => count($station->getBuyOfferIDs())
         );
@@ -66,9 +70,16 @@ class StationsListScreen extends Application_Admin_Area_Mode_CollectionList
 
         $this->grid->addColumn(self::COL_SOLAR_SYSTEM, t('Solar system'));
 
-        $this->grid->addColumn(self::COL_SALE_OFFERS, t('Sell offers'));
+        $this->grid->addColumn(self::COL_CLUSTER, t('Cluster'));
 
-        $this->grid->addColumn(self::COL_BUY_OFFERS, t('Buy offers'));
+        $this->grid->addColumn(self::COL_SALE_OFFERS, t('Sell offers'))
+            ->alignRight();
+
+        $this->grid->addColumn(self::COL_BUY_OFFERS, t('Buy offers'))
+            ->alignRight();
+
+        $this->grid->addColumn(self::COL_CORE_DISTANCE, t('Core distance'))
+            ->alignRight();
     }
 
     protected function configureActions() : void
