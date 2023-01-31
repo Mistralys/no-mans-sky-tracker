@@ -39,6 +39,7 @@ class SolarSystemsCollection extends DBHelper_BaseCollection
     public const COL_COMMENTS = 'comments';
     public const COL_AMOUNT_PLANETS = 'amount_planets';
     public const COL_IS_OWN_DISCOVERY = 'is_own_discovery';
+    public const COL_DATE_ADDED = 'date_added';
 
     public function getRecordClassName() : string
     {

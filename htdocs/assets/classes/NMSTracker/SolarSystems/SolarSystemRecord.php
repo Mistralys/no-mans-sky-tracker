@@ -6,6 +6,7 @@ namespace NMSTracker\SolarSystems;
 
 use Application_Admin_ScreenInterface;
 use Application_Request;
+use DateTime;
 use DBHelper_BaseRecord;
 use NMSTracker;
 use NMSTracker\Area\SolarSystemsScreen;
@@ -176,5 +177,10 @@ class SolarSystemRecord extends DBHelper_BaseRecord
         }
 
         return null;
+    }
+
+    public function getDateAdded() : DateTime
+    {
+        return $this->getRecordDateKey(SolarSystemsCollection::COL_DATE_ADDED);
     }
 }

@@ -58,7 +58,12 @@ class SystemStatusScreen
 
         $grid = $this->ui->createPropertiesGrid();
 
+        $system->getCluster()->injectCommonProperties($grid);
         $system->injectProperties($grid);
+
+        $grid->addDate(t('Date added'), $system->getDateAdded())
+            ->withTime()
+            ->withDiff();
 
         $grid->addBoolean(t('Own discovery?'), $system->isOwnDiscovery())
             ->makeYesNo()
