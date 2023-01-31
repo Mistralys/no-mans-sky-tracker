@@ -40,8 +40,12 @@ class ClusterStatusScreen extends Application_Admin_Area_Mode_Submode
         $grid = $this->ui->createPropertiesGrid();
         $cluster = $this->getCluster();
 
-        $grid->add(t('Core distance'), number_format($cluster->getCoreDistance(), 0, '.', ' '))
+        $grid->add(t('Core distance'), $cluster->getCoreDistancePretty())
             ->setComment(t('Light years to the galaxy core'));
+
+        $grid->addHeader(t('Comments'));
+        $grid->addMerged($cluster->getComments())
+            ->ifEmpty(sb()->muted(t('No comments entered.')));
 
         return $this->renderer
             ->appendContent($grid)

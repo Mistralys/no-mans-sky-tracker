@@ -66,5 +66,11 @@ class ClusterScreen extends Application_Admin_Area_Mode
             $cluster->getAdminStatusURL()
         )
             ->setIcon(NMSTracker::icon()->overview());
+
+        $this->subnav->addURL(
+            t('Settings'),
+            $cluster->getAdminSettingsURL()
+        )
+            ->setIcon(NMSTracker::icon()->settings());
     }
 }

@@ -28,6 +28,9 @@ class ClustersListScreen extends Application_Admin_Area_Mode_CollectionList
     public const URL_NAME = 'clusters-list';
     public const GRID_NAME = 'global-clusters-list';
     public const COL_LABEL = 'label';
+    public const COL_CORE_DISTANCE = 'core_distance';
+    public const COL_SYSTEMS = 'systems';
+    public const COL_PLANETS = 'planets';
 
     public function getURLName() : string
     {
@@ -53,6 +56,9 @@ class ClustersListScreen extends Application_Admin_Area_Mode_CollectionList
 
         return array(
             self::COL_LABEL => $cluster->getLabelLinked(),
+            self::COL_CORE_DISTANCE => $cluster->getCoreDistancePretty(),
+            self::COL_SYSTEMS => $entry->getColumnInt($this->filters->getColSystemsCount()->getName()),
+            self::COL_PLANETS => $entry->getColumnInt($this->filters->getColPlanetsCount()->getName())
         );
     }
 
@@ -60,6 +66,18 @@ class ClustersListScreen extends Application_Admin_Area_Mode_CollectionList
     {
         $this->grid->addColumn(self::COL_LABEL, t('Label'))
             ->setSortable(true, ClustersCollection::COL_LABEL);
+
+        $this->grid->addColumn(self::COL_CORE_DISTANCE, t('Core distance'))
+            ->setSortable(false, ClustersCollection::COL_CORE_DISTANCE)
+            ->alignRight();
+
+        $this->grid->addColumn(self::COL_SYSTEMS, t('Solar systems'))
+            ->setSortable(false, $this->filters->getColSystemsCount()->getSecondarySelectValue())
+            ->alignRight();
+
+        $this->grid->addColumn(self::COL_PLANETS, t('Planets'))
+            ->setSortable(false, $this->filters->getColPlanetsCount()->getSecondarySelectValue())
+            ->alignRight();
     }
 
     protected function configureActions() : void
@@ -86,11 +104,19 @@ class ClustersListScreen extends Application_Admin_Area_Mode_CollectionList
         return t('Global clusters overview');
     }
 
+    protected function configureFilters() : void
+    {
+        $this->filters->withSystemsCount();
+        $this->filters->withPlanetsCount();
+    }
+
     protected function _handleSidebar() : void
     {
         $this->sidebar->addButton('create_cluster', t('Add a cluster...'))
             ->setIcon(NMSTracker::icon()->add())
             ->link($this->createCollection()->getAdminCreateURL());
+
+        parent::_handleSidebar();
     }
 
     protected function _handleHelp() : void

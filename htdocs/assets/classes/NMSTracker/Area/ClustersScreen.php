@@ -49,7 +49,7 @@ class ClustersScreen extends Application_Admin_Area
 
     public function getNavigationTitle() : string
     {
-        return t('Clusters');
+        return t('Solar system clusters');
     }
 
     public function getNavigationIcon() : ?UI_Icon
@@ -59,6 +59,6 @@ class ClustersScreen extends Application_Admin_Area
 
     public function getTitle() : string
     {
-        return t('Clusters');
+        return t('Solar system clusters');
     }
 }
