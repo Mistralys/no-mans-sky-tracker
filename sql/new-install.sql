@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 19, 2023 at 09:28 PM
+-- Generation Time: Jan 31, 2023 at 10:37 PM
 -- Server version: 10.3.10-MariaDB
 -- PHP Version: 7.4.27
 
@@ -103,6 +103,19 @@ CREATE TABLE `app_settings` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `clusters`
+--
+
+CREATE TABLE `clusters` (
+`cluster_id` int(11) UNSIGNED NOT NULL,
+`label` varchar(160) NOT NULL,
+`comments` mediumtext NOT NULL,
+`core_distance` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `countries`
 --
 
@@ -159,6 +172,14 @@ CREATE TABLE `known_users` (
 `lastname` varchar(250) NOT NULL,
 `email` varchar(254) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `known_users`
+--
+
+INSERT INTO `known_users` (`user_id`, `foreign_id`, `firstname`, `lastname`, `email`) VALUES
+(1, '__system', 'NMSTracker', 'System', 'system@nmstracker.example'),
+(2, '1234567890', 'Sample', 'User', 'sample.user@nmstracker.example');
 
 -- --------------------------------------------------------
 
@@ -358,58 +379,80 @@ CREATE TABLE `planet_pois` (
 
 CREATE TABLE `planet_types` (
 `planet_type_id` int(11) UNSIGNED NOT NULL,
-`label` varchar(160) NOT NULL
+`label` varchar(160) NOT NULL,
+`comments` mediumtext NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `planet_types`
 --
 
-INSERT INTO `planet_types` (`planet_type_id`, `label`) VALUES
-(7, 'Abandoned'),
-(26, 'Acidic'),
-(37, 'Arid'),
-(24, 'Basalt'),
-(21, 'Bleak'),
-(29, 'Blighted'),
-(1, 'Boiling'),
-(4, 'Contaminated'),
-(32, 'Corrosive'),
-(42, 'Endless Morass'),
-(35, 'Fiery'),
-(13, 'Flame-Ruptured'),
-(44, 'Foggy'),
-(33, 'Fractured'),
-(6, 'Freezing'),
-(3, 'Frostbound'),
-(25, 'Frozen'),
-(23, 'Fungal'),
-(39, 'Glacial'),
-(15, 'Hiemal'),
-(40, 'High Radio Source'),
-(31, 'Hot'),
-(18, 'Humid'),
-(20, 'Hyperborean'),
-(11, 'Icebound'),
-(16, 'Icy'),
-(43, 'Lost Green Planet'),
-(5, 'Marshy'),
-(36, 'Molten'),
-(17, 'Noxious'),
-(9, 'Ossified'),
-(12, 'Overgrown'),
-(27, 'Paradise'),
-(34, 'Poison'),
-(22, 'Rainy'),
-(30, 'Stellar Corruption'),
-(14, 'Supercritical'),
-(19, 'Swamp'),
-(45, 'Tectonic'),
-(10, 'Temperate'),
-(2, 'Toxic'),
-(8, 'Tropical'),
-(28, 'Vermillion Globe'),
-(38, 'Viridescent');
+INSERT INTO `planet_types` (`planet_type_id`, `label`, `comments`) VALUES
+(1, 'Boiling', ''),
+(2, 'Toxic', ''),
+(3, 'Frostbound', ''),
+(4, 'Contaminated', ''),
+(5, 'Marshy', ''),
+(6, 'Freezing', ''),
+(7, 'Abandoned', ''),
+(8, 'Tropical', ''),
+(9, 'Ossified', ''),
+(10, 'Temperate', ''),
+(11, 'Icebound', ''),
+(12, 'Overgrown', ''),
+(13, 'Flame-Ruptured', ''),
+(14, 'Supercritical', ''),
+(15, 'Hiemal', ''),
+(16, 'Icy', ''),
+(17, 'Noxious', ''),
+(18, 'Humid', ''),
+(19, 'Swamp', ''),
+(20, 'Hyperborean', ''),
+(21, 'Bleak', ''),
+(22, 'Rainy', ''),
+(23, 'Fungal', ''),
+(24, 'Basalt', ''),
+(25, 'Frozen', ''),
+(26, 'Acidic', ''),
+(27, 'Paradise', ''),
+(28, 'Vermillion Globe', ''),
+(29, 'Blighted', ''),
+(30, 'Stellar Corruption', ''),
+(31, 'Hot', ''),
+(32, 'Corrosive', ''),
+(33, 'Fractured', ''),
+(34, 'Poison', ''),
+(35, 'Fiery', ''),
+(36, 'Molten', ''),
+(37, 'Arid', ''),
+(38, 'Viridescent', ''),
+(39, 'Glacial', ''),
+(40, 'High Radio Source', ''),
+(42, 'Endless Morass', ''),
+(43, 'Lost Green Planet', ''),
+(44, 'Foggy', ''),
+(45, 'Tectonic', ''),
+(48, 'Radioactive', ''),
+(49, '[REDACTED]', ''),
+(50, 'The Nest', ''),
+(51, 'Mechanical', ''),
+(52, 'Xeno Colony', ''),
+(53, 'Spined', ''),
+(54, 'Decaying Nuclear', ''),
+(55, 'Flourishing', ''),
+(56, 'Infested', ''),
+(57, 'Petrified', ''),
+(58, 'Caustic Nightmare', ''),
+(59, 'Rotting', ''),
+(60, 'Wind-swept', ''),
+(61, 'Scalding', ''),
+(62, 'High Temperature', ''),
+(63, 'Damp', ''),
+(64, 'Obsidian Bead', ''),
+(65, 'Incandescent', ''),
+(66, 'Irradiated', ''),
+(68, 'Foaming', 'Floating soap bubbles everywhere :D'),
+(69, 'Unstable', '');
 
 -- --------------------------------------------------------
 
@@ -441,6 +484,7 @@ INSERT INTO `races` (`race_id`, `label`) VALUES
 CREATE TABLE `resources` (
 `resource_id` int(11) UNSIGNED NOT NULL,
 `label` varchar(160) NOT NULL,
+`comments` mediumtext NOT NULL DEFAULT '',
 `type` enum('mineral','harvestable','collectible','specialty','tradeable') NOT NULL DEFAULT 'mineral'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -448,71 +492,77 @@ CREATE TABLE `resources` (
 -- Dumping data for table `resources`
 --
 
-INSERT INTO `resources` (`resource_id`, `label`, `type`) VALUES
-(1, 'Solanium', 'harvestable'),
-(2, 'Copper', 'mineral'),
-(3, 'Phosphorus', 'mineral'),
-(4, 'Silver', 'mineral'),
-(5, 'Fungal Mold', 'harvestable'),
-(6, 'Ammonia', 'mineral'),
-(7, 'Sodium', 'mineral'),
-(8, 'Salt', 'mineral'),
-(9, 'Frost Crystal', 'harvestable'),
-(10, 'Dioxite', 'mineral'),
-(11, 'Gamma Root', 'harvestable'),
-(12, 'Uranium', 'mineral'),
-(13, 'Magnetised Ferrite', 'mineral'),
-(14, 'Ancient Bones', 'specialty'),
-(15, 'Faecium', 'mineral'),
-(16, 'Cactus Flesh', 'harvestable'),
-(17, 'Pyrite', 'mineral'),
-(18, 'Paraffinium', 'mineral'),
-(19, 'Star Bulb', 'harvestable'),
-(20, 'Gold', 'mineral'),
-(21, 'Activated Copper', 'mineral'),
-(22, 'Cobalt', 'mineral'),
-(23, 'Salvageable Scrap', 'specialty'),
-(24, 'Cadmium', 'mineral'),
-(25, 'Activated Cadmium', 'mineral'),
-(26, 'Hexaberry', 'harvestable'),
-(27, 'Collectible: Electric Cube', 'specialty'),
-(28, 'Storm Crystals', 'harvestable'),
-(29, 'Emeril', 'mineral'),
-(30, 'Spark Canister', 'tradeable'),
-(31, 'Industrial-Grade Battery', 'tradeable'),
-(32, 'Ohmic Gel', 'tradeable'),
-(33, 'Experimental Power Fluid', 'tradeable'),
-(34, 'Fusion Core', 'tradeable'),
-(35, 'Decomissioned Circuits', 'tradeable'),
-(36, 'Welding Soap', 'tradeable'),
-(37, 'Ion Capacitor', 'tradeable'),
-(38, 'Autonomous Positioning Unit', 'tradeable'),
-(39, 'Quantum Accelerator', 'tradeable'),
-(40, 'Non-Stick Piston', 'tradeable'),
-(41, 'Enormous Metal Cog', 'tradeable'),
-(42, 'Fusion Accelerant', 'tradeable'),
-(43, 'Dirt', 'tradeable'),
-(44, 'Unrefined Pyrite Grease', 'tradeable'),
-(45, 'Bromide Salt', 'tradeable'),
-(46, 'Polychromatic Zirconium', 'tradeable'),
-(47, 'Re-Latticed Arc Crystal', 'tradeable'),
-(48, 'Nanotube Crate', 'tradeable'),
-(49, 'Self-Repairing Heridium', 'tradeable'),
-(50, 'Optical Solvent', 'tradeable'),
-(51, '5D Torus', 'tradeable'),
-(52, 'Decrypted User Data', 'tradeable'),
-(53, 'Star Silk', 'tradeable'),
-(54, 'Comet Droplets', 'tradeable'),
-(55, 'Ion Sphere', 'tradeable'),
-(56, 'Teleport Coordinators', 'tradeable'),
-(57, 'De-Scented Bottles', 'tradeable'),
-(58, 'Neutron Microscope', 'tradeable'),
-(59, 'Instability Injector', 'tradeable'),
-(60, 'Organic Piping', 'tradeable'),
-(61, 'Neural Duct', 'tradeable'),
-(62, 'Mesh Decouplers', 'tradeable'),
-(63, 'Holographic Crankshaft', 'tradeable'),
-(64, 'Vector Compressors', 'tradeable');
+INSERT INTO `resources` (`resource_id`, `label`, `comments`, `type`) VALUES
+(1, 'Solanium', '', 'harvestable'),
+(2, 'Copper', '', 'mineral'),
+(3, 'Phosphorus', '', 'mineral'),
+(4, 'Silver', '', 'mineral'),
+(5, 'Fungal Mold', '', 'harvestable'),
+(6, 'Ammonia', '', 'mineral'),
+(7, 'Sodium', '', 'mineral'),
+(8, 'Salt', '', 'mineral'),
+(9, 'Frost Crystal', '', 'harvestable'),
+(10, 'Dioxite', '', 'mineral'),
+(11, 'Gamma Root', '', 'harvestable'),
+(12, 'Uranium', '', 'mineral'),
+(13, 'Magnetised Ferrite', '', 'mineral'),
+(14, 'Ancient Bones', '', 'specialty'),
+(15, 'Faecium', '', 'mineral'),
+(16, 'Cactus Flesh', '', 'harvestable'),
+(17, 'Pyrite', '', 'mineral'),
+(18, 'Paraffinium', '', 'mineral'),
+(19, 'Star Bulb', '', 'harvestable'),
+(20, 'Gold', '', 'mineral'),
+(21, 'Activated Copper', '', 'mineral'),
+(22, 'Cobalt', '', 'mineral'),
+(23, 'Salvageable Scrap', '', 'specialty'),
+(24, 'Cadmium', '', 'mineral'),
+(25, 'Activated Cadmium', '', 'mineral'),
+(26, 'Hexaberry', '', 'harvestable'),
+(27, 'Collectible: Electric Cube', '', 'specialty'),
+(28, 'Storm Crystals', '', 'harvestable'),
+(29, 'Emeril', '', 'mineral'),
+(30, 'Spark Canister', '', 'tradeable'),
+(31, 'Industrial-Grade Battery', '', 'tradeable'),
+(32, 'Ohmic Gel', '', 'tradeable'),
+(33, 'Experimental Power Fluid', '', 'tradeable'),
+(34, 'Fusion Core', '', 'tradeable'),
+(35, 'Decomissioned Circuits', '', 'tradeable'),
+(36, 'Welding Soap', '', 'tradeable'),
+(37, 'Ion Capacitor', '', 'tradeable'),
+(38, 'Autonomous Positioning Unit', '', 'tradeable'),
+(39, 'Quantum Accelerator', '', 'tradeable'),
+(40, 'Non-Stick Piston', '', 'tradeable'),
+(41, 'Enormous Metal Cog', '', 'tradeable'),
+(42, 'Fusion Accelerant', '', 'tradeable'),
+(43, 'Dirt', '', 'tradeable'),
+(44, 'Unrefined Pyrite Grease', '', 'tradeable'),
+(45, 'Bromide Salt', '', 'tradeable'),
+(46, 'Polychromatic Zirconium', '', 'tradeable'),
+(47, 'Re-Latticed Arc Crystal', '', 'tradeable'),
+(48, 'Nanotube Crate', '', 'tradeable'),
+(49, 'Self-Repairing Heridium', '', 'tradeable'),
+(50, 'Optical Solvent', '', 'tradeable'),
+(51, '5D Torus', '', 'tradeable'),
+(52, 'Decrypted User Data', '', 'tradeable'),
+(53, 'Star Silk', '', 'tradeable'),
+(54, 'Comet Droplets', '', 'tradeable'),
+(55, 'Ion Sphere', '', 'tradeable'),
+(56, 'Teleport Coordinators', '', 'tradeable'),
+(57, 'De-Scented Bottles', '', 'tradeable'),
+(58, 'Neutron Microscope', '', 'tradeable'),
+(59, 'Instability Injector', '', 'tradeable'),
+(60, 'Organic Piping', '', 'tradeable'),
+(61, 'Neural Duct', '', 'tradeable'),
+(62, 'Mesh Decouplers', '', 'tradeable'),
+(63, 'Holographic Crankshaft', '', 'tradeable'),
+(64, 'Vector Compressors', '', 'tradeable'),
+(65, 'Indium', '', 'mineral'),
+(66, 'Activated Indium', '', 'mineral'),
+(67, 'Rattle Spine', '', 'collectible'),
+(68, 'Activated Emeril', '', 'mineral'),
+(69, 'Mordite', '', 'mineral'),
+(70, 'Bubble Cluster', '', 'collectible');
 
 -- --------------------------------------------------------
 
@@ -535,6 +585,7 @@ INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`) VALUES
 (11, 'Ever present'),
 (7, 'Frequent'),
 (9, 'High security'),
+(13, 'Inescapable'),
 (1, 'None'),
 (4, 'Observant'),
 (12, 'Regular Patrols'),
@@ -551,8 +602,10 @@ INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`) VALUES
 
 CREATE TABLE `solar_systems` (
 `solar_system_id` int(11) UNSIGNED NOT NULL,
+`cluster_id` int(11) UNSIGNED NOT NULL,
 `star_type_id` int(11) UNSIGNED NOT NULL,
 `label` varchar(120) NOT NULL,
+`date_added` datetime NOT NULL DEFAULT current_timestamp(),
 `race_id` int(11) UNSIGNED NOT NULL,
 `comments` mediumtext NOT NULL,
 `amount_planets` int(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -600,6 +653,7 @@ CREATE TABLE `star_types` (
 --
 
 INSERT INTO `star_types` (`star_type_id`, `label`) VALUES
+(4, 'Blue'),
 (3, 'Green'),
 (2, 'Red'),
 (1, 'Yellow');
@@ -684,6 +738,14 @@ ADD KEY `lock_id` (`lock_id`);
 ALTER TABLE `app_settings`
 ADD PRIMARY KEY (`data_key`),
 ADD KEY `data_role` (`data_role`);
+
+--
+-- Indexes for table `clusters`
+--
+ALTER TABLE `clusters`
+ADD PRIMARY KEY (`cluster_id`),
+ADD KEY `label` (`label`),
+ADD KEY `core_distance` (`core_distance`);
 
 --
 -- Indexes for table `countries`
@@ -803,6 +865,7 @@ ADD KEY `planet_id` (`planet_id`);
 --
 ALTER TABLE `planet_types`
 ADD PRIMARY KEY (`planet_type_id`),
+ADD UNIQUE KEY `label_2` (`label`),
 ADD KEY `label` (`label`);
 
 --
@@ -826,6 +889,7 @@ ADD KEY `type` (`type`);
 --
 ALTER TABLE `sentinel_levels`
 ADD PRIMARY KEY (`sentinel_level_id`),
+ADD UNIQUE KEY `label_2` (`label`),
 ADD KEY `label` (`label`);
 
 --
@@ -837,7 +901,9 @@ ADD KEY `name` (`label`),
 ADD KEY `race_id` (`race_id`),
 ADD KEY `star_type_id` (`star_type_id`),
 ADD KEY `amount_planets` (`amount_planets`),
-ADD KEY `own_discovery` (`is_own_discovery`);
+ADD KEY `own_discovery` (`is_own_discovery`),
+ADD KEY `cluster_id` (`cluster_id`),
+ADD KEY `date_added` (`date_added`);
 
 --
 -- Indexes for table `space_stations`
@@ -900,6 +966,12 @@ ALTER TABLE `app_messaging`
 MODIFY `message_id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `clusters`
+--
+ALTER TABLE `clusters`
+MODIFY `cluster_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `countries`
 --
 ALTER TABLE `countries`
@@ -915,7 +987,7 @@ MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `known_users`
 --
 ALTER TABLE `known_users`
-MODIFY `user_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+MODIFY `user_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=655;
 
 --
 -- AUTO_INCREMENT for table `media`
@@ -963,7 +1035,7 @@ MODIFY `planet_poi_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `planet_types`
 --
 ALTER TABLE `planet_types`
-MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `races`
@@ -975,13 +1047,13 @@ MODIFY `race_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 -- AUTO_INCREMENT for table `resources`
 --
 ALTER TABLE `resources`
-MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `sentinel_levels`
 --
 ALTER TABLE `sentinel_levels`
-MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `solar_systems`
@@ -999,7 +1071,7 @@ MODIFY `space_station_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `star_types`
 --
 ALTER TABLE `star_types`
-MODIFY `star_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+MODIFY `star_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `uploads`
@@ -1087,7 +1159,8 @@ ADD CONSTRAINT `planet_pois_ibfk_1` FOREIGN KEY (`planet_id`) REFERENCES `planet
 --
 ALTER TABLE `solar_systems`
 ADD CONSTRAINT `solar_systems_ibfk_1` FOREIGN KEY (`race_id`) REFERENCES `races` (`race_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `solar_systems_ibfk_2` FOREIGN KEY (`star_type_id`) REFERENCES `star_types` (`star_type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `solar_systems_ibfk_2` FOREIGN KEY (`star_type_id`) REFERENCES `star_types` (`star_type_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `solar_systems_ibfk_3` FOREIGN KEY (`cluster_id`) REFERENCES `clusters` (`cluster_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `space_stations`
