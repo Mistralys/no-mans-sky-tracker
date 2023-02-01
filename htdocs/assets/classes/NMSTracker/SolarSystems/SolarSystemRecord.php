@@ -25,9 +25,13 @@ use NMSTracker\SolarSystemsCollection;
 use NMSTracker\StarTypes\StarTypeRecord;
 use NMSTracker_User;
 use UI;
+use UI_Icon;
 use UI_Label;
 use UI_PropertiesGrid;
 
+/**
+ * @property SolarSystemsCollection $collection
+ */
 class SolarSystemRecord extends DBHelper_BaseRecord
 {
     public function getLabel() : string
@@ -182,5 +186,10 @@ class SolarSystemRecord extends DBHelper_BaseRecord
     public function getDateAdded() : DateTime
     {
         return $this->getRecordDateKey(SolarSystemsCollection::COL_DATE_ADDED);
+    }
+
+    public function getIcon() : UI_Icon
+    {
+        return $this->collection->getIcon();
     }
 }
