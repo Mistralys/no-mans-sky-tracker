@@ -6,6 +6,7 @@ namespace NMSTracker\Area;
 
 use Application_Admin_Area;
 use NMSTracker\Area\SolarSystemsScreen\SystemsListScreen;
+use NMSTracker\ClassFactory;
 
 class SolarSystemsScreen extends Application_Admin_Area
 {
@@ -49,5 +50,12 @@ class SolarSystemsScreen extends Application_Admin_Area
     public function getTitle() : string
     {
         return t('Solar systems');
+    }
+
+    protected function _handleHelp() : void
+    {
+        $this->renderer
+            ->getTitle()
+            ->setIcon(ClassFactory::createSolarSystems()->getIcon());
     }
 }

@@ -62,7 +62,6 @@ class SystemScreen extends Application_Admin_Area_Mode_CollectionRecord
         $this->renderer
             ->getTitle()
             ->setText($system->getLabel())
-            ->setIcon(NMSTracker::icon()->solarSystem())
             ->addBadge($system->getOwnershipBadge());
     }
 

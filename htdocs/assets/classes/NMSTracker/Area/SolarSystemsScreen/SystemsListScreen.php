@@ -68,13 +68,6 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
         return ClassFactory::createSolarSystems();
     }
 
-    protected function _handleHelp() : void
-    {
-        $this->renderer
-            ->getTitle()
-            ->setIcon(NMSTracker::icon()->solarSystem());
-    }
-
     protected function _handleSidebar() : void
     {
         $this->sidebar->addButton('add_system', t('Add a system'))
