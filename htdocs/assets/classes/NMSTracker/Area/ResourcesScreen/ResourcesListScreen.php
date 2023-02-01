@@ -9,6 +9,7 @@ use AppUtils\ClassHelper;
 use DBHelper_BaseCollection;
 use DBHelper_BaseFilterCriteria_Record;
 use DBHelper_BaseRecord;
+use NMSTracker;
 use NMSTracker\ClassFactory;
 use NMSTracker\Resources\ResourceFilterCriteria;
 use NMSTracker\Resources\ResourceFilterSettings;
@@ -103,6 +104,17 @@ class ResourcesListScreen extends Application_Admin_Area_Mode_CollectionList
     public function getTitle() : string
     {
         return t('Global resources list');
+    }
+
+    protected function _handleSidebar() : void
+    {
+        $this->sidebar->addButton('create-resource', t('Add a resource'))
+            ->setIcon(NMSTracker::icon()->add())
+            ->link($this->createCollection()->getAdminCreateURL());
+
+        $this->sidebar->addSeparator();
+
+        parent::_handleSidebar();
     }
 
     protected function _handleHelp() : void

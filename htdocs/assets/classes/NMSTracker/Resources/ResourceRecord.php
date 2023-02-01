@@ -10,6 +10,7 @@ use DBHelper_BaseRecord;
 use NMSTracker\Area\ResourcesScreen\ResourceScreen;
 use NMSTracker\Area\ResourcesScreen\ResourceScreen\ResourceOutpostsScreen;
 use NMSTracker\Area\ResourcesScreen\ResourceScreen\ResourcePlanetsScreen;
+use NMSTracker\Area\ResourcesScreen\ResourceScreen\ResourceSettingsScreen;
 use NMSTracker\Area\ResourcesScreen\ResourceScreen\ResourceStationsScreen;
 use NMSTracker\ClassFactory;
 use NMSTracker\Outposts\OutpostFilterCriteria;
@@ -25,6 +26,11 @@ class ResourceRecord extends DBHelper_BaseRecord
     public function getLabel() : string
     {
         return $this->getRecordStringKey(ResourcesCollection::COL_LABEL);
+    }
+
+    public function getComments() : string
+    {
+        return $this->getRecordStringKey(ResourcesCollection::COL_COMMENTS);
     }
 
     public function getTypeID() : string
@@ -106,5 +112,21 @@ class ResourceRecord extends DBHelper_BaseRecord
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_SUBMODE] = ResourceStationsScreen::URL_NAME;
 
         return $this->getAdminURL($params);
+    }
+
+    /**
+     * @param array<string,string|number|Interface_Stringable|NULL> $params
+     * @return string
+     */
+    public function getAdminSettingsURL(array $params=array()) : string
+    {
+        $params[Application_Admin_ScreenInterface::REQUEST_PARAM_SUBMODE] = ResourceSettingsScreen::URL_NAME;
+
+        return $this->getAdminURL($params);
+    }
+
+    public function isEditable() : bool
+    {
+        return true;
     }
 }

@@ -74,5 +74,11 @@ class ResourceScreen
             $resource->getAdminStationsURL()
         )
             ->setIcon(NMSTracker::icon()->spaceStation());
+
+        $this->subnav->addURL(
+            t('Settings'),
+            $resource->getAdminSettingsURL()
+        )
+            ->setIcon(NMSTracker::icon()->settings());
     }
 }

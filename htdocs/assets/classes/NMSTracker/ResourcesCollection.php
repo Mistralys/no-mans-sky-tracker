@@ -6,15 +6,18 @@ namespace NMSTracker;
 
 use Application_Admin_ScreenInterface;
 use Application_Driver;
+use Application_Formable;
 use AppUtils\Interface_Stringable;
 use DBHelper_BaseCollection;
 use DBHelper_BaseRecord;
 use NMSTracker;
 use NMSTracker\Area\ResourcesScreen;
+use NMSTracker\Area\ResourcesScreen\CreateResourceScreen;
 use NMSTracker\Area\ResourcesScreen\ResourcesListScreen;
 use NMSTracker\Resources\ResourceFilterCriteria;
 use NMSTracker\Resources\ResourceFilterSettings;
 use NMSTracker\Resources\ResourceRecord;
+use NMSTracker\Resources\ResourceSettingsManager;
 use UI_Icon;
 
 /**
@@ -31,6 +34,7 @@ class ResourcesCollection extends DBHelper_BaseCollection
 
     public const COL_LABEL = 'label';
     public const COL_TYPE = 'type';
+    public const COL_COMMENTS = 'comments';
 
     public function getRecordClassName() : string
     {
@@ -104,6 +108,17 @@ class ResourcesCollection extends DBHelper_BaseCollection
      * @param array<string,string|number|Interface_Stringable|NULL> $params
      * @return string
      */
+    public function getAdminCreateURL(array $params=array()) : string
+    {
+        $params[Application_Admin_ScreenInterface::REQUEST_PARAM_MODE] = CreateResourceScreen::URL_NAME;
+
+        return $this->getAdminURL($params);
+    }
+
+    /**
+     * @param array<string,string|number|Interface_Stringable|NULL> $params
+     * @return string
+     */
     public function getAdminURL(array $params=array()) : string
     {
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_PAGE] = ResourcesScreen::URL_NAME;
@@ -116,5 +131,10 @@ class ResourcesCollection extends DBHelper_BaseCollection
     public function getIcon() : UI_Icon
     {
         return NMSTracker::icon()->resources();
+    }
+
+    public function createSettingsManager(Application_Formable $formable, ?ResourceRecord $record) : ResourceSettingsManager
+    {
+        return new ResourceSettingsManager($formable, $this, $record);
     }
 }
