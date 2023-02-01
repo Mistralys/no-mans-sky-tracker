@@ -26,8 +26,9 @@ class NMSTracker_User extends Application_User_Extended
     public const GROUP_OUTPOSTS = 'outposts';
     public const GROUP_SPACE_STATIONS = 'space_stations';
     public const GROUP_CLUSTERS = 'clusters';
+    public const GROUP_RESOURCES = 'resources';
 
-    public const RIGHT_VIEW_SOLAR_SYSTEMS = 'view_solar_sytems';
+    public const RIGHT_VIEW_SOLAR_SYSTEMS = 'view_solar_systems';
     public const RIGHT_VIEW_PLANETS = 'view_planets';
     public const RIGHT_VIEW_OUTPOSTS = 'view_outposts';
     public const RIGHT_CREATE_PLANETS = 'create_planets';
@@ -48,6 +49,9 @@ class NMSTracker_User extends Application_User_Extended
     public const RIGHT_VIEW_CLUSTERS = 'view_clusters';
     public const RIGHT_EDIT_CLUSTERS = 'edit_clusters';
     public const RIGHT_CREATE_CLUSTERS = 'create_clusters';
+    public const RIGHT_VIEW_RESOURCES = 'view_resources';
+    public const RIGHT_EDIT_RESOURCES = 'edit_resources';
+    public const RIGHT_CREATE_RESOURCES = 'create_resources';
 
     public function getRightGroups(): array
     {
@@ -56,7 +60,8 @@ class NMSTracker_User extends Application_User_Extended
             self::GROUP_MANAGE_PLANETS => t('Manage planets'),
             self::GROUP_OUTPOSTS => t('Manage outposts'),
             self::GROUP_SPACE_STATIONS => t('Manage space stations'),
-            self::GROUP_CLUSTERS => t('Solar system clusters')
+            self::GROUP_CLUSTERS => t('Manage solar system clusters'),
+            self::GROUP_RESOURCES => t('Manage resources')
         );
     }
 
@@ -67,6 +72,12 @@ class NMSTracker_User extends Application_User_Extended
         $group->registerRight(self::RIGHT_CREATE_CLUSTERS, t('Create solar system clusters'));
     }
 
+    protected function registerRights_resources(Application_User_Rights_Group $group) : void
+    {
+        $group->registerRight(self::RIGHT_VIEW_RESOURCES, t('View resources'));
+        $group->registerRight(self::RIGHT_EDIT_RESOURCES, t('Edit resources'));
+        $group->registerRight(self::RIGHT_CREATE_RESOURCES, t('Create resources'));
+    }
 
     protected function registerRights_solar_systems(Application_User_Rights_Group $group) : void
     {
@@ -117,6 +128,7 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_VIEW_POIS,
                 self::RIGHT_VIEW_SPACE_STATIONS,
                 self::RIGHT_VIEW_CLUSTERS,
+                self::RIGHT_VIEW_RESOURCES,
 
                 self::RIGHT_EDIT_PLANETS,
                 self::RIGHT_EDIT_SOLAR_SYSTEMS,
@@ -125,6 +137,7 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_EDIT_POIS,
                 self::RIGHT_EDIT_SPACE_STATIONS,
                 self::RIGHT_EDIT_CLUSTERS,
+                self::RIGHT_EDIT_RESOURCES,
 
                 self::RIGHT_CREATE_PLANETS,
                 self::RIGHT_CREATE_SOLAR_SYSTEMS,
@@ -132,7 +145,8 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_CREATE_PLANET_TYPES,
                 self::RIGHT_CREATE_POIS,
                 self::RIGHT_CREATE_SPACE_STATIONS,
-                self::RIGHT_CREATE_CLUSTERS
+                self::RIGHT_CREATE_CLUSTERS,
+                self::RIGHT_CREATE_RESOURCES
             );
     }
 
@@ -158,5 +172,8 @@ class NMSTracker_User extends Application_User_Extended
     public function canViewClusters() : bool { return $this->can(self::RIGHT_VIEW_CLUSTERS); }
     public function canEditClusters() : bool { return $this->can(self::RIGHT_EDIT_CLUSTERS); }
     public function canCreateClusters() : bool { return $this->can(self::RIGHT_CREATE_CLUSTERS); }
+    public function canViewResources() : bool { return $this->can(self::RIGHT_VIEW_RESOURCES); }
+    public function canEditResources() : bool { return $this->can(self::RIGHT_EDIT_RESOURCES); }
+    public function canCreateResources() : bool { return $this->can(self::RIGHT_CREATE_RESOURCES); }
     // endregion
 }
