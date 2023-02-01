@@ -11,6 +11,7 @@ use AppUtils\ClassHelper\ClassNotExistsException;
 use AppUtils\ClassHelper\ClassNotImplementsException;
 use AppUtils\Interface_Stringable;
 use DBHelper_BaseCollection;
+use NMSTracker;
 use NMSTracker\Area\SolarSystemsScreen;
 use NMSTracker\Area\SolarSystemsScreen\CreateSystemScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemAddPlanetScreen;
@@ -20,6 +21,7 @@ use NMSTracker\SolarSystems\SolarSystemFilterCriteria;
 use NMSTracker\SolarSystems\SolarSystemFilterSettings;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystems\SystemSettingsManager;
+use UI_Icon;
 
 /**
  * @method SolarSystemRecord getByID(int $record_id)
@@ -140,5 +142,10 @@ class SolarSystemsCollection extends DBHelper_BaseCollection
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_MODE] = CreateSystemScreen::URL_NAME;
 
         return $this->getAdminURL($params);
+    }
+
+    public function getIcon() : UI_Icon
+    {
+        return NMSTracker::icon()->solarSystem();
     }
 }
