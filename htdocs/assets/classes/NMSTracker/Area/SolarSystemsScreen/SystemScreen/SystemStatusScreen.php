@@ -70,8 +70,10 @@ class SystemStatusScreen
             ->setComment(t('Whether this is your own discovery.'));
 
         $grid->add(t('Discovered planets'), $system->countPlanets().'/'.$system->getAmountPlanets());
-        $grid->add(t('Comments'), $system->getComments())
-            ->ifEmpty(sb()->muted(t('No comments entered.')));
+
+        $grid->addHeader(t('Comments'));
+        $grid->addMarkdown($system->getComments())
+            ->ifEmpty(t('No comments entered.'));
 
         return $this->renderer
             ->appendContent($grid)
