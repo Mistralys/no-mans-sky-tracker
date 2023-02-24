@@ -10,6 +10,7 @@ use Application_Formable_RecordSettings_Setting;
 use Application_Formable_RecordSettings_ValueSet;
 use AppUtils\ClassHelper;
 use AppUtils\NamedClosure;
+use NMSTracker;
 use NMSTracker\Planets\PlanetRecord;
 use Closure;
 use DBHelper_BaseCollection;
@@ -132,12 +133,8 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectSentinels')
             ));
 
-        $group->registerSetting(self::SETTING_SCAN_COMPLETE)
-            ->setStorageName(PlanetsCollection::COL_SCAN_COMPLETE)
-            ->setCallback(NamedClosure::fromClosure(
-                Closure::fromCallable(array($this, 'injectScanComplete')),
-                array($this, 'injectScanComplete')
-            ));
+        $group = $this->addGroup(t('Discoveries'))
+            ->setIcon(NMSTracker::icon()->discoveries());
 
         $group->registerSetting(self::SETTING_OWN_DISCOVERY)
             ->setStorageName(SolarSystemsCollection::COL_IS_OWN_DISCOVERY)
@@ -145,6 +142,20 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
             ->setCallback(NamedClosure::fromClosure(
                 Closure::fromCallable(array($this, 'injectOwnDiscovery')),
                 array($this, 'injectOwnDiscovery')
+            ));
+
+        $group->registerSetting('amount_fauna')
+            ->setStorageName(PlanetsCollection::COL_FAUNA_AMOUNT)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectFaunaAmount')),
+                array($this, 'injectFaunaAmount')
+            ));
+
+        $group->registerSetting(self::SETTING_SCAN_COMPLETE)
+            ->setStorageName(PlanetsCollection::COL_SCAN_COMPLETE)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectScanComplete')),
+                array($this, 'injectScanComplete')
             ));
 
         $group = $this->addGroup(t('Comments'))
@@ -239,6 +250,20 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
         foreach($levels as $level)
         {
             $el->addOption($level->getLabel(), (string)$level->getID());
+        }
+
+        return $el;
+    }
+
+    private function injectFaunaAmount(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select
+    {
+        $el = $this->addElementSelect($setting->getName(), t('Fauna count'));
+
+        $max = 14;
+        $el->addOption(t('Not recorded'), 'not_recorded');
+
+        for($i=1; $i <= $max; $i++) {
+            $el->addOption((string)$i, (string)$i);
         }
 
         return $el;

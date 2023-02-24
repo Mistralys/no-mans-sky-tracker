@@ -33,6 +33,7 @@ class PlanetsCollection extends DBHelper_BaseCollection
     public const COL_SENTINEL_LEVEL_ID = SentinelLevelsCollection::PRIMARY_NAME;
     public const COL_SCAN_COMPLETE = 'scan_complete';
     public const COL_IS_OWN_DISCOVERY = 'is_own_discovery';
+    public const COL_FAUNA_AMOUNT = 'fauna_amount';
     public const COL_COMMENTS = 'comments';
 
     public function getRecordClassName() : string

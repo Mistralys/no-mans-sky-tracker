@@ -100,6 +100,34 @@ class PlanetRecord extends DBHelper_BaseRecord
         return $this->getRecordStringKey(PlanetsCollection::COL_COMMENTS);
     }
 
+    public function getFaunaAmount() : ?int
+    {
+        $value = $this->getRecordStringKey(PlanetsCollection::COL_FAUNA_AMOUNT);
+        if($value === 'not_recorded') {
+            return null;
+        }
+
+        return (int)$value;
+    }
+
+    public function getFaunaAmountPretty(bool $short=false) : string
+    {
+        $amount = $this->getFaunaAmount();
+
+        if($amount === null) {
+            if($short) {
+                return (string)NMSTracker::icon()
+                    ->minus()
+                    ->makeMuted()
+                    ->setTooltip(t('Not recorded'))
+                    ->cursorHelp();
+            }
+            return (string)sb()->muted(t('Not recorded'));
+        }
+
+        return (string)$amount;
+    }
+
     protected function recordRegisteredKeyModified($name, $label, $isStructural, $oldValue, $newValue)
     {
     }
@@ -204,6 +232,8 @@ class PlanetRecord extends DBHelper_BaseRecord
 
         $grid->add(t('Sentinels'), $this->getSentinelLevel()->getLabelLinked());
 
+        $grid->add(t('Fauna count'), $this->getFaunaAmountPretty());
+
         $grid->addBoolean(t('Scan complete?'), $this->isScanComplete())
             ->makeYesNo()
             ->makeColorsNeutral();
@@ -215,6 +245,22 @@ class PlanetRecord extends DBHelper_BaseRecord
     public function countOutposts() : int
     {
         return $this->getOutpostFilters()->countItems();
+    }
+
+    public function countOutpostsPretty() : string
+    {
+        $count = $this->countOutposts();
+
+        if($count > 0)
+        {
+            return (string)$count;
+        }
+
+        return (string)NMSTracker::icon()
+            ->minus()
+            ->makeMuted()
+            ->setTooltip(t('No outposts'))
+            ->cursorHelp();
     }
 
     /**
