@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+#
+# Batch files / Unit tests run script (Linux)
+#
+# @template-version 1
+#
+
+echo "----------------------------------------------------"
+echo "RUNNING MAILEDITOR TESTS"
+echo "----------------------------------------------------"
+echo ""
+echo "Run specific testsuites with \"--testsuite SuiteName\""
+echo ""
+
+
+
+
+echo ""
+echo "-----------------------------------------------------"
+echo ""
+
+cd ../
+
+vendor/bin/phpunit "$@"
+
+cd tests || exit
+
+echo ""
+echo ""
