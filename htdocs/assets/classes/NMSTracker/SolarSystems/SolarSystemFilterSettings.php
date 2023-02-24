@@ -19,6 +19,7 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
     public const DISCOVERY_TYPE_OWN = 'only_own';
     public const DISCOVERY_TYPE_OTHERS = 'only_others';
     public const SETTING_CLUSTER = 'cluster';
+    public const SETTING_HAS_WORMHOLE = 'has_wormhole';
 
     protected function registerSettings() : void
     {
@@ -27,6 +28,14 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         $this->registerSetting(self::SETTING_RACE, t('Dominant race'));
         $this->registerSetting(self::SETTING_OWN_DISCOVERY, t('Own discovery?'));
         $this->registerSetting(self::SETTING_CLUSTER, t('Cluster'));
+        $this->registerSetting(self::SETTING_HAS_WORMHOLE, t('Has wormhole?'));
+    }
+
+    protected function inject_has_wormhole() : void
+    {
+        $el = $this->addElementSwitch(self::SETTING_HAS_WORMHOLE);
+        $el->makeYesNo();
+        $el->setComment(t('Limit to systems with a wormhole?'));
     }
 
     protected function inject_star() : void
@@ -88,6 +97,7 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         $this->configureRace($this->getSettingInt(self::SETTING_RACE));
         $this->configureDiscoveries($this->getSettingString(self::SETTING_OWN_DISCOVERY));
         $this->configureCluster($this->getSettingInt(self::SETTING_CLUSTER));
+        $this->configureHasWormhole($this->getSettingBool(self::SETTING_HAS_WORMHOLE));
     }
 
     private function configureStarType(int $typeID) : void
@@ -135,5 +145,13 @@ class SolarSystemFilterSettings extends DBHelper_BaseFilterSettings
         }
 
         $this->filters->selectCluster($collection->getByID($clusterID));
+    }
+
+    private function configureHasWormhole(bool $present) : void
+    {
+        if($present)
+        {
+            $this->filters->selectHasWormhole();
+        }
     }
 }

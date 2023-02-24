@@ -26,6 +26,7 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
     public const CUSTOM_COL_DISTANCE_TO_CORE = 'distance_to_core';
     public const JOIN_CLUSTERS = 'join_clusters';
     private ?bool $ownDiscoveries = null;
+    private bool $hasWormhole = false;
 
     /**
      * @param StarTypeRecord $starType
@@ -40,6 +41,12 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
     public function selectOwnDiscoveries(?bool $mode) : self
     {
         $this->ownDiscoveries = $mode;
+        return $this;
+    }
+
+    public function selectHasWormhole() : self
+    {
+        $this->hasWormhole = true;
         return $this;
     }
 
@@ -66,6 +73,11 @@ class SolarSystemFilterCriteria extends DBHelper_BaseFilterCriteria
                 SolarSystemsCollection::COL_IS_OWN_DISCOVERY,
                 ConvertHelper::boolStrict2string($this->ownDiscoveries, true)
             );
+        }
+
+        if($this->hasWormhole)
+        {
+            $this->addWhereColumnNOT_NULL(SolarSystemsCollection::COL_WORMHOLE_TO);
         }
     }
 
