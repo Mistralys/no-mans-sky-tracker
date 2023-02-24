@@ -74,6 +74,7 @@ class NMSTracker extends Application_Driver
             ClustersScreen::URL_NAME => ClassHelper::getClassTypeName(ClustersScreen::class),
             Application_Admin_Area_Settings::URL_NAME => ClassHelper::getClassTypeName(NMSTracker_Area_Settings::class),
             Application_Admin_TranslationsArea::URL_NAME => ClassHelper::getClassTypeName(NMSTracker_Area_Translations::class),
+            NMSTracker_Area_Devel::URL_NAME => ClassHelper::getClassTypeName(NMSTracker_Area_Devel::class)
         );
     }
     
