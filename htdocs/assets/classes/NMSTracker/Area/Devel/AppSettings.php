@@ -19,4 +19,8 @@ declare(strict_types=1);
  */
 class NMSTracker_Area_Devel_AppSettings extends Application_Admin_Area_Devel_AppSettings
 {
+    protected function _registerSettings() : void
+    {
+
+    }
 }
