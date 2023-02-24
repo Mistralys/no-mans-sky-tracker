@@ -3,19 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 31, 2023 at 10:37 PM
+-- Generation Time: Feb 24, 2023 at 09:04 AM
 -- Server version: 10.3.10-MariaDB
 -- PHP Version: 7.4.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `nms_tracker`
@@ -340,6 +334,7 @@ CREATE TABLE `planets` (
 `sentinel_level_id` int(11) UNSIGNED NOT NULL,
 `is_moon` enum('yes','no') NOT NULL DEFAULT 'no',
 `is_own_discovery` enum('yes','no') NOT NULL DEFAULT 'yes',
+`fauna_amount` varchar(40) NOT NULL DEFAULT 'not_recorded',
 `scan_complete` enum('yes','no') NOT NULL DEFAULT 'no',
 `comments` mediumtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -452,7 +447,29 @@ INSERT INTO `planet_types` (`planet_type_id`, `label`, `comments`) VALUES
 (65, 'Incandescent', ''),
 (66, 'Irradiated', ''),
 (68, 'Foaming', 'Floating soap bubbles everywhere :D'),
-(69, 'Unstable', '');
+(69, 'Unstable', ''),
+(70, 'Cerulean', ''),
+(71, 'Azure', ''),
+(72, 'Gamma Intensive', ''),
+(73, 'Frothing', ''),
+(74, 'Scorched', ''),
+(75, 'Low Atmosphere', ''),
+(76, 'Quagmire', ''),
+(77, 'Parched', ''),
+(78, 'Reeking', ''),
+(80, 'Sharded', ''),
+(81, 'Barren', ''),
+(82, 'Rocky', ''),
+(83, 'Isotopic', ''),
+(84, 'Terraforming Catastrophe', ''),
+(85, 'Dusty', ''),
+(86, 'Bountiful', ''),
+(87, 'Verdant', ''),
+(88, 'Mutated', ''),
+(89, 'Desert', ''),
+(90, 'Sporal', ''),
+(91, 'High Energy', ''),
+(92, 'Poisonous', '');
 
 -- --------------------------------------------------------
 
@@ -562,7 +579,13 @@ INSERT INTO `resources` (`resource_id`, `label`, `comments`, `type`) VALUES
 (67, 'Rattle Spine', '', 'collectible'),
 (68, 'Activated Emeril', '', 'mineral'),
 (69, 'Mordite', '', 'mineral'),
-(70, 'Bubble Cluster', '', 'collectible');
+(70, 'Bubble Cluster', '', 'collectible'),
+(71, 'Prismatic Feathers (Black Market)', '', 'tradeable'),
+(72, 'Banned Weapons (Black Market)', '', 'tradeable'),
+(73, 'Grah Grah (Black Market)', '', 'tradeable'),
+(74, 'Rusted Metal', '', 'mineral'),
+(75, 'Superconducting Fibre', '', 'tradeable'),
+(76, 'Calcishroom', '', 'collectible');
 
 -- --------------------------------------------------------
 
@@ -572,27 +595,32 @@ INSERT INTO `resources` (`resource_id`, `label`, `comments`, `type`) VALUES
 
 CREATE TABLE `sentinel_levels` (
 `sentinel_level_id` int(11) UNSIGNED NOT NULL,
-`label` varchar(160) NOT NULL
+`label` varchar(160) NOT NULL,
+`aggression_level` enum('red','orange','gray','none') NOT NULL DEFAULT 'gray'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `sentinel_levels`
 --
 
-INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`) VALUES
-(3, 'Attentive'),
-(8, 'Enforcing'),
-(11, 'Ever present'),
-(7, 'Frequent'),
-(9, 'High security'),
-(13, 'Inescapable'),
-(1, 'None'),
-(4, 'Observant'),
-(12, 'Regular Patrols'),
-(6, 'Require Obedience'),
-(5, 'Require Orthodoxy'),
-(10, 'Unwavering'),
-(2, 'Zealous');
+INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`, `aggression_level`) VALUES
+(1, 'None', 'none'),
+(2, 'Zealous', 'gray'),
+(3, 'Attentive', 'gray'),
+(4, 'Observant', 'orange'),
+(5, 'Require Orthodoxy', 'orange'),
+(6, 'Require Obedience', 'gray'),
+(7, 'Frequent', 'orange'),
+(8, 'Enforcing', 'orange'),
+(9, 'High security', 'gray'),
+(10, 'Unwavering', 'orange'),
+(11, 'Ever present', 'orange'),
+(12, 'Regular Patrols', 'orange'),
+(13, 'Inescapable', 'red'),
+(14, 'Hateful', 'red'),
+(15, 'Frenzied', 'red'),
+(16, 'Malicious', 'red'),
+(17, 'Hostile Patrols', 'red');
 
 -- --------------------------------------------------------
 
@@ -839,7 +867,8 @@ ADD KEY `sentinel_level_id` (`sentinel_level_id`),
 ADD KEY `scan_complete` (`scan_complete`),
 ADD KEY `solar_system_id` (`solar_system_id`),
 ADD KEY `is_moon` (`is_moon`),
-ADD KEY `is_own_discovery` (`is_own_discovery`);
+ADD KEY `is_own_discovery` (`is_own_discovery`),
+ADD KEY `fauna_amount` (`fauna_amount`);
 
 --
 -- Indexes for table `planets_resources`
@@ -890,7 +919,8 @@ ADD KEY `type` (`type`);
 ALTER TABLE `sentinel_levels`
 ADD PRIMARY KEY (`sentinel_level_id`),
 ADD UNIQUE KEY `label_2` (`label`),
-ADD KEY `label` (`label`);
+ADD KEY `label` (`label`),
+ADD KEY `aggression_level` (`aggression_level`);
 
 --
 -- Indexes for table `solar_systems`
@@ -1035,7 +1065,7 @@ MODIFY `planet_poi_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `planet_types`
 --
 ALTER TABLE `planet_types`
-MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT for table `races`
@@ -1047,13 +1077,13 @@ MODIFY `race_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 -- AUTO_INCREMENT for table `resources`
 --
 ALTER TABLE `resources`
-MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT for table `sentinel_levels`
 --
 ALTER TABLE `sentinel_levels`
-MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `solar_systems`
@@ -1187,7 +1217,3 @@ ADD CONSTRAINT `uploads_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `known_users`
 ALTER TABLE `user_settings`
 ADD CONSTRAINT `user_settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `known_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
