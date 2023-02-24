@@ -262,7 +262,7 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
         $max = 14;
         $el->addOption(t('Not recorded'), 'not_recorded');
 
-        for($i=1; $i <= $max; $i++) {
+        for($i=0; $i <= $max; $i++) {
             $el->addOption((string)$i, (string)$i);
         }
 
