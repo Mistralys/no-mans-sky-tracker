@@ -7,6 +7,7 @@ namespace NMSTracker;
 use AppUtils\ClassHelper;
 use DBHelper;
 use NMSTracker\Resources\ResourceTypesCollection;
+use NMSTracker\SentinelLevels\SentinelAggressionLevels;
 
 class ClassFactory
 {
@@ -117,5 +118,10 @@ class ClassFactory
             ClustersCollection::class,
             DBHelper::createCollection(ClustersCollection::class)
         );
+    }
+
+    public static function createSentinelAggressionLevels() : SentinelAggressionLevels
+    {
+        return SentinelAggressionLevels::getInstance();
     }
 }
