@@ -73,7 +73,7 @@
         "ext-json": "*",
         "ext-libxml": "*",
         "ext-redis": "*",
-        "mistralys\/application_framework": "2.3.8",
+        "mistralys\/application_framework": "2.4.4",
         "php": "^7.4"
     },
     "require-dev": {
