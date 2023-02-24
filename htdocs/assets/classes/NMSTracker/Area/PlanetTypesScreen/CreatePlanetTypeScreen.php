@@ -51,6 +51,13 @@ class CreatePlanetTypeScreen extends Application_Admin_Area_Mode_CollectionCreat
             ->getAdminSettingsURL();
     }
 
+    protected function _handleBreadcrumb() : void
+    {
+        $this->breadcrumb->appendArea($this->getArea());
+        $this->breadcrumb->appendItem(t('Add type'))
+            ->makeLinked($this->createCollection()->getAdminCreateURL());
+    }
+
     public function getBackOrCancelURL() : string
     {
         return $this->createCollection()->getAdminListURL();
