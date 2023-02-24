@@ -7,14 +7,18 @@ namespace NMSTracker\SolarSystems;
 use Application_Formable;
 use Application_Formable_RecordSettings_Extended;
 use Application_Formable_RecordSettings_Setting;
+use Application_Formable_RecordSettings_ValueSet;
+use AppUtils\ClassHelper;
 use AppUtils\NamedClosure;
 use Closure;
 use DBHelper_BaseCollection;
 use DBHelper_BaseRecord;
 use HTML_QuickForm2_Element_InputText;
+use HTML_QuickForm2_Element_Multiselect;
 use HTML_QuickForm2_Element_Select;
 use HTML_QuickForm2_Element_Switch;
 use HTML_QuickForm2_Element_Textarea;
+use NMSTracker;
 use NMSTracker\ClassFactory;
 use NMSTracker\SolarSystemsCollection;
 use NMSTracker\UI\FormHelper;
@@ -22,6 +26,7 @@ use UI;
 
 /**
  * @property SolarSystemRecord|NULL $record
+ * @property SolarSystemsCollection $collection
  */
 class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
 {
@@ -32,6 +37,7 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
     public const SETTING_PLANETS = 'planets';
     public const SETTING_OWN_DISCOVERY = 'own_discovery';
     public const SETTING_CLUSTER = 'cluster';
+    public const SETTING_WORMHOLE = 'wormhole';
     private FormHelper $formHelper;
 
     public function __construct(Application_Formable $formable, DBHelper_BaseCollection $collection, ?DBHelper_BaseRecord $record = null)
@@ -45,6 +51,26 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
 
     protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
     {
+
+    }
+
+    protected function _afterSave(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $data) : void
+    {
+        $system = ClassHelper::requireObjectInstanceOf(SolarSystemRecord::class, $record);
+        $id = $data->getKey(self::SETTING_WORMHOLE);
+
+        if(!empty($id))
+        {
+            $system->setWormholeSystem(
+                $this->collection->getByID((int)$id)
+            );
+        }
+        else
+        {
+            $system->setWormholeSystem(null);
+        }
+
+        $system->save();
     }
 
     protected function getCreateData(array $formValues) : array
@@ -54,7 +80,6 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
 
     protected function updateRecord(array $values) : void
     {
-
     }
 
     protected function registerSettings() : void
@@ -111,6 +136,16 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectOwnDiscovery')
             ));
 
+        $group = $this->addGroup(t('Wormhole'))
+            ->setIcon(NMSTracker::icon()->wormhole());
+
+        $group->registerSetting(self::SETTING_WORMHOLE)
+            ->makeInternal()
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectWormhole')),
+                array($this, 'injectWormhole')
+            ));
+
         $group = $this->addGroup(t('Comments'))
             ->setIcon(UI::icon()->comment());
 
@@ -120,6 +155,23 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 Closure::fromCallable(array($this, 'injectComments')),
                 array($this, 'injectComments')
             ));
+    }
+
+    private function injectWormhole(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Multiselect
+    {
+        $el = $this->addElementMultiselect($setting->getName(), t('Wormhole destination'));
+        $el->setComment(t('If the system has a wormhole, select the system here that it leads to.'));
+        $el->enableFiltering();
+
+        $el->addOption(t('No wormhole present'), '');
+
+        $systems = $this->collection->getAll();
+        foreach($systems as $system)
+        {
+            $el->addOption($system->getLabel(), $system->getID());
+        }
+
+        return $el;
     }
 
     private function injectCluster(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select

@@ -10,6 +10,7 @@ use NMSTracker\ClassFactory;
 use NMSTracker\Interfaces\Admin\ViewSystemScreenInterface;
 use NMSTracker\Interfaces\Admin\ViewSystemScreenTrait;
 use NMSTracker\SolarSystems\SolarSystemRecord;
+use NMSTracker\SolarSystems\SystemSettingsManager;
 use NMSTracker\SolarSystemsCollection;
 use NMSTracker_User;
 
@@ -38,6 +39,15 @@ class SystemSettingsScreen
     public function getSettingsManager()
     {
         return $this->createCollection()->createSettingsManager($this, $this->record);
+    }
+
+    public function getDefaultFormValues() : array
+    {
+        $values = parent::getDefaultFormValues();
+
+        $values[SystemSettingsManager::SETTING_WORMHOLE] = $this->record->getWormholeSystemID();
+
+        return $values;
     }
 
     public function isEditable() : bool

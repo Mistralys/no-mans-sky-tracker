@@ -183,6 +183,42 @@ class SolarSystemRecord extends DBHelper_BaseRecord
         return null;
     }
 
+    public function hasWormhole() : bool
+    {
+        return $this->getWormholeSystemID() !== null;
+    }
+
+    public function getWormholeSystemID() : ?int
+    {
+        $id = $this->getRecordKey(SolarSystemsCollection::COL_WORMHOLE_TO);
+        if(!empty($id)) {
+            return (int)$id;
+        }
+
+        return null;
+    }
+
+    public function getWormholeSystem() : ?SolarSystemRecord
+    {
+        $id = $this->getWormholeSystemID();
+
+        if($id !== null) {
+            return $this->collection->getByID($id);
+        }
+
+        return null;
+    }
+
+    public function setWormholeSystem(?SolarSystemRecord $system) : bool
+    {
+        $id = null;
+        if($system !== null) {
+            $id = $system->getID();
+        }
+
+        return $this->setRecordKey(SolarSystemsCollection::COL_WORMHOLE_TO, $id);
+    }
+
     public function getDateAdded() : DateTime
     {
         return $this->getRecordDateKey(SolarSystemsCollection::COL_DATE_ADDED);
