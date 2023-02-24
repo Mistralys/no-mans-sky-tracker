@@ -66,7 +66,8 @@ class SolarSystemsCollection extends DBHelper_BaseCollection
     public function getRecordSearchableColumns() : array
     {
         return array(
-            self::COL_LABEL => t('Name')
+            self::COL_LABEL => t('Name'),
+            self::COL_COMMENTS => t('Comments')
         );
     }
 
