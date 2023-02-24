@@ -21,6 +21,7 @@ class SentinelLevelsCollection extends DBHelper_BaseCollection
     public const PRIMARY_NAME = 'sentinel_level_id';
 
     public const COL_LABEL = 'label';
+    public const COL_AGGRESSION_LEVEL = 'aggression_level';
     public const ID_NONE = 1;
 
     public function getRecordClassName() : string
