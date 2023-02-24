@@ -1,10 +1,14 @@
 # No Man's Sky tracker
 
-PHP-based tool for tracking solar systems and outposts in No Man's Sky.
+PHP-based tool for tracking solar systems and outposts in [No Man's Sky](https://www.nomanssky.com/).
 
 Offers a user interface to manually add solar systems, planets and outpost 
 to keep track of. Various views make it easy to find things again, with
 filtering tools.
+
+It is intended to make it easier to keep track of noteworthy things while
+you explore. Add detailed comments on solar systems, planets, outposts and
+more. Save the position of planetary POIs to have a way to get back to them. 
 
 ## Requirements
 
