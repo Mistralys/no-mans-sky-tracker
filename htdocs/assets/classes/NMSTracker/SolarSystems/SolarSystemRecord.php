@@ -192,4 +192,51 @@ class SolarSystemRecord extends DBHelper_BaseRecord
     {
         return $this->collection->getIcon();
     }
+
+    public function getHospitalityPretty() : string
+    {
+        $percent = $this->getHospitalityPercentage();
+
+        if($percent !== null) {
+            return $percent.'%';
+        }
+
+        return (string)NMSTracker::icon()
+            ->minus()
+            ->makeMuted()
+            ->setTooltip(t('Not all planets have been discovered.'))
+            ->cursorHelp();
+    }
+
+    public function getHospitalityPercentage() : ?float
+    {
+        $aggression = $this->getAggressionPercentage();
+
+        if($aggression !== null) {
+            return floor(100 - $aggression);
+        }
+
+        return null;
+    }
+
+    public function getAggressionPercentage() : ?float
+    {
+        $planets = $this->getPlanetFilters()->getItemsObjects();
+
+        $amount = count($planets);
+        if($amount < $this->getAmountPlanets()) {
+            return null;
+        }
+
+        $cumulated = 0;
+        foreach($planets as $planet)
+        {
+            $cumulated += $planet
+                ->getSentinelLevel()
+                ->getAggressionLevel()
+                ->getAsPercentage();
+        }
+
+        return $cumulated / $amount;
+    }
 }
