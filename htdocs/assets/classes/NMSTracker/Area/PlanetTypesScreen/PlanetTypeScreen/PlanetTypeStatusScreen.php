@@ -47,6 +47,11 @@ class PlanetTypeStatusScreen
 
         $grid->addAmount(t('Planets'), $type->countPlanets());
 
+        $grid->addHeader(t('Comments'));
+
+        $grid->addMarkdown($type->getComments())
+            ->ifEmpty(t('No comments entered.'));
+
         return $this->renderer
             ->appendContent($grid)
             ->makeWithoutSidebar();

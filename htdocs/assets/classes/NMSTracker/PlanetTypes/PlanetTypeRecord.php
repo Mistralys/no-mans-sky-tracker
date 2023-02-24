@@ -26,6 +26,11 @@ class PlanetTypeRecord extends DBHelper_BaseRecord
         return $this->getRecordStringKey(PlanetTypesCollection::COL_LABEL);
     }
 
+    public function getComments() : string
+    {
+        return $this->getRecordStringKey(PlanetTypesCollection::COL_COMMENTS);
+    }
+
     protected function recordRegisteredKeyModified($name, $label, $isStructural, $oldValue, $newValue)
     {
     }

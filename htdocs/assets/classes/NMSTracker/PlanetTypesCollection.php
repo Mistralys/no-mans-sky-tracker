@@ -32,7 +32,7 @@ class PlanetTypesCollection extends DBHelper_BaseCollection
     public const PRIMARY_NAME = 'planet_type_id';
 
     public const COL_LABEL = 'label';
-
+    public const COL_COMMENTS = 'comments';
 
     public function getRecordClassName() : string
     {

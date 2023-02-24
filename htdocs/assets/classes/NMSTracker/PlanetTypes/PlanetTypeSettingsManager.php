@@ -12,7 +12,10 @@ use Closure;
 use DBHelper_BaseCollection;
 use DBHelper_BaseRecord;
 use HTML_QuickForm2_Element_InputText;
+use HTML_QuickForm2_Element_Textarea;
 use NMSTracker;
+use NMSTracker\PlanetTypesCollection;
+use NMSTracker\UI\FormHelper;
 use NMSTracker_User;
 
 /**
@@ -21,12 +24,17 @@ use NMSTracker_User;
 class PlanetTypeSettingsManager extends Application_Formable_RecordSettings_Extended
 {
     public const SETTING_LABEL = 'label';
+    public const SETTING_COMMENTS = 'comments';
+
+    private FormHelper $formHelper;
 
     public function __construct(Application_Formable $formable, DBHelper_BaseCollection $collection, ?DBHelper_BaseRecord $record = null)
     {
         parent::__construct($formable, $collection, $record);
 
         $this->setDefaultsUseStorageNames(true);
+
+        $this->formHelper = new FormHelper($this);
     }
 
     protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
@@ -49,23 +57,29 @@ class PlanetTypeSettingsManager extends Application_Formable_RecordSettings_Exte
             ->setIcon(NMSTracker::icon()->settings());
 
         $group->registerSetting(self::SETTING_LABEL)
+            ->setStorageName(PlanetTypesCollection::COL_LABEL)
             ->makeRequired()
             ->setCallback(NamedClosure::fromClosure(
                 Closure::fromCallable(array($this, 'injectLabel')),
                 array($this, 'injectLabel')
             ));
+
+        $group->registerSetting(self::SETTING_COMMENTS)
+            ->setStorageName(PlanetTypesCollection::COL_COMMENTS)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectComments')),
+                array($this, 'injectComments')
+            ));
     }
 
     private function injectLabel(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
     {
-        $el = $this->addElementText($setting->getName(), t('Label'));
-        $el->addFilterTrim();
-        $el->addClass('input-xxlarge');
+        return $this->formHelper->injectLabel($setting, t('Label'));
+    }
 
-        $this->makeLengthLimited($el, 0, 160);
-        $this->addRuleNameOrTitle($el);
-
-        return $el;
+    private function injectComments(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Textarea
+    {
+        return $this->formHelper->injectComments($setting, t('Comments'));
     }
 
     public function getDefaultSettingName() : string
