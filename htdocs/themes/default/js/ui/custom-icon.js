@@ -15,6 +15,7 @@ var CustomIcon =
     
     Cluster:function() { return this.SetType('cookie', 'fas'); },
     Coordinates:function() { return this.SetType('arrows-alt'); },
+    Discoveries:function() { return this.SetType('dragon', 'fas'); },
     Map:function() { return this.SetType('map', 'far'); },
     Outpost:function() { return this.SetType('campground', 'fas'); },
     Overview:function() { return this.SetType('list-alt', 'far'); },
@@ -23,6 +24,7 @@ var CustomIcon =
     PlanetType:function() { return this.SetType('globe', 'fas'); },
     PointsOfInterest:function() { return this.SetType('map-marked-alt', 'fas'); },
     Resources:function() { return this.SetType('shapes', 'fas'); },
+    Sentinels:function() { return this.SetType('virus', 'fas'); },
     Services:function() { return this.SetType('truck-monster', 'fas'); },
     SolarSystem:function() { return this.SetType('sun', 'fas'); },
     SpaceStation:function() { return this.SetType('satellite', 'fas'); },

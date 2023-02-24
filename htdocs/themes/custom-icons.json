@@ -50,5 +50,13 @@
   "cluster": {
     "icon": "cookie",
     "type": "fas"
+  },
+  "discoveries": {
+    "icon": "dragon",
+    "type": "fas"
+  },
+  "sentinels": {
+    "icon": "virus",
+    "type": "fas"
   }
 }

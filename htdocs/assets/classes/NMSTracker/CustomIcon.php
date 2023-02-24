@@ -40,6 +40,10 @@ class CustomIcon extends UI_Icon
     /**
      * @return $this
      */
+    public function discoveries() : self { return $this->setType('dragon', 'fas'); }
+    /**
+     * @return $this
+     */
     public function map() : self { return $this->setType('map', 'far'); }
     /**
      * @return $this
@@ -69,6 +73,10 @@ class CustomIcon extends UI_Icon
      * @return $this
      */
     public function resources() : self { return $this->setType('shapes', 'fas'); }
+    /**
+     * @return $this
+     */
+    public function sentinels() : self { return $this->setType('virus', 'fas'); }
     /**
      * @return $this
      */
