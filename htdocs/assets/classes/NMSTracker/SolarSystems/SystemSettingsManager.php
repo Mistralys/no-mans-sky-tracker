@@ -17,6 +17,7 @@ use HTML_QuickForm2_Element_Switch;
 use HTML_QuickForm2_Element_Textarea;
 use NMSTracker\ClassFactory;
 use NMSTracker\SolarSystemsCollection;
+use NMSTracker\UI\FormHelper;
 use UI;
 
 /**
@@ -31,12 +32,15 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
     public const SETTING_PLANETS = 'planets';
     public const SETTING_OWN_DISCOVERY = 'own_discovery';
     public const SETTING_CLUSTER = 'cluster';
+    private FormHelper $formHelper;
 
     public function __construct(Application_Formable $formable, DBHelper_BaseCollection $collection, ?DBHelper_BaseRecord $record = null)
     {
         parent::__construct($formable, $collection, $record);
 
         $this->setDefaultsUseStorageNames(true);
+
+        $this->formHelper = new FormHelper($this);
     }
 
     protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
@@ -146,21 +150,12 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
 
     private function injectLabel(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
     {
-        $el = $this->addElementText($setting->getName(), t('Name'));
-        $el->addClass('input-xxlarge');
-
-        $this->makeLengthLimited($el, 0, 160);
-
-        return $el;
+        return $this->formHelper->injectLabel($setting, t('Name'));
     }
 
     private function injectComments(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Textarea
     {
-        $el = $this->addElementTextarea($setting->getName(), t('Comments'));
-
-        $el->setRows(3);
-
-        return $el;
+        return $this->formHelper->injectComments($setting, t('Comments'));
     }
 
     private function injectAmountPlanets(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
