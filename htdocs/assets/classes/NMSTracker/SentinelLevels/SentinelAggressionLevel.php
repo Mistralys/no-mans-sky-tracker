@@ -10,6 +10,13 @@ use UI_Label;
 
 class SentinelAggressionLevel
 {
+    public const AGGRESSION_PERCENTAGES = array(
+        SentinelAggressionLevels::LEVEL_NONE => 0,
+        SentinelAggressionLevels::LEVEL_GRAY => 20,
+        SentinelAggressionLevels::LEVEL_ORANGE => 40,
+        SentinelAggressionLevels::LEVEL_RED => 100
+    );
+
     private string $id;
     private string $label;
 
@@ -42,6 +49,11 @@ class SentinelAggressionLevel
     public function isDangerous() : bool
     {
         return $this->getID() === SentinelAggressionLevels::LEVEL_RED;
+    }
+
+    public function getAsPercentage() : int
+    {
+        return self::AGGRESSION_PERCENTAGES[$this->getID()];
     }
 
     public function getBadge() : UI_Label
