@@ -89,6 +89,10 @@ class CustomIcon extends UI_Icon
      * @return $this
      */
     public function spaceStation() : self { return $this->setType('satellite', 'fas'); }
+    /**
+     * @return $this
+     */
+    public function wormhole() : self { return $this->setType('link', 'fas'); }
     
     // endregion
 }
