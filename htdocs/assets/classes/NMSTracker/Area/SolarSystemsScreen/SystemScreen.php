@@ -59,18 +59,30 @@ class SystemScreen extends Application_Admin_Area_Mode_CollectionRecord
     {
         $system = $this->getRecord();
 
+        if($system->getRace()->isUnknown())
+        {
+            $subline = sb()
+                ->t(
+                    'Unowned star system, %1$s from galaxy core',
+                    $system->getCoreDistancePretty()
+                );
+        }
+        else
+        {
+            $subline = sb()
+                ->t(
+                    '%1$s star system, %2$s from galaxy core',
+                    $system->getRace()->getLabelLinked(),
+                    $system->getCoreDistancePretty()
+                );
+        }
+
         $this->renderer
             ->getTitle()
+            ->setIcon($system->getStarType()->getIcon())
             ->setText($system->getLabel())
             ->addBadge($system->getOwnershipBadge())
-            ->setSubline(sb()
-                ->t(
-                    '%1$s %2$s star system, %3$s from galaxy core',
-                    $system->getRace()->getLabelLinked(),
-                    $system->getStarType()->getLabelLinked(),
-                    $system->getCoreDistancePretty()
-                )
-            );
+            ->setSubline($subline);
     }
 
     protected function _handleBreadcrumb() : void

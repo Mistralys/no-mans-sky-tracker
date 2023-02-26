@@ -27,7 +27,6 @@ var CustomIcon =
     Services:function() { return this.SetType('truck-monster', 'fas'); },
     SolarSystem:function() { return this.SetType('sun', 'fas'); },
     SpaceStation:function() { return this.SetType('satellite', 'fas'); },
-    SystemType:function() { return this.SetType('circle', 'fas'); },
     Wormhole:function() { return this.SetType('link', 'fas'); },
 
     // endregion

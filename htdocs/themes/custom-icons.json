@@ -47,10 +47,6 @@
     "icon": "satellite",
     "type": "fas"
   },
-  "system_type": {
-    "icon": "circle",
-    "type": "fas"
-  },
   "discoveries": {
     "icon": "dragon",
     "type": "fas"

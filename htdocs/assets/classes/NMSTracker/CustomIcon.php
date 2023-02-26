@@ -88,10 +88,6 @@ class CustomIcon extends UI_Icon
     /**
      * @return $this
      */
-    public function systemType() : self { return $this->setType('circle', 'fas'); }
-    /**
-     * @return $this
-     */
     public function wormhole() : self { return $this->setType('link', 'fas'); }
     
     // endregion

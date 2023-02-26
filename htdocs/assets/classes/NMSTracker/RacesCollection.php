@@ -19,6 +19,7 @@ class RacesCollection extends DBHelper_BaseCollection
 {
     public const TABLE_NAME = 'races';
     public const PRIMARY_NAME = 'race_id';
+    public const ID_UNKNOWN = 4;
 
     public const COL_LABEL = 'label';
 

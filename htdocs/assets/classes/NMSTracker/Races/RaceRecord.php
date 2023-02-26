@@ -22,4 +22,9 @@ class RaceRecord extends DBHelper_BaseRecord
     {
         return $this->getLabel();
     }
+
+    public function isUnknown() : bool
+    {
+        return $this->getID() === RacesCollection::ID_UNKNOWN;
+    }
 }

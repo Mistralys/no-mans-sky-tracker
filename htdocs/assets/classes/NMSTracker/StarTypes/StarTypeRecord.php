@@ -43,8 +43,8 @@ class StarTypeRecord extends DBHelper_BaseRecord
     public function getIcon() : CustomIcon
     {
         $icon = NMSTracker::icon()
-            ->systemType()
-            ->setTooltip($this->getLabel())
+            ->solarSystem()
+            ->setTooltip(t('%1$s star', $this->getLabel()))
             ->cursorHelp();
 
         if($this->isYellow()) {
