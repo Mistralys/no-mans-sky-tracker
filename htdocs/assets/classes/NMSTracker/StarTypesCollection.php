@@ -21,6 +21,11 @@ class StarTypesCollection extends DBHelper_BaseCollection
     public const TABLE_NAME = 'star_types';
     public const PRIMARY_NAME = 'star_type_id';
 
+    public const ID_YELLOW = 1;
+    public const ID_RED = 2;
+    public const ID_GREEN = 3;
+    public const ID_BLUE = 4;
+
     public const COL_LABEL = 'label';
 
     public function getRecordClassName() : string

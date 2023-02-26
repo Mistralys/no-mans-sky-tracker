@@ -83,8 +83,10 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
         {
             return array(
                 self::COL_PRIMARY => $record->getID(),
-                self::COL_NAME => $record->getLabelLinked(),
-                self::COL_STAR => $record->getStarType()->getLabelLinked(),
+                self::COL_NAME => sb()
+                    ->icon($record->getStarType()->getIcon())
+                    ->add($record->getLabelLinked()
+                ),
                 self::COL_RACE => $record->getRace()->getLabelLinked(),
                 self::COL_ORBITAL_BODIES => $record->getAmountPlanets(),
                 self::COL_OWN_DISCOVERY => $record->getOwnershipBadge(),
@@ -110,8 +112,6 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
     {
         $this->grid->addColumn(self::COL_NAME, t('Name'))
             ->setSortable(true, SolarSystemsCollection::COL_LABEL);
-
-        $this->grid->addColumn(self::COL_STAR, t('Star type'));
 
         $this->grid->addColumn(self::COL_RACE, t('Dominant race'));
 

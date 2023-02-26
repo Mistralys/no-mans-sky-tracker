@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace NMSTracker\StarTypes;
 
 use DBHelper_BaseRecord;
+use NMSTracker;
+use NMSTracker\CustomIcon;
 use NMSTracker\StarTypesCollection;
 
 class StarTypeRecord extends DBHelper_BaseRecord
@@ -16,6 +18,46 @@ class StarTypeRecord extends DBHelper_BaseRecord
 
     protected function recordRegisteredKeyModified($name, $label, $isStructural, $oldValue, $newValue)
     {
+    }
+
+    public function isYellow() : bool
+    {
+        return $this->getID() === StarTypesCollection::ID_YELLOW;
+    }
+
+    public function isBlue() : bool
+    {
+        return $this->getID() === StarTypesCollection::ID_BLUE;
+    }
+
+    public function isRed() : bool
+    {
+        return $this->getID() === StarTypesCollection::ID_RED;
+    }
+
+    public function isGreen() : bool
+    {
+        return $this->getID() === StarTypesCollection::ID_GREEN;
+    }
+
+    public function getIcon() : CustomIcon
+    {
+        $icon = NMSTracker::icon()
+            ->systemType()
+            ->setTooltip($this->getLabel())
+            ->cursorHelp();
+
+        if($this->isYellow()) {
+            $icon->addClass('star-color-yellow');
+        } else if($this->isBlue()) {
+            $icon->addClass('star-color-blue');
+        } else if($this->isRed()) {
+            $icon->addClass('star-color-red');
+        } else if($this->isGreen()) {
+            $icon->addClass('star-color-green');
+        }
+
+        return $icon;
     }
 
     public function getLabelLinked() : string
