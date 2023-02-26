@@ -36,7 +36,6 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
     public const SETTING_COMMENTS = 'comments';
     public const SETTING_PLANETS = 'planets';
     public const SETTING_OWN_DISCOVERY = 'own_discovery';
-    public const SETTING_CLUSTER = 'cluster';
     public const SETTING_WORMHOLE = 'wormhole';
     private FormHelper $formHelper;
 
@@ -82,6 +81,8 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
     {
     }
 
+    // region: Settings
+
     protected function registerSettings() : void
     {
         $group = $this->addGroup(t('Settings'))
@@ -96,12 +97,11 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectLabel')
             ));
 
-        $group->registerSetting(self::SETTING_CLUSTER)
-            ->setStorageName(SolarSystemsCollection::COL_CLUSTER_ID)
-            ->makeRequired()
+        $group->registerSetting('core_distance')
+            ->setStorageName(SolarSystemsCollection::COL_CORE_DISTANCE)
             ->setCallback(NamedClosure::fromClosure(
-                Closure::fromCallable(array($this, 'injectCluster')),
-                array($this, 'injectCluster')
+                Closure::fromCallable(array($this, 'injectCoreDistance')),
+                array($this, 'injectCoreDistance')
             ));
 
         $group->registerSetting(self::SETTING_STAR)
@@ -157,6 +157,20 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
             ));
     }
 
+    private function injectCoreDistance(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_InputText
+    {
+        $el = $this->addElementInteger($setting->getName(), t('Core distance'));
+        $el->setComment((string)sb()
+            ->t('The distance to the galaxy core from this solar system.')
+            ->note()
+            ->t('This can be seen by getting as close as possible to the system in the galaxy map.')
+        );
+
+        $this->setElementAppend($el, t('LY'));
+
+        return $el;
+    }
+
     private function injectWormhole(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Multiselect
     {
         $el = $this->addElementMultiselect($setting->getName(), t('Wormhole destination'));
@@ -169,22 +183,6 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
         foreach($systems as $system)
         {
             $el->addOption($system->getLabel(), $system->getID());
-        }
-
-        return $el;
-    }
-
-    private function injectCluster(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select
-    {
-        $el = $this->addElementSelect($setting->getName(), t('Cluster'));
-
-        $el->addOption(t('Please select...'), '');
-
-        $clusters = ClassFactory::createClusters()->getAll();
-
-        foreach ($clusters as $cluster)
-        {
-            $el->addOption($cluster->getLabel(), (string)$cluster->getID());
         }
 
         return $el;
@@ -258,6 +256,8 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
 
         return $el;
     }
+
+    // endregion
 
     public function getDefaultSettingName() : string
     {

@@ -32,7 +32,6 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
     public const COL_RACE = 'race';
     public const COL_PRIMARY = 'primary';
     public const COL_OWN_DISCOVERY = 'own_discovery';
-    public const COL_CLUSTER = 'cluster';
     public const COL_CORE_DISTANCE = 'core_distance';
     public const COL_HOSPITALITY = 'hospitality';
 
@@ -95,8 +94,7 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
                     $record->getAdminPlanetsURL(),
                     NMSTracker_User::RIGHT_VIEW_SOLAR_SYSTEMS
                 ),
-                self::COL_CLUSTER => $record->getCluster()->getLabelLinked(),
-                self::COL_CORE_DISTANCE => $record->getCluster()->getCoreDistancePretty()
+                self::COL_CORE_DISTANCE => $record->getCoreDistancePretty()
             );
         }
 
@@ -131,10 +129,8 @@ class SystemsListScreen extends Application_Admin_Area_Mode_CollectionList
             ->alignRight()
             ->setSortable(false, $this->filters->getColPlanetCount()->getName());
 
-        $this->grid->addColumn(self::COL_CLUSTER, t('Cluster'));
-
         $this->grid->addColumn(self::COL_CORE_DISTANCE, t('Core distance'))
-            ->setSortable(false, $this->filters->getColDistanceToCore()->getSecondarySelectValue());
+            ->setSortable(false, $this->filters->getColDistanceToCore());
     }
 
     protected function configureActions() : void

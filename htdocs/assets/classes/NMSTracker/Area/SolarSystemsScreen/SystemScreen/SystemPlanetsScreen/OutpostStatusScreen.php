@@ -67,7 +67,6 @@ class OutpostStatusScreen
         $grid->add(t('Role'), $outpost->getRole()->getLabelLinked());
 
         $grid->addHeader(NMSTracker::icon()->planet().' '.t('Planet'));
-        $system->getCluster()->injectCommonProperties($grid);
         $grid->add(
             t('Planet name'),
             t(
@@ -82,6 +81,7 @@ class OutpostStatusScreen
                 ->t('Dominant race:')->add($system->getRace()->getLabel())
             );
 
+        $grid->add(t('Distance from core'), $system->getCoreDistancePretty());
         $planet->injectProperties($grid);
 
         $grid->addHeader(NMSTracker::icon()->services().' '.t('Services'));

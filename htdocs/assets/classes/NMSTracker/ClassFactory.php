@@ -112,14 +112,6 @@ class ClassFactory
         );
     }
 
-    public static function createClusters() : ClustersCollection
-    {
-        return ClassHelper::requireObjectInstanceOf(
-            ClustersCollection::class,
-            DBHelper::createCollection(ClustersCollection::class)
-        );
-    }
-
     public static function createSentinelAggressionLevels() : SentinelAggressionLevels
     {
         return SentinelAggressionLevels::getInstance();

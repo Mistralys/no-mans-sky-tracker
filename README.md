@@ -29,9 +29,8 @@ more. Save the position of planetary POIs to have a way to get back to them.
 
 ## Quick start
 
-1) Go to "Manage" > "Solar System Clusters".
-2) Add a first cluster to work with.
-3) Now you can start adding solar systems.
+1) Go to "Solar Systems".
+2) Add a solar system.
 
 Keep the tool open in a browser tab while you play, and add the solar
 systems and planets as you visit them.

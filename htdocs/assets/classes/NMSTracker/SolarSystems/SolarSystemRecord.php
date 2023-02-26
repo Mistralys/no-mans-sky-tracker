@@ -18,7 +18,6 @@ use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemResourcesScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemSettingsScreen;
 use NMSTracker\Area\SolarSystemsScreen\SystemScreen\SystemStatusScreen;
 use NMSTracker\ClassFactory;
-use NMSTracker\Clusters\ClusterRecord;
 use NMSTracker\Planets\PlanetFilterCriteria;
 use NMSTracker\Races\RaceRecord;
 use NMSTracker\SolarSystemsCollection;
@@ -28,6 +27,7 @@ use UI;
 use UI_Icon;
 use UI_Label;
 use UI_PropertiesGrid;
+use function AppLocalize\tex;
 
 /**
  * @property SolarSystemsCollection $collection
@@ -48,14 +48,24 @@ class SolarSystemRecord extends DBHelper_BaseRecord
         );
     }
 
-    public function getClusterID() : int
+    public function setCoreDistance(int $distance) : bool
     {
-        return $this->getRecordIntKey(SolarSystemsCollection::COL_CLUSTER_ID);
+        return $this->setRecordKey(SolarSystemsCollection::COL_CORE_DISTANCE, $distance);
     }
 
-    public function getCluster() : ClusterRecord
+    public function getCoreDistance() : int
     {
-        return ClassFactory::createClusters()->getByID($this->getClusterID());
+        return $this->getRecordIntKey(SolarSystemsCollection::COL_CORE_DISTANCE);
+    }
+
+    public function getCoreDistancePretty() : string
+    {
+        return tex(
+            '%1$s %2$s',
+            'Example: "4000 LY" for a distance in light years.',
+            number_format($this->getCoreDistance(), 0, '.', ' '),
+            sb()->muted(t('LY'))
+        );
     }
 
     public function getStarTypeID() : int

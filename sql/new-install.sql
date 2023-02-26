@@ -97,19 +97,6 @@ CREATE TABLE `app_settings` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `clusters`
---
-
-CREATE TABLE `clusters` (
-`cluster_id` int(11) UNSIGNED NOT NULL,
-`label` varchar(160) NOT NULL,
-`comments` mediumtext NOT NULL,
-`core_distance` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `countries`
 --
 
@@ -630,7 +617,6 @@ INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`, `aggression_level`)
 
 CREATE TABLE `solar_systems` (
 `solar_system_id` int(11) UNSIGNED NOT NULL,
-`cluster_id` int(11) UNSIGNED NOT NULL,
 `star_type_id` int(11) UNSIGNED NOT NULL,
 `label` varchar(120) NOT NULL,
 `date_added` datetime NOT NULL DEFAULT current_timestamp(),
@@ -766,14 +752,6 @@ ADD KEY `lock_id` (`lock_id`);
 ALTER TABLE `app_settings`
 ADD PRIMARY KEY (`data_key`),
 ADD KEY `data_role` (`data_role`);
-
---
--- Indexes for table `clusters`
---
-ALTER TABLE `clusters`
-ADD PRIMARY KEY (`cluster_id`),
-ADD KEY `label` (`label`),
-ADD KEY `core_distance` (`core_distance`);
 
 --
 -- Indexes for table `countries`
@@ -932,7 +910,6 @@ ADD KEY `race_id` (`race_id`),
 ADD KEY `star_type_id` (`star_type_id`),
 ADD KEY `amount_planets` (`amount_planets`),
 ADD KEY `own_discovery` (`is_own_discovery`),
-ADD KEY `cluster_id` (`cluster_id`),
 ADD KEY `date_added` (`date_added`);
 
 --
@@ -994,12 +971,6 @@ MODIFY `log_id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 ALTER TABLE `app_messaging`
 MODIFY `message_id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `clusters`
---
-ALTER TABLE `clusters`
-MODIFY `cluster_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `countries`
@@ -1189,8 +1160,7 @@ ADD CONSTRAINT `planet_pois_ibfk_1` FOREIGN KEY (`planet_id`) REFERENCES `planet
 --
 ALTER TABLE `solar_systems`
 ADD CONSTRAINT `solar_systems_ibfk_1` FOREIGN KEY (`race_id`) REFERENCES `races` (`race_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `solar_systems_ibfk_2` FOREIGN KEY (`star_type_id`) REFERENCES `star_types` (`star_type_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `solar_systems_ibfk_3` FOREIGN KEY (`cluster_id`) REFERENCES `clusters` (`cluster_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `solar_systems_ibfk_2` FOREIGN KEY (`star_type_id`) REFERENCES `star_types` (`star_type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `space_stations`

@@ -65,9 +65,10 @@ class SystemScreen extends Application_Admin_Area_Mode_CollectionRecord
             ->addBadge($system->getOwnershipBadge())
             ->setSubline(sb()
                 ->t(
-                    '%1$s from galaxy core in %2$s',
-                    $system->getCluster()->getCoreDistancePretty(),
-                    $system->getCluster()->getLabelLinked()
+                    '%1$s %2$s star system, %3$s from galaxy core',
+                    $system->getRace()->getLabelLinked(),
+                    $system->getStarType()->getLabelLinked(),
+                    $system->getCoreDistancePretty()
                 )
             );
     }

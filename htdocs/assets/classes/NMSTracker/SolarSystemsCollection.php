@@ -37,12 +37,12 @@ class SolarSystemsCollection extends DBHelper_BaseCollection
     public const COL_LABEL = 'label';
     public const COL_RACE_ID = 'race_id';
     public const COL_STAR_TYPE_ID = StarTypesCollection::PRIMARY_NAME;
-    public const COL_CLUSTER_ID = ClustersCollection::PRIMARY_NAME;
     public const COL_COMMENTS = 'comments';
     public const COL_AMOUNT_PLANETS = 'amount_planets';
     public const COL_IS_OWN_DISCOVERY = 'is_own_discovery';
     public const COL_DATE_ADDED = 'date_added';
     public const COL_WORMHOLE_TO = 'wormhole_to';
+    public const COL_CORE_DISTANCE = 'core_distance';
 
     public function getRecordClassName() : string
     {

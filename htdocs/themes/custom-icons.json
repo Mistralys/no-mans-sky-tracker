@@ -47,8 +47,8 @@
     "icon": "satellite",
     "type": "fas"
   },
-  "cluster": {
-    "icon": "cookie",
+  "system_type": {
+    "icon": "circle",
     "type": "fas"
   },
   "discoveries": {

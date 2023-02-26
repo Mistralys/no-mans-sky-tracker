@@ -32,10 +32,6 @@ class CustomIcon extends UI_Icon
     /**
      * @return $this
      */
-    public function cluster() : self { return $this->setType('cookie', 'fas'); }
-    /**
-     * @return $this
-     */
     public function coordinates() : self { return $this->setType('arrows-alt'); }
     /**
      * @return $this
@@ -89,6 +85,10 @@ class CustomIcon extends UI_Icon
      * @return $this
      */
     public function spaceStation() : self { return $this->setType('satellite', 'fas'); }
+    /**
+     * @return $this
+     */
+    public function systemType() : self { return $this->setType('circle', 'fas'); }
     /**
      * @return $this
      */

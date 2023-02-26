@@ -13,7 +13,6 @@ var CustomIcon =
 {
     // region: Icon methods
     
-    Cluster:function() { return this.SetType('cookie', 'fas'); },
     Coordinates:function() { return this.SetType('arrows-alt'); },
     Discoveries:function() { return this.SetType('dragon', 'fas'); },
     Map:function() { return this.SetType('map', 'far'); },
@@ -28,6 +27,7 @@ var CustomIcon =
     Services:function() { return this.SetType('truck-monster', 'fas'); },
     SolarSystem:function() { return this.SetType('sun', 'fas'); },
     SpaceStation:function() { return this.SetType('satellite', 'fas'); },
+    SystemType:function() { return this.SetType('circle', 'fas'); },
     Wormhole:function() { return this.SetType('link', 'fas'); },
 
     // endregion

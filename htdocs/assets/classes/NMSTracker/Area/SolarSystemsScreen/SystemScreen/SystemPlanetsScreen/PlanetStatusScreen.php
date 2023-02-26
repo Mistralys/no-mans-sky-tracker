@@ -49,14 +49,14 @@ class PlanetStatusScreen
 
         $grid = $this->ui->createPropertiesGrid();
 
-        $system->getCluster()->injectCommonProperties($grid);
-
         $grid->add(t('Solar system'), $system->getLabelLinked())
             ->setComment(sb()
                 ->t('Star type:')->add($system->getStarType()->getLabel())
                 ->add('|')
                 ->t('Dominant race:')->add($system->getRace()->getLabel())
             );
+
+        $grid->add(t('Distance from core'), $system->getCoreDistancePretty());
 
         $planet->injectProperties($grid);
 
