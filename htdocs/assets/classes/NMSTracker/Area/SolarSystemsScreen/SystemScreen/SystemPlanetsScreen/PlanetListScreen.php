@@ -73,6 +73,11 @@ class PlanetListScreen
     {
     }
 
+    protected function handleColumnVisibility() : void
+    {
+        $this->disableColumn(PlanetListScreenInterface::COL_SYSTEM);
+    }
+
     public function getPersistVars() : array
     {
         return array(
