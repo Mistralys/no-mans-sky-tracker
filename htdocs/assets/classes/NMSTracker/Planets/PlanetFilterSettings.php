@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace NMSTracker\Planets;
 
+use Application_Exception;
+use Application_Exception_DisposableDisposed;
 use DBHelper_BaseFilterSettings;
+use DBHelper_Exception;
 use NMSTracker\ClassFactory;
 
 /**
@@ -18,13 +21,33 @@ class PlanetFilterSettings extends DBHelper_BaseFilterSettings
     public const SETTING_TYPE = 'type';
     public const SCAN_MODE_COMPLETE = 'complete';
     public const SCAN_MODE_INCOMPLETE = 'incomplete';
+    public const SETTING_PLANET_FALL = 'planet_fall';
+    public const PLANET_FALL_MODE_MADE = 'planet_fall_made';
+    public const PLANET_FALL_MODE_NOT_MADE = 'planet_fall_not_made';
+    public const SETTING_RATING = 'rating';
 
     protected function registerSettings() : void
     {
         $this->registerSetting(self::SETTING_SEARCH, t('Search'));
+        $this->registerSetting(self::SETTING_RATING, t('Rating'));
         $this->registerSetting(self::SETTING_SCAN_COMPLETE, t('Scan complete?'));
         $this->registerSetting(self::SETTING_SENTINELS, t('Sentinels level'));
         $this->registerSetting(self::SETTING_TYPE, t('Planet type'));
+        $this->registerSetting(self::SETTING_PLANET_FALL, t('Planet-fall made?'));
+    }
+
+    protected function inject_rating() : void
+    {
+        $el = $this->addElementSelect(self::SETTING_RATING);
+
+        $el->addOption(t('Any'), '');
+
+        $ratings = PlanetRatings::getInstance()->getAll();
+
+        foreach($ratings as $rating)
+        {
+            $el->addOption($rating->getLabelForSelect(), $rating->getID());
+        }
     }
 
     protected function inject_scan_complete() : void
@@ -36,17 +59,35 @@ class PlanetFilterSettings extends DBHelper_BaseFilterSettings
         $el->addOption(t('Incomplete only'), self::SCAN_MODE_INCOMPLETE);
     }
 
+    protected function inject_planet_fall() : void
+    {
+        $el = $this->addElementSelect(self::SETTING_PLANET_FALL);
+
+        $el->addOption(t('Any'), '');
+        $el->addOption(t('Planetfall made'), self::PLANET_FALL_MODE_MADE);
+        $el->addOption(t('Planetfall not made'), self::PLANET_FALL_MODE_NOT_MADE);
+    }
+
     protected function inject_sentinels() : void
     {
         $el = $this->addElementSelect(self::SETTING_SENTINELS);
 
         $el->addOption(t('Any'), '');
 
+        $group = $el->addOptgroup(t('Aggression level'));
+
+        $items = ClassFactory::createSentinelAggressionLevels()->getAll();
+        foreach($items as $item)
+        {
+            $group->addOption($item->getLabel(), $item->getID());
+        }
+
         $items = ClassFactory::createSentinelLevels()->getAll();
+        $group = $el->addOptgroup(t('Specific level'));
 
         foreach($items as $item)
         {
-            $el->addOption($item->getLabel(), (string)$item->getID());
+            $group->addOption($item->getLabel(), (string)$item->getID());
         }
     }
 
@@ -69,8 +110,32 @@ class PlanetFilterSettings extends DBHelper_BaseFilterSettings
         $this->configureSearch(self::SETTING_SEARCH);
 
         $this->configureScanCompleted($this->getSettingString(self::SETTING_SCAN_COMPLETE));
-        $this->configureSentinels($this->getSettingInt(self::SETTING_SENTINELS));
+        $this->configureSentinels($this->getSettingString(self::SETTING_SENTINELS));
         $this->configureType($this->getSettingInt(self::SETTING_TYPE));
+        $this->configurePlanetFall($this->getSettingString(self::SETTING_PLANET_FALL));
+        $this->configureRating($this->getSettingString(self::SETTING_RATING));
+    }
+
+    private function configureRating(string $ratingID) : void
+    {
+        $collection = PlanetRatings::getInstance();
+
+        if(!empty($ratingID) && $collection->idExists($ratingID))
+        {
+            $this->filters->selectRating($collection->getByID($ratingID));
+        }
+    }
+
+    private function configurePlanetFall(string $mode) : void
+    {
+        if($mode === self::PLANET_FALL_MODE_MADE)
+        {
+            $this->filters->selectPlanetFallMade(true);
+        }
+        else if($mode === self::PLANET_FALL_MODE_NOT_MADE)
+        {
+            $this->filters->selectPlanetFallMade(false);
+        }
     }
 
     private function configureScanCompleted(string $value) : void
@@ -85,16 +150,32 @@ class PlanetFilterSettings extends DBHelper_BaseFilterSettings
         }
     }
 
-    private function configureSentinels(int $sentinelLevelID) : void
+    /**
+     * @param string|int $sentinelLevelID
+     * @return void
+     * @throws Application_Exception
+     * @throws Application_Exception_DisposableDisposed
+     * @throws DBHelper_Exception
+     */
+    private function configureSentinels($sentinelLevelID) : void
     {
-        $collection = ClassFactory::createSentinelLevels();
+        $aggressionLevels = ClassFactory::createSentinelAggressionLevels();
 
-        if($sentinelLevelID === 0 || !$collection->idExists($sentinelLevelID))
+        if($aggressionLevels->idExists($sentinelLevelID))
+        {
+            $this->filters->selectSentinelAggressionLevel($aggressionLevels->getByID($sentinelLevelID));
+            return;
+        }
+
+        $specificLevels = ClassFactory::createSentinelLevels();
+        $sentinelLevelID = (int)$sentinelLevelID;
+
+        if($sentinelLevelID === 0 || !$specificLevels->idExists($sentinelLevelID))
         {
             return;
         }
 
-        $this->filters->selectSentinelLevel($collection->getByID($sentinelLevelID));
+        $this->filters->selectSentinelLevel($specificLevels->getByID($sentinelLevelID));
     }
 
     private function configureType(int $planetTypeID) : void
