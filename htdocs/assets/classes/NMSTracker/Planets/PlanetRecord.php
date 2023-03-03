@@ -85,6 +85,11 @@ class PlanetRecord extends DBHelper_BaseRecord
         return $this->getRecordBooleanKey(PlanetsCollection::COL_SCAN_COMPLETE);
     }
 
+    public function isPlanetFallMade() : bool
+    {
+        return $this->getRecordBooleanKey(PlanetsCollection::COL_PLANET_FALL_MADE);
+    }
+
     public function isMoon() : bool
     {
         return $this->getRecordBooleanKey(PlanetsCollection::COL_IS_MOON);
@@ -421,5 +426,10 @@ class PlanetRecord extends DBHelper_BaseRecord
             'latitudeMax' => ceil($latitudeMax),
             'latitudeMin' => floor($latitudeMin)
         );
+    }
+
+    public function countResources() : int
+    {
+        return count($this->getResourceIDs());
     }
 }
