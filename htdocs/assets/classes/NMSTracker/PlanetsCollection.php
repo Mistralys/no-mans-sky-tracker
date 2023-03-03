@@ -35,6 +35,8 @@ class PlanetsCollection extends DBHelper_BaseCollection
     public const COL_IS_OWN_DISCOVERY = 'is_own_discovery';
     public const COL_FAUNA_AMOUNT = 'fauna_amount';
     public const COL_COMMENTS = 'comments';
+    public const COL_PLANET_FALL_MADE = 'planetfall_made';
+    public const COL_RATING = 'rating';
 
     public function getRecordClassName() : string
     {
