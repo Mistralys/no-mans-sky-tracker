@@ -9,10 +9,14 @@ use Application_Request;
 use DBHelper_BaseRecord;
 use NMSTracker\Area\TagsScreen;
 use NMSTracker\Area\TagsScreen\TagScreen;
+use NMSTracker\Area\TagsScreen\TagScreen\TagPlanetsScreen;
 use NMSTracker\Area\TagsScreen\TagScreen\TagSettingsScreen;
 use NMSTracker\TagsCollection;
 use NMSTracker_User;
 
+/**
+ * @method TagsCollection getCollection()
+ */
 class TagRecord extends DBHelper_BaseRecord
 {
     public function getLabel() : string
@@ -45,6 +49,13 @@ class TagRecord extends DBHelper_BaseRecord
     public function getAdminSettingsURL(array $params=array()) : string
     {
         $params[Application_Admin_ScreenInterface::REQUEST_PARAM_SUBMODE] = TagSettingsScreen::URL_NAME;
+
+        return $this->getAdminViewURL($params);
+    }
+
+    public function getAdminPlanetsURL(array $params=array()) : string
+    {
+        $params[Application_Admin_ScreenInterface::REQUEST_PARAM_SUBMODE] = TagPlanetsScreen::URL_NAME;
 
         return $this->getAdminViewURL($params);
     }
