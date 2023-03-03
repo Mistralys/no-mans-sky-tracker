@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NMSTracker\SentinelLevels;
 
 use NMSTracker;
+use NMSTracker\ClassFactory;
 use UI;
 use UI_Label;
 
@@ -24,6 +25,25 @@ class SentinelAggressionLevel
     {
         $this->id = $id;
         $this->label = $label;
+    }
+
+    /**
+     * @return SentinelLevelRecord[]
+     */
+    public function getLevels() : array
+    {
+        $levels = ClassFactory::createSentinelLevels()->getAll();
+        $result = array();
+        $id = $this->getID();
+
+        foreach ($levels as $level)
+        {
+            if($level->getAggressionLevelID() === $id) {
+                $result[] = $level;
+            }
+        }
+
+        return $result;
     }
 
     public function getID() : string
