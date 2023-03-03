@@ -14,6 +14,7 @@ use NMSTracker\PlanetTypes\PlanetTypeRecord;
 use NMSTracker\RacesCollection;
 use NMSTracker\Resources\ResourceRecord;
 use NMSTracker\ResourcesCollection;
+use NMSTracker\SentinelLevels\SentinelAggressionLevel;
 use NMSTracker\SentinelLevels\SentinelLevelRecord;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystemsCollection;
@@ -29,12 +30,29 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
     public const FILTER_PLANET_TYPES = 'planet_types';
     public const FILTER_RESOURCES = 'resources';
     public const JOIN_RESOURCES = 'join_resources';
+    public const FILTER_RATINGS = 'ratings';
 
     private ?bool $scanComplete = null;
+    private ?bool $planetFallMade = null;
 
     public function getColLabel() : string
     {
         return (string)$this->statement('{table_planets}.{planet_label}');
+    }
+
+    public function selectSentinelAggressionLevel(SentinelAggressionLevel $aggressionLevel) : self
+    {
+        $levels = $aggressionLevel->getLevels();
+        foreach($levels as $level) {
+            $this->selectSentinelLevel($level);
+        }
+
+        return $this;
+    }
+
+    public function selectRating(PlanetRating $rating) : self
+    {
+        return $this->selectCriteriaValue(self::FILTER_RATINGS, $rating->getID());
     }
 
     public function getColID() : string
@@ -49,6 +67,16 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
     public function selectScanComplete(?bool $value) : self
     {
         $this->scanComplete = $value;
+        return $this;
+    }
+
+    /**
+     * @param bool|null $value
+     * @return $this
+     */
+    public function selectPlanetFallMade(?bool $value) : self
+    {
+        $this->planetFallMade = $value;
         return $this;
     }
 
@@ -94,10 +122,22 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
             $this->getCriteriaValues(self::FILTER_PLANET_TYPES)
         );
 
+        $this->addWhereColumnIN(
+            PlanetsCollection::COL_RATING,
+            $this->getCriteriaValues(self::FILTER_RATINGS)
+        );
+
         if($this->scanComplete !== null) {
             $this->addWhereColumnEquals(
                 PlanetsCollection::COL_SCAN_COMPLETE,
                 ConvertHelper::boolStrict2string($this->scanComplete, true)
+            );
+        }
+
+        if($this->planetFallMade !== null) {
+            $this->addWhereColumnEquals(
+                PlanetsCollection::COL_PLANET_FALL_MADE,
+                ConvertHelper::boolStrict2string($this->planetFallMade, true)
             );
         }
         
