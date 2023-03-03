@@ -24,6 +24,7 @@ class PlanetsCollection extends DBHelper_BaseCollection
 {
     public const TABLE_NAME = 'planets';
     public const TABLE_RESOURCES = 'planets_resources';
+    public const TABLE_TAGS = 'planets_tags';
     public const PRIMARY_NAME = 'planet_id';
 
     public const COL_LABEL = 'label';
