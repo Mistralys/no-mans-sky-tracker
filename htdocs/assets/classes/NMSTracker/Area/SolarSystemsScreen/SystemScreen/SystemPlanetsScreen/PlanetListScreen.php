@@ -37,6 +37,7 @@ class PlanetListScreen
     public const COL_OUTPOSTS = 'outposts';
     public const COL_RESOURCES = 'resources';
     public const COL_FAUNA = 'fauna';
+    public const COL_PLANETFALL = 'planetfall';
 
     public function getURLName() : string
     {
@@ -86,6 +87,7 @@ class PlanetListScreen
                 self::COL_FAUNA => $record->getFaunaAmountPretty(true),
                 self::COL_SENTINELS => $record->getSentinelLevel()->getLabelLinked(),
                 self::COL_SCAN_COMPLETE => UI::prettyBool($record->isScanComplete())->makeYesNo(),
+                self::COL_PLANETFALL => UI::prettyBool($record->isPlanetFallMade())->makeYesNo(),
                 self::COL_OUTPOSTS => sb()->link(
                     $record->countOutpostsPretty(),
                     $record->getAdminOutpostsURL()
@@ -112,6 +114,9 @@ class PlanetListScreen
         $this->grid->addColumn(self::COL_SENTINELS, t('Sentinels'));
 
         $this->grid->addColumn(self::COL_SCAN_COMPLETE, t('Scan complete?'))
+            ->alignCenter();
+
+        $this->grid->addColumn(self::COL_PLANETFALL, t('Planet-fall?'))
             ->alignCenter();
 
         $this->grid->addColumn(self::COL_FAUNA, t('Fauna'))

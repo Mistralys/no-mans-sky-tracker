@@ -38,6 +38,8 @@ class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
     public const COL_SENTINELS = 'sentinels';
     public const COL_SCAN = 'scan';
     public const COL_OUTPOSTS = 'outposts';
+    public const COL_PLANETFALL = 'planetfall';
+    public const COL_FAUNA = 'fauna';
 
     public function getURLName() : string
     {
@@ -76,6 +78,8 @@ class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
             self::COL_TYPE => $planet->getType()->getLabelLinked(),
             self::COL_SENTINELS => $planet->getSentinelLevel()->getLabelLinked(),
             self::COL_SCAN => UI::prettyBool($planet->isScanComplete())->makeYesNo(),
+            self::COL_FAUNA => $planet->getFaunaAmountPretty(true),
+            self::COL_PLANETFALL => UI::prettyBool($planet->isPlanetFallMade())->makeYesNo(),
             self::COL_OUTPOSTS => sb()->link(
                 (string)$planet->countOutposts(),
                 $planet->getAdminOutpostsURL()
@@ -97,8 +101,16 @@ class PlanetsListScreen extends Application_Admin_Area_Mode_CollectionList
         $this->grid->addColumn(self::COL_SCAN, t('Scan complete?'))
             ->alignCenter();
 
+        $this->grid->addColumn(self::COL_PLANETFALL, t('Planet-fall?'))
+            ->alignCenter();
+
+        $this->grid->addColumn(self::COL_FAUNA, t('Fauna'))
+            ->alignRight();
+
         $this->grid->addColumn(self::COL_OUTPOSTS, t('Outposts'))
             ->alignRight();
+
+        $this->grid->enableColumnControls(6);
     }
 
     protected function configureActions() : void
