@@ -26,6 +26,7 @@ class NMSTracker_User extends Application_User_Extended
     public const GROUP_OUTPOSTS = 'outposts';
     public const GROUP_SPACE_STATIONS = 'space_stations';
     public const GROUP_RESOURCES = 'resources';
+    public const GROUP_TAGS = 'tags';
 
     public const RIGHT_VIEW_SOLAR_SYSTEMS = 'view_solar_systems';
     public const RIGHT_VIEW_PLANETS = 'view_planets';
@@ -48,6 +49,9 @@ class NMSTracker_User extends Application_User_Extended
     public const RIGHT_VIEW_RESOURCES = 'view_resources';
     public const RIGHT_EDIT_RESOURCES = 'edit_resources';
     public const RIGHT_CREATE_RESOURCES = 'create_resources';
+    public const RIGHT_VIEW_TAGS = 'view_tags';
+    public const RIGHT_EDIT_TAGS = 'edit_tags';
+    public const RIGHT_CREATE_TAGS = 'create_tags';
 
     public function getRightGroups(): array
     {
@@ -56,7 +60,8 @@ class NMSTracker_User extends Application_User_Extended
             self::GROUP_MANAGE_PLANETS => t('Manage planets'),
             self::GROUP_OUTPOSTS => t('Manage outposts'),
             self::GROUP_SPACE_STATIONS => t('Manage space stations'),
-            self::GROUP_RESOURCES => t('Manage resources')
+            self::GROUP_RESOURCES => t('Manage resources'),
+            self::GROUP_TAGS => t('Manage tags')
         );
     }
 
@@ -65,6 +70,13 @@ class NMSTracker_User extends Application_User_Extended
         $group->registerRight(self::RIGHT_VIEW_RESOURCES, t('View resources'));
         $group->registerRight(self::RIGHT_EDIT_RESOURCES, t('Edit resources'));
         $group->registerRight(self::RIGHT_CREATE_RESOURCES, t('Create resources'));
+    }
+
+    protected function registerRights_tags(Application_User_Rights_Group $group) : void
+    {
+        $group->registerRight(self::RIGHT_VIEW_TAGS, t('View tags'));
+        $group->registerRight(self::RIGHT_EDIT_TAGS, t('Edit tags'));
+        $group->registerRight(self::RIGHT_CREATE_TAGS, t('Create tags'));
     }
 
     protected function registerRights_solar_systems(Application_User_Rights_Group $group) : void
@@ -116,6 +128,7 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_VIEW_POIS,
                 self::RIGHT_VIEW_SPACE_STATIONS,
                 self::RIGHT_VIEW_RESOURCES,
+                self::RIGHT_VIEW_TAGS,
 
                 self::RIGHT_EDIT_PLANETS,
                 self::RIGHT_EDIT_SOLAR_SYSTEMS,
@@ -124,6 +137,7 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_EDIT_POIS,
                 self::RIGHT_EDIT_SPACE_STATIONS,
                 self::RIGHT_EDIT_RESOURCES,
+                self::RIGHT_EDIT_TAGS,
 
                 self::RIGHT_CREATE_PLANETS,
                 self::RIGHT_CREATE_SOLAR_SYSTEMS,
@@ -131,7 +145,8 @@ class NMSTracker_User extends Application_User_Extended
                 self::RIGHT_CREATE_PLANET_TYPES,
                 self::RIGHT_CREATE_POIS,
                 self::RIGHT_CREATE_SPACE_STATIONS,
-                self::RIGHT_CREATE_RESOURCES
+                self::RIGHT_CREATE_RESOURCES,
+                self::RIGHT_CREATE_TAGS
             );
     }
 
@@ -157,5 +172,8 @@ class NMSTracker_User extends Application_User_Extended
     public function canViewResources() : bool { return $this->can(self::RIGHT_VIEW_RESOURCES); }
     public function canEditResources() : bool { return $this->can(self::RIGHT_EDIT_RESOURCES); }
     public function canCreateResources() : bool { return $this->can(self::RIGHT_CREATE_RESOURCES); }
+    public function canViewTags() : bool { return $this->can(self::RIGHT_VIEW_TAGS); }
+    public function canEditTags() : bool { return $this->can(self::RIGHT_EDIT_TAGS); }
+    public function canCreateTags() : bool { return $this->can(self::RIGHT_CREATE_TAGS); }
     // endregion
 }

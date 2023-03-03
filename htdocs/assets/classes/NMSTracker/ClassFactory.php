@@ -116,4 +116,12 @@ class ClassFactory
     {
         return SentinelAggressionLevels::getInstance();
     }
+
+    public static function createTags() : TagsCollection
+    {
+        return ClassHelper::requireObjectInstanceOf(
+            TagsCollection::class,
+            DBHelper::createCollection(TagsCollection::class)
+        );
+    }
 }
