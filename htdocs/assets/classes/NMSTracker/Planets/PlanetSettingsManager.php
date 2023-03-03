@@ -28,10 +28,11 @@ use NMSTracker\SolarSystemsCollection;
 use NMSTracker_User;
 use UI;
 
+/**
+ * @property PlanetRecord|NULL $record
+ */
 class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 {
-    public const SETTING_IS_MOON = 'is_moon';
-    public const SETTING_OWN_DISCOVERY = 'own_discovery';
     private SolarSystemRecord $solarSystem;
 
     public function __construct(Application_Formable $formable, DBHelper_BaseCollection $collection, SolarSystemRecord $solarSystem, ?DBHelper_BaseRecord $record = null)
@@ -56,6 +57,11 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
             ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $record),
             (array)$data->getKey(self::SETTING_RESOURCES)
         );
+
+        if($data->getKey(self::SETTING_SCAN_COMPLETE) === 'yes') {
+            $record->setRecordBooleanKey(PlanetsCollection::COL_PLANET_FALL_MADE, true);
+            $record->save();
+        }
     }
 
     protected function getCreateData(array $formValues) : array
@@ -85,6 +91,11 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 
     // region: Register settings
 
+    public const SETTING_IS_MOON = 'is_moon';
+    public const SETTING_OWN_DISCOVERY = 'own_discovery';
+    public const SETTING_PLANETFALL = 'planetfall';
+    public const SETTING_AMOUNT_FAUNA = 'amount_fauna';
+    public const SETTING_RATING = 'rating';
     public const SETTING_SENTINELS = 'sentinels';
     public const SETTING_RESOURCES = 'resources';
     public const SETTING_COMMENTS = 'comments';
@@ -133,6 +144,14 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectSentinels')
             ));
 
+        $group->registerSetting(self::SETTING_RATING)
+            ->setStorageName(PlanetsCollection::COL_RATING)
+            ->setDefaultValue(PlanetRatings::DEFAULT_RATING)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectRating')),
+                array($this, 'injectRating')
+            ));
+
         $group = $this->addGroup(t('Discoveries'))
             ->setIcon(NMSTracker::icon()->discoveries());
 
@@ -144,7 +163,7 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectOwnDiscovery')
             ));
 
-        $group->registerSetting('amount_fauna')
+        $group->registerSetting(self::SETTING_AMOUNT_FAUNA)
             ->setStorageName(PlanetsCollection::COL_FAUNA_AMOUNT)
             ->setCallback(NamedClosure::fromClosure(
                 Closure::fromCallable(array($this, 'injectFaunaAmount')),
@@ -158,6 +177,13 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectScanComplete')
             ));
 
+        $group->registerSetting(self::SETTING_PLANETFALL)
+            ->setStorageName(PlanetsCollection::COL_PLANET_FALL_MADE)
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectPlanetFallMade')),
+                array($this, 'injectPlanetFallMade')
+            ));
+
         $group = $this->addGroup(t('Comments'))
             ->setIcon(UI::icon()->options());
 
@@ -168,7 +194,12 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
                 array($this, 'injectComments')
             ));
 
-        $group = $this->addGroup(t('Resources'))
+        $suffix = '';
+        if(isset($this->record)) {
+            $suffix = ' '.sb()->muted(sb()->parentheses($this->record->countResources()));
+        }
+
+        $group = $this->addGroup(t('Resources').$suffix)
             ->setIcon(UI::icon()->presets());
 
         $group->registerSetting(self::SETTING_RESOURCES)
@@ -271,9 +302,23 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 
     private function injectScanComplete(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Switch
     {
-        $el = $this->addElementSwitch($setting->getName(), t('Scan complete?'));
+        $el = $this->addElementSwitch($setting->getName(), t('Fauna scan complete?'));
         $el->makeYesNo();
         $el->setValues('yes', 'no');
+
+        return $el;
+    }
+
+    private function injectPlanetFallMade(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Switch
+    {
+        $el = $this->addElementSwitch($setting->getName(), t('Planet-fall made?'));
+        $el->makeYesNo();
+        $el->setValues('yes', 'no');
+        $el->setComment((string)sb()
+            ->t('Whether you have landed on the planet.')
+            ->note()
+            ->t('Planets can be discovered without landing on them using the freighter\'s system scanner.')
+        );
 
         return $el;
     }
@@ -287,11 +332,28 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
         return $el;
     }
 
-    private function injectResources(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_ExpandableSelect
+    private function injectRating(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select
     {
-        $el = $this->addElementExpandableSelect($setting->getName(), t('Resources'));
+        $ratings = PlanetRatings::getInstance()->getAll();
 
+        $el = $this->addElementSelect($setting->getName(), t('Rating'));
+        $el->setAttribute('size', count($ratings));
+
+        foreach($ratings as $rating)
+        {
+            $el->addOption($rating->getLabelForSelect(), $rating->getID());
+        }
+
+        return $el;
+    }
+
+    private function injectResources(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select
+    {
         $resources = ClassFactory::createResources()->getAll();
+
+        $el = $this->addElementSelect($setting->getName(), t('Resources'));
+        $el->setAttribute('size', count($resources));
+        $el->setAttribute('multiple');
 
         foreach($resources as $resource)
         {
