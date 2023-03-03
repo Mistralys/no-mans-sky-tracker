@@ -81,9 +81,9 @@
       <path value="$PROJECT_DIR$/htdocs/vendor/composer" />
       <path value="$PROJECT_DIR$/htdocs/vendor/psr/http-client" />
       <path value="$PROJECT_DIR$/htdocs/vendor/scn/deepl-api-connector" />
-      <path value="$PROJECT_DIR$/htdocs/vendor/pear/html_common2" />
       <path value="$PROJECT_DIR$/htdocs/vendor/psr/http-factory" />
       <path value="$PROJECT_DIR$/htdocs/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/symfony/polyfill-php80" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
