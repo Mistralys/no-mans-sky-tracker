@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 03, 2023 at 10:48 AM
+-- Generation Time: Mar 03, 2023 at 05:07 PM
 -- Server version: 10.3.10-MariaDB
 -- PHP Version: 7.4.27
 
@@ -343,6 +343,17 @@ CREATE TABLE `planets_resources` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `planets_tags`
+--
+
+CREATE TABLE `planets_tags` (
+`planet_id` int(11) UNSIGNED NOT NULL,
+`tag_id` int(11) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `planet_pois`
 --
 
@@ -631,7 +642,8 @@ INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`, `aggression_level`)
 (15, 'Frenzied', 'red'),
 (16, 'Malicious', 'red'),
 (17, 'Hostile Patrols', 'red'),
-(18, 'Aggressive', 'red');
+(18, 'Aggressive', 'red'),
+(19, 'Threatening', 'red');
 
 -- --------------------------------------------------------
 
@@ -697,6 +709,17 @@ INSERT INTO `star_types` (`star_type_id`, `label`) VALUES
 (3, 'Green'),
 (2, 'Red'),
 (1, 'Yellow');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tags`
+--
+
+CREATE TABLE `tags` (
+`tag_id` int(11) UNSIGNED NOT NULL,
+`label` varchar(160) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -886,6 +909,14 @@ ADD KEY `resource_id` (`resource_id`),
 ADD KEY `solar_system_id` (`solar_system_id`);
 
 --
+-- Indexes for table `planets_tags`
+--
+ALTER TABLE `planets_tags`
+ADD PRIMARY KEY (`planet_id`,`tag_id`),
+ADD KEY `planet_id` (`planet_id`),
+ADD KEY `tag_id` (`tag_id`);
+
+--
 -- Indexes for table `planet_pois`
 --
 ALTER TABLE `planet_pois`
@@ -965,6 +996,13 @@ ADD KEY `offer_type` (`offer_type`);
 --
 ALTER TABLE `star_types`
 ADD PRIMARY KEY (`star_type_id`),
+ADD KEY `label` (`label`);
+
+--
+-- Indexes for table `tags`
+--
+ALTER TABLE `tags`
+ADD PRIMARY KEY (`tag_id`),
 ADD KEY `label` (`label`);
 
 --
@@ -1084,7 +1122,7 @@ MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79
 -- AUTO_INCREMENT for table `sentinel_levels`
 --
 ALTER TABLE `sentinel_levels`
-MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `solar_systems`
@@ -1103,6 +1141,12 @@ MODIFY `space_station_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 ALTER TABLE `star_types`
 MODIFY `star_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tags`
+--
+ALTER TABLE `tags`
+MODIFY `tag_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `uploads`
@@ -1178,6 +1222,13 @@ ALTER TABLE `planets_resources`
 ADD CONSTRAINT `planets_resources_ibfk_1` FOREIGN KEY (`planet_id`) REFERENCES `planets` (`planet_id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `planets_resources_ibfk_2` FOREIGN KEY (`resource_id`) REFERENCES `resources` (`resource_id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `planets_resources_ibfk_3` FOREIGN KEY (`solar_system_id`) REFERENCES `solar_systems` (`solar_system_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `planets_tags`
+--
+ALTER TABLE `planets_tags`
+ADD CONSTRAINT `planets_tags_ibfk_1` FOREIGN KEY (`planet_id`) REFERENCES `planets` (`planet_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `planets_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `planet_pois`
