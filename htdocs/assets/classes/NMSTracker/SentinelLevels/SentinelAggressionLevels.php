@@ -71,6 +71,11 @@ class SentinelAggressionLevels
         );
     }
 
+    public function idExists(string $id) : bool
+    {
+        return isset($this->levels[$id]);
+    }
+
     /**
      * @return string[]
      */
