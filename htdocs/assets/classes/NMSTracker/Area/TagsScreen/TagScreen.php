@@ -70,6 +70,9 @@ class TagScreen
     {
         $tag = $this->getTag();
 
+        $this->subnav->addURL(t('Planets'), $tag->getAdminPlanetsURL())
+            ->setIcon(NMSTracker::icon()->planet());
+
         $this->subnav->addURL(t('Settings'), $tag->getAdminSettingsURL())
             ->setIcon(NMSTracker::icon()->settings());
     }
