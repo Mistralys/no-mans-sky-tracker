@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 24, 2023 at 09:04 AM
+-- Generation Time: Mar 03, 2023 at 10:48 AM
 -- Server version: 10.3.10-MariaDB
 -- PHP Version: 7.4.27
 
@@ -323,7 +323,9 @@ CREATE TABLE `planets` (
 `is_own_discovery` enum('yes','no') NOT NULL DEFAULT 'yes',
 `fauna_amount` varchar(40) NOT NULL DEFAULT 'not_recorded',
 `scan_complete` enum('yes','no') NOT NULL DEFAULT 'no',
-`comments` mediumtext NOT NULL
+`comments` mediumtext NOT NULL,
+`planetfall_made` enum('yes','no') NOT NULL DEFAULT 'no',
+`rating` enum('unrated','1','2','3','4','5') NOT NULL DEFAULT 'unrated'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -456,7 +458,26 @@ INSERT INTO `planet_types` (`planet_type_id`, `label`, `comments`) VALUES
 (89, 'Desert', ''),
 (90, 'Sporal', ''),
 (91, 'High Energy', ''),
-(92, 'Poisonous', '');
+(92, 'Poisonous', ''),
+(93, 'Arctic', ''),
+(94, 'Lifeless', ''),
+(95, 'Torrid', ''),
+(96, 'Misty', ''),
+(97, 'Acrid', ''),
+(98, 'Life-Incompatible', ''),
+(100, 'Nuclear', ''),
+(101, 'Lava', ''),
+(102, 'Sub-Zero', ''),
+(103, 'Dead', ''),
+(104, 'Bubbling', ''),
+(105, 'Volcanic', ''),
+(106, 'Miasmatic', ''),
+(107, 'Erupting', ''),
+(108, 'Caustic', ''),
+(109, 'Desolate', ''),
+(110, 'Charred', ''),
+(111, 'Capped', ''),
+(112, 'Airless', '');
 
 -- --------------------------------------------------------
 
@@ -572,7 +593,9 @@ INSERT INTO `resources` (`resource_id`, `label`, `comments`, `type`) VALUES
 (73, 'Grah Grah (Black Market)', '', 'tradeable'),
 (74, 'Rusted Metal', '', 'mineral'),
 (75, 'Superconducting Fibre', '', 'tradeable'),
-(76, 'Calcishroom', '', 'collectible');
+(76, 'Calcishroom', '', 'collectible'),
+(77, 'Basalt', '', 'mineral'),
+(78, 'Terbium Growth', '', 'collectible');
 
 -- --------------------------------------------------------
 
@@ -593,13 +616,13 @@ CREATE TABLE `sentinel_levels` (
 INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`, `aggression_level`) VALUES
 (1, 'None', 'none'),
 (2, 'Zealous', 'gray'),
-(3, 'Attentive', 'gray'),
+(3, 'Attentive', 'orange'),
 (4, 'Observant', 'orange'),
 (5, 'Require Orthodoxy', 'orange'),
 (6, 'Require Obedience', 'gray'),
 (7, 'Frequent', 'orange'),
 (8, 'Enforcing', 'orange'),
-(9, 'High security', 'gray'),
+(9, 'High security', 'red'),
 (10, 'Unwavering', 'orange'),
 (11, 'Ever present', 'orange'),
 (12, 'Regular Patrols', 'orange'),
@@ -607,7 +630,8 @@ INSERT INTO `sentinel_levels` (`sentinel_level_id`, `label`, `aggression_level`)
 (14, 'Hateful', 'red'),
 (15, 'Frenzied', 'red'),
 (16, 'Malicious', 'red'),
-(17, 'Hostile Patrols', 'red');
+(17, 'Hostile Patrols', 'red'),
+(18, 'Aggressive', 'red');
 
 -- --------------------------------------------------------
 
@@ -623,7 +647,9 @@ CREATE TABLE `solar_systems` (
 `race_id` int(11) UNSIGNED NOT NULL,
 `comments` mediumtext NOT NULL,
 `amount_planets` int(11) UNSIGNED NOT NULL DEFAULT 0,
-`is_own_discovery` enum('yes','no') NOT NULL DEFAULT 'yes'
+`is_own_discovery` enum('yes','no') NOT NULL DEFAULT 'yes',
+`wormhole_to` int(11) UNSIGNED DEFAULT NULL,
+`core_distance` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -846,7 +872,9 @@ ADD KEY `scan_complete` (`scan_complete`),
 ADD KEY `solar_system_id` (`solar_system_id`),
 ADD KEY `is_moon` (`is_moon`),
 ADD KEY `is_own_discovery` (`is_own_discovery`),
-ADD KEY `fauna_amount` (`fauna_amount`);
+ADD KEY `fauna_amount` (`fauna_amount`),
+ADD KEY `landfall_made` (`planetfall_made`),
+ADD KEY `rating` (`rating`);
 
 --
 -- Indexes for table `planets_resources`
@@ -910,7 +938,9 @@ ADD KEY `race_id` (`race_id`),
 ADD KEY `star_type_id` (`star_type_id`),
 ADD KEY `amount_planets` (`amount_planets`),
 ADD KEY `own_discovery` (`is_own_discovery`),
-ADD KEY `date_added` (`date_added`);
+ADD KEY `date_added` (`date_added`),
+ADD KEY `wormhole_to` (`wormhole_to`),
+ADD KEY `core_distance` (`core_distance`);
 
 --
 -- Indexes for table `space_stations`
@@ -1036,7 +1066,7 @@ MODIFY `planet_poi_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `planet_types`
 --
 ALTER TABLE `planet_types`
-MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+MODIFY `planet_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT for table `races`
@@ -1048,13 +1078,13 @@ MODIFY `race_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 -- AUTO_INCREMENT for table `resources`
 --
 ALTER TABLE `resources`
-MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+MODIFY `resource_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `sentinel_levels`
 --
 ALTER TABLE `sentinel_levels`
-MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+MODIFY `sentinel_level_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `solar_systems`
@@ -1160,7 +1190,8 @@ ADD CONSTRAINT `planet_pois_ibfk_1` FOREIGN KEY (`planet_id`) REFERENCES `planet
 --
 ALTER TABLE `solar_systems`
 ADD CONSTRAINT `solar_systems_ibfk_1` FOREIGN KEY (`race_id`) REFERENCES `races` (`race_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `solar_systems_ibfk_2` FOREIGN KEY (`star_type_id`) REFERENCES `star_types` (`star_type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `solar_systems_ibfk_2` FOREIGN KEY (`star_type_id`) REFERENCES `star_types` (`star_type_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `solar_systems_ibfk_4` FOREIGN KEY (`wormhole_to`) REFERENCES `solar_systems` (`solar_system_id`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 --
 -- Constraints for table `space_stations`
