@@ -19,11 +19,26 @@ use UI;
 trait PlanetListScreenTrait
 {
     /**
+     * @var string[]
+     */
+    protected array $disabledColumns = array();
+
+    /**
      * @return PlanetsCollection
      */
     protected function createCollection() : DBHelper_BaseCollection
     {
         return ClassFactory::createPlanets();
+    }
+
+    protected function disableColumn(string $name) : void
+    {
+        $this->disabledColumns[] = $name;
+    }
+
+    protected function isColumnEnabled(string $name) : bool
+    {
+        return !in_array($name, $this->disabledColumns, true);
     }
 
     protected function getEntryData(DBHelper_BaseRecord $record, DBHelper_BaseFilterCriteria_Record $entry) : array
@@ -32,6 +47,7 @@ trait PlanetListScreenTrait
         {
             return array(
                 PlanetListScreenInterface::COL_LABEL => sb()->add($record->getLabelLinked())->add($record->getMoonIcon()),
+                PlanetListScreenInterface::COL_SYSTEM => $record->getSolarSystem()->getLabelLinked(),
                 PlanetListScreenInterface::COL_TYPE => $record->getType()->getLabelLinked(),
                 PlanetListScreenInterface::COL_FAUNA => $record->getFaunaAmountPretty(true),
                 PlanetListScreenInterface::COL_SENTINELS => $record->getSentinelLevel()->getLabelLinked(),
@@ -107,8 +123,15 @@ trait PlanetListScreenTrait
 
     protected string $jsID;
 
+    protected function handleColumnVisibility() : void
+    {
+
+    }
+
     protected function configureColumns() : void
     {
+        $this->handleColumnVisibility();
+
         $this->jsID = nextJSID();
 
         $ui = $this->getUI();
@@ -121,6 +144,11 @@ trait PlanetListScreenTrait
             ->setSortable(true, $filters->getColLabel());
 
         $this->grid->addColumn(PlanetListScreenInterface::COL_TYPE, t('Type'));
+
+        if($this->isColumnEnabled(PlanetListScreenInterface::COL_SYSTEM))
+        {
+            $this->grid->addColumn(PlanetListScreenInterface::COL_SYSTEM, t('Solar system'));
+        }
 
         $this->grid->addColumn(PlanetListScreenInterface::COL_SENTINELS, t('Sentinels'));
 
@@ -140,5 +168,6 @@ trait PlanetListScreenTrait
             ->alignRight();
 
         $this->grid->enableLimitOptionsDefault();
+        $this->grid->enableColumnControls(6);
     }
 }
