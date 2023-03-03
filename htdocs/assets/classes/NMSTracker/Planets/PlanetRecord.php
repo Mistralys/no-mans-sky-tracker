@@ -29,6 +29,9 @@ use NMSTracker\ResourcesCollection;
 use NMSTracker\SentinelLevels\SentinelLevelRecord;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystemsCollection;
+use NMSTracker\Tags\TagFilterCriteria;
+use NMSTracker\Tags\TagRecord;
+use NMSTracker\TagsCollection;
 use NMSTracker_User;
 use UI;
 use UI_Label;
@@ -137,28 +140,7 @@ class PlanetRecord extends DBHelper_BaseRecord
     {
     }
 
-    /**
-     * @return ResourceRecord[]
-     */
-    public function getResources() : array
-    {
-        return $this->getResourceFilters()->getItemsObjects();
-    }
 
-    public function getResourceFilters() : ResourceFilterCriteria
-    {
-        return ClassFactory::createResources()
-            ->getFilterCriteria()
-            ->selectPlanet($this);
-    }
-
-    public function getResourceIDs() : array
-    {
-        return DBHelper::createFetchMany(PlanetsCollection::TABLE_RESOURCES)
-            ->selectColumn(ResourcesCollection::PRIMARY_NAME)
-            ->whereValue(PlanetsCollection::PRIMARY_NAME, $this->getID())
-            ->fetchColumnInt(ResourcesCollection::PRIMARY_NAME);
-    }
 
     /**
      * @return OutpostRecord[]
@@ -268,6 +250,36 @@ class PlanetRecord extends DBHelper_BaseRecord
             ->cursorHelp();
     }
 
+    // region: Resources management
+
+    /**
+     * @return ResourceRecord[]
+     */
+    public function getResources() : array
+    {
+        return $this->getResourceFilters()->getItemsObjects();
+    }
+
+    public function getResourceFilters() : ResourceFilterCriteria
+    {
+        return ClassFactory::createResources()
+            ->getFilterCriteria()
+            ->selectPlanet($this);
+    }
+
+    public function getResourceIDs() : array
+    {
+        return DBHelper::createFetchMany(PlanetsCollection::TABLE_RESOURCES)
+            ->selectColumn(ResourcesCollection::PRIMARY_NAME)
+            ->whereValue(PlanetsCollection::PRIMARY_NAME, $this->getID())
+            ->fetchColumnInt(ResourcesCollection::PRIMARY_NAME);
+    }
+
+    public function countResources() : int
+    {
+        return count($this->getResourceIDs());
+    }
+
     /**
      * @param array<int,int|string> $resourceIDs
      * @return void
@@ -354,6 +366,8 @@ class PlanetRecord extends DBHelper_BaseRecord
         return in_array($resource->getID(), $this->getResourceIDs(), true);
     }
 
+    // endregion
+
     public function getMoonIcon() : string
     {
         if($this->isMoon()) {
@@ -428,8 +442,82 @@ class PlanetRecord extends DBHelper_BaseRecord
         );
     }
 
-    public function countResources() : int
+    // region: Tags management
+
+    public function countTags() : int
     {
-        return count($this->getResourceIDs());
+        return count($this->getTagIDs());
+    }
+
+    /**
+     * @param string[] $tagIDs
+     * @return void
+     */
+    public function updateTagsFromForm(array $tagIDs) : void
+    {
+        // Remove all existing tags
+        DBHelper::deleteRecords(
+            PlanetsCollection::TABLE_TAGS,
+            array(
+                PlanetsCollection::PRIMARY_NAME => $this->getID()
+            )
+        );
+
+        $collection = ClassFactory::createTags();
+
+        foreach($tagIDs as $tagID)
+        {
+            $this->addTag($collection->getByID((int)$tagID));
+        }
+    }
+
+    public function addTag(TagRecord $tag) : void
+    {
+        if($this->hasTag($tag))
+        {
+            return;
+        }
+
+        DBHelper::insertDynamic(
+            PlanetsCollection::TABLE_TAGS,
+            array(
+                PlanetsCollection::PRIMARY_NAME => $this->getID(),
+                TagsCollection::PRIMARY_NAME => $tag->getID()
+            )
+        );
+    }
+
+    public function hasTag(TagRecord $tag) : bool
+    {
+        return in_array($tag->getID(), $this->getTagIDs());
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getTagIDs() : array
+    {
+        return DBHelper::fetchAllKeyInt(
+            TagsCollection::PRIMARY_NAME,
+            PlanetFilterCriteria::createStatement("
+                SELECT
+                    {tag_primary}
+                FROM
+                    {table_tags}
+                WHERE
+                    {planet_primary}=:planet_primary"
+            ),
+            array(
+                'planet_primary' => $this->getID()
+            )
+        );
+    }
+
+    // endregion
+    public function getTagFilters() : TagFilterCriteria
+    {
+        return ClassFactory::createTags()
+            ->getFilterCriteria()
+            ->selectPlanet($this);
     }
 }

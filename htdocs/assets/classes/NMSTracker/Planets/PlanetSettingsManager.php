@@ -11,11 +11,9 @@ use Application_Formable_RecordSettings_ValueSet;
 use AppUtils\ClassHelper;
 use AppUtils\NamedClosure;
 use NMSTracker;
-use NMSTracker\Planets\PlanetRecord;
 use Closure;
 use DBHelper_BaseCollection;
 use DBHelper_BaseRecord;
-use HTML_QuickForm2_Element_ExpandableSelect;
 use HTML_QuickForm2_Element_InputText;
 use HTML_QuickForm2_Element_Select;
 use HTML_QuickForm2_Element_Switch;
@@ -33,6 +31,7 @@ use UI;
  */
 class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 {
+    public const SETTING_TAGS = 'tags';
     private SolarSystemRecord $solarSystem;
 
     public function __construct(Application_Formable $formable, DBHelper_BaseCollection $collection, SolarSystemRecord $solarSystem, ?DBHelper_BaseRecord $record = null)
@@ -53,10 +52,10 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 
     protected function _afterSave(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $data) : void
     {
-        $this->updateResources(
-            ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $record),
-            (array)$data->getKey(self::SETTING_RESOURCES)
-        );
+        $planet = ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $record);
+
+        $this->updateResources($planet, (array)$data->getKey(self::SETTING_RESOURCES));
+        $this->updateTags($planet, (array)$data->getKey(self::SETTING_TAGS));
 
         if($data->getKey(self::SETTING_SCAN_COMPLETE) === 'yes') {
             $record->setRecordBooleanKey(PlanetsCollection::COL_PLANET_FALL_MADE, true);
@@ -71,10 +70,10 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 
     protected function updateRecord(array $values) : void
     {
-        $this->updateResources(
-            ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $this->record),
-            (array)$values[self::SETTING_RESOURCES]
-        );
+        $planet = ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $this->record);
+
+        $this->updateResources($planet, (array)$values[self::SETTING_RESOURCES]);
+        $this->updateTags($planet, (array)$values[self::SETTING_RESOURCES]);
     }
 
     /**
@@ -85,6 +84,16 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
     private function updateResources(PlanetRecord $record, array $resourceIDs) : void
     {
         $record->updateResourcesFromForm($resourceIDs);
+    }
+
+    /**
+     * @param PlanetRecord $record
+     * @param string[] $tagIDs
+     * @return void
+     */
+    private function updateTags(PlanetRecord $record, array $tagIDs) : void
+    {
+        $record->updateTagsFromForm($tagIDs);
     }
 
     // endregion
@@ -192,6 +201,21 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
             ->setCallback(NamedClosure::fromClosure(
                 Closure::fromCallable(array($this, 'injectComments')),
                 array($this, 'injectComments')
+            ));
+
+        $suffix = '';
+        if(isset($this->record)) {
+            $suffix = ' '.sb()->muted(sb()->parentheses($this->record->countTags()));
+        }
+
+        $group = $this->addGroup(t('Tags').$suffix)
+            ->setIcon(NMSTracker::icon()->tags());
+
+        $group->registerSetting(self::SETTING_TAGS)
+            ->makeInternal()
+            ->setCallback(NamedClosure::fromClosure(
+                Closure::fromCallable(array($this, 'injectTags')),
+                array($this, 'injectTags')
             ));
 
         $suffix = '';
@@ -342,6 +366,22 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
         foreach($ratings as $rating)
         {
             $el->addOption($rating->getLabelForSelect(), $rating->getID());
+        }
+
+        return $el;
+    }
+
+    private function injectTags(Application_Formable_RecordSettings_Setting $setting) : HTML_QuickForm2_Element_Select
+    {
+        $tags = ClassFactory::createTags()->getAll();
+
+        $el = $this->addElementSelect($setting->getName(), t('Tags'));
+        $el->setAttribute('size', count($tags));
+        $el->setAttribute('multiple');
+
+        foreach($tags as $tag)
+        {
+            $el->addOption($tag->getLabel(), $tag->getID());
         }
 
         return $el;

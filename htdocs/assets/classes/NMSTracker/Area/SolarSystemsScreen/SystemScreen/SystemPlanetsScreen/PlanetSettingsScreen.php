@@ -68,6 +68,7 @@ class PlanetSettingsScreen
         $defaults = $this->settingsManager->getDefaultValues();
 
         $defaults[PlanetSettingsManager::SETTING_RESOURCES] = $this->record->getResourceIDs();
+        $defaults[PlanetSettingsManager::SETTING_TAGS] = $this->record->getTagIDs();
 
         return $defaults;
     }

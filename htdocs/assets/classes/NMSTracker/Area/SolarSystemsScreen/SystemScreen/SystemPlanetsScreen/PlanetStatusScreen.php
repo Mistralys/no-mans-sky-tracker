@@ -60,6 +60,9 @@ class PlanetStatusScreen
 
         $planet->injectProperties($grid);
 
+        $grid->addHeader(t('Tags'));
+        $grid->addMerged($this->renderTags());
+
         $grid->addHeader(t('Resources'));
         $grid->addMerged($this->renderResources());
 
@@ -69,6 +72,16 @@ class PlanetStatusScreen
         return $this->renderer
             ->appendContent($grid)
             ->makeWithoutSidebar();
+    }
+
+    private function renderTags() : string
+    {
+        return $this
+            ->getPlanet()
+            ->getTagFilters()
+            ->getContainer()
+            ->createBulletListRenderer()
+            ->render();
     }
 
     private function renderResources() : string
