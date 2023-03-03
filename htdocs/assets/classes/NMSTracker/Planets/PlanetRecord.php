@@ -88,9 +88,19 @@ class PlanetRecord extends DBHelper_BaseRecord
         return $this->getRecordBooleanKey(PlanetsCollection::COL_SCAN_COMPLETE);
     }
 
+    public function setScanComplete(bool $complete) : bool
+    {
+        return $this->setRecordBooleanKey(PlanetsCollection::COL_SCAN_COMPLETE, $complete);
+    }
+
     public function isPlanetFallMade() : bool
     {
         return $this->getRecordBooleanKey(PlanetsCollection::COL_PLANET_FALL_MADE);
+    }
+
+    public function setPlanetFallMade(bool $made) : bool
+    {
+        return $this->setRecordBooleanKey(PlanetsCollection::COL_PLANET_FALL_MADE, $made);
     }
 
     public function isMoon() : bool
