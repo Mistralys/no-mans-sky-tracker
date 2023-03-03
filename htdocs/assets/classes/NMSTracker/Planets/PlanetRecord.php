@@ -503,7 +503,7 @@ class PlanetRecord extends DBHelper_BaseRecord
                 SELECT
                     {tag_primary}
                 FROM
-                    {table_tags}
+                    {table_planets_tags}
                 WHERE
                     {planet_primary}=:planet_primary"
             ),
