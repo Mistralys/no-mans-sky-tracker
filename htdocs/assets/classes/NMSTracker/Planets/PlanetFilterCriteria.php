@@ -19,6 +19,7 @@ use NMSTracker\SentinelLevels\SentinelAggressionLevel;
 use NMSTracker\SentinelLevels\SentinelLevelRecord;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystemsCollection;
+use NMSTracker\Tags\TagRecord;
 use NMSTracker\TagsCollection;
 
 
@@ -30,8 +31,6 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
     public const FILTER_SOLAR_SYSTEMS = 'solar_systems';
     public const FILTER_SENTINEL_LEVELS = 'sentinel_levels';
     public const FILTER_PLANET_TYPES = 'planet_types';
-    public const FILTER_RESOURCES = 'resources';
-    public const JOIN_RESOURCES = 'join_resources';
     public const FILTER_RATINGS = 'ratings';
 
     private ?bool $scanComplete = null;
@@ -101,11 +100,90 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
     {
         return $this->selectCriteriaValue(self::FILTER_PLANET_TYPES, $planetType->getID());
     }
+    
+    // region: Tag filters
+
+    public const FILTER_TAGS = 'tags';
+    public const JOIN_TAGS = 'join_tags';
+
+    public function selectTag(TagRecord $tag) : self
+    {
+        return $this->selectCriteriaValue(self::FILTER_TAGS, $tag->getID());
+    }
+
+    private function registerJoinTags() : void
+    {
+        $this->registerJoin(
+            self::JOIN_TAGS,
+            $this->statement("
+                LEFT JOIN
+                    {table_planets_tags}
+                ON
+                    {table_planets_tags}.{planet_primary}={table_planets}.{planet_primary}
+            ")
+        );
+    }
+
+    private function applyFilterTags() : void
+    {
+        $tagIDs = $this->getCriteriaValues(self::FILTER_TAGS);
+
+        if(empty($tagIDs))
+        {
+            return;
+        }
+
+        $this->requireJoin(self::JOIN_TAGS);
+
+        $this->addWhereColumnIN(
+            $this->statement('{table_planets_tags}.{tag_primary}'),
+            $tagIDs
+        );
+    }
+    
+    // endregion
+
+    // region: Resource filters
+
+    public const FILTER_RESOURCES = 'resources';
+    public const JOIN_RESOURCES = 'join_resources';
 
     public function selectResource(ResourceRecord $resource) : self
     {
         return $this->selectCriteriaValue(self::FILTER_RESOURCES, $resource->getID());
     }
+
+    private function registerJoinResources() : void
+    {
+        $this->registerJoin(
+            self::JOIN_RESOURCES,
+            $this->statement("
+                LEFT JOIN
+                    {table_resources}
+                ON
+                    {table_resources}.{planet_primary}={table_planets}.{planet_primary}
+            ")
+        );
+    }
+
+    private function applyFilterResources() : void
+    {
+        $resourceIDs = $this->getCriteriaValues(self::FILTER_RESOURCES);
+
+        if(empty($resourceIDs))
+        {
+            return;
+        }
+
+        $this->requireJoin(self::JOIN_RESOURCES);
+
+        $this->addWhereColumnIN(
+            $this->statement('{table_resources}.{resource_primary}'),
+            $resourceIDs
+        );
+    }
+
+    // endregion
 
     protected function prepareQuery() : void
     {
@@ -143,16 +221,8 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
             );
         }
         
-        $resourceIDs = $this->getCriteriaValues(self::FILTER_RESOURCES);
-        if(!empty($resourceIDs))
-        {
-            $this->requireJoin(self::JOIN_RESOURCES);
-            
-            $this->addWhereColumnIN(
-                $this->statement('{table_resources}.{resource_primary}'),
-                $resourceIDs
-            );
-        }
+        $this->applyFilterResources();
+        $this->applyFilterTags();
     }
 
     public function selectSolarSystem(SolarSystemRecord $system) : self
@@ -167,15 +237,8 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
 
     protected function _registerJoins() : void
     {
-        $this->registerJoin(
-            self::JOIN_RESOURCES,
-            $this->statement("
-                LEFT JOIN
-                    {table_resources}
-                ON
-                    {table_resources}.{planet_primary}={table_planets}.{planet_primary}
-            ")
-        );
+        $this->registerJoinResources();
+        $this->registerJoinTags();
     }
 
     protected function _initCustomColumns() : void
@@ -202,7 +265,7 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
             ->table('{table_planets}', PlanetsCollection::TABLE_NAME)
             ->table('{table_races}', RacesCollection::TABLE_NAME)
             ->table('{table_resources}', PlanetsCollection::TABLE_RESOURCES)
-            ->table('{table_tags}', PlanetsCollection::TABLE_TAGS)
+            ->table('{table_planets_tags}', PlanetsCollection::TABLE_TAGS)
 
             ->field('{system_primary}', SolarSystemsCollection::PRIMARY_NAME)
             ->field('{planet_label}', SolarSystemsCollection::COL_LABEL)
