@@ -6,6 +6,7 @@ namespace NMSTracker\Planets;
 
 use Application_Exception;
 use AppUtils\ConvertHelper;
+use DBHelper_StatementBuilder;
 use NMSTracker\Planets\PlanetRecord;
 use DBHelper_BaseFilterCriteria;
 use DBHelper_StatementBuilder_ValuesContainer;
@@ -18,6 +19,7 @@ use NMSTracker\SentinelLevels\SentinelAggressionLevel;
 use NMSTracker\SentinelLevels\SentinelLevelRecord;
 use NMSTracker\SolarSystems\SolarSystemRecord;
 use NMSTracker\SolarSystemsCollection;
+use NMSTracker\TagsCollection;
 
 
 /**
@@ -182,16 +184,31 @@ class PlanetFilterCriteria extends DBHelper_BaseFilterCriteria
 
     protected function _registerStatementValues(DBHelper_StatementBuilder_ValuesContainer $container) : void
     {
-        $container
+        self::getValues($container);
+    }
+
+    public static function createStatement(string $statement) : DBHelper_StatementBuilder
+    {
+        return statementBuilder($statement, self::getValues());
+    }
+    public static function getValues(?DBHelper_StatementBuilder_ValuesContainer $container=null) : DBHelper_StatementBuilder_ValuesContainer
+    {
+        if($container === null) {
+            $container = statementValues();
+        }
+
+        return $container
             ->table('{table_systems}', SolarSystemsCollection::TABLE_NAME)
             ->table('{table_planets}', PlanetsCollection::TABLE_NAME)
             ->table('{table_races}', RacesCollection::TABLE_NAME)
             ->table('{table_resources}', PlanetsCollection::TABLE_RESOURCES)
+            ->table('{table_tags}', PlanetsCollection::TABLE_TAGS)
 
             ->field('{system_primary}', SolarSystemsCollection::PRIMARY_NAME)
             ->field('{planet_label}', SolarSystemsCollection::COL_LABEL)
             ->field('{planet_primary}', PlanetsCollection::PRIMARY_NAME)
             ->field('{race_primary}', RacesCollection::PRIMARY_NAME)
-            ->field('{resource_primary}', ResourcesCollection::PRIMARY_NAME);
+            ->field('{resource_primary}', ResourcesCollection::PRIMARY_NAME)
+            ->field('{tag_primary}', TagsCollection::PRIMARY_NAME);
     }
 }
