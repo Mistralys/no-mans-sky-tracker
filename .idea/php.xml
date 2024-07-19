@@ -35,10 +35,8 @@
       <path value="$PROJECT_DIR$/htdocs/vendor/theseer/tokenizer" />
       <path value="$PROJECT_DIR$/htdocs/vendor/phpunit/php-timer" />
       <path value="$PROJECT_DIR$/htdocs/vendor/phpunit/phpunit" />
-      <path value="$PROJECT_DIR$/htdocs/vendor/doctrine/instantiator" />
       <path value="$PROJECT_DIR$/htdocs/vendor/neitanod/forceutf8" />
       <path value="$PROJECT_DIR$/htdocs/vendor/desandro/masonry" />
-      <path value="$PROJECT_DIR$/htdocs/vendor/php-http/message-factory" />
       <path value="$PROJECT_DIR$/htdocs/vendor/php-http/multipart-stream-builder" />
       <path value="$PROJECT_DIR$/htdocs/vendor/parsecsv/php-parsecsv" />
       <path value="$PROJECT_DIR$/htdocs/vendor/php-http/discovery" />
@@ -66,11 +64,9 @@
       <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/object-enumerator" />
       <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/exporter" />
       <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/global-state" />
-      <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/resource-operations" />
       <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/type" />
       <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/object-reflector" />
       <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/recursion-context" />
-      <path value="$PROJECT_DIR$/htdocs/vendor/components/flag-icon-css" />
       <path value="$PROJECT_DIR$/htdocs/vendor/components/jquery" />
       <path value="$PROJECT_DIR$/htdocs/vendor/sebastian/version" />
       <path value="$PROJECT_DIR$/htdocs/vendor/zenorocha/clipboardjs" />
@@ -84,9 +80,23 @@
       <path value="$PROJECT_DIR$/htdocs/vendor/psr/http-factory" />
       <path value="$PROJECT_DIR$/htdocs/vendor/psr/http-message" />
       <path value="$PROJECT_DIR$/htdocs/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/psr/event-dispatcher" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/league/config" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/league/commonmark" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/nette/utils" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/nette/schema" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/lipis/flag-icons" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/mistralys/application-utils-core" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/mistralys/application-framework-docs" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/mistralys/application-utils-collections" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/mistralys/appframework-ckeditor5" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/dflydev/dot-access-data" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/apereo/phpcas" />
+      <path value="$PROJECT_DIR$/htdocs/vendor/phpmailer/phpmailer" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
   <component name="PhpStan">
     <PhpStan_settings>
       <PhpStanConfiguration tool_path="$PROJECT_DIR$/htdocs/vendor/bin/phpstan" />
