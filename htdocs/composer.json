@@ -56,6 +56,14 @@
                     "reference": "master"
                 }
             }
+        },
+        {
+            "type": "vcs",
+            "url": "https:\/\/github.com\/Mistralys\/flag-icons.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https:\/\/github.com\/zenorocha\/clipboard.js.git"
         }
     ],
     "autoload": {
@@ -72,9 +80,8 @@
     "require": {
         "ext-json": "*",
         "ext-libxml": "*",
-        "ext-redis": "*",
-        "mistralys\/application_framework": "2.4.4",
-        "php": "^7.4"
+        "mistralys\/application_framework": "dev-main",
+        "php": "^8.2"
     },
     "require-dev": {
         "phpstan\/extension-installer": ">=1.1.0",
@@ -87,7 +94,8 @@
     "prefer-stable": true,
     "config": {
         "allow-plugins": {
-            "phpstan\/extension-installer": true
+            "phpstan/extension-installer": true,
+            "php-http/discovery": true
         }
     }
 }
