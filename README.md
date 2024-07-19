@@ -13,7 +13,7 @@ more. Save the position of planetary POIs to have a way to get back to them.
 ## Requirements
 
 - Local webserver
-- PHP 7.4+
+- PHP 8.2+
 - [Composer](https://getcomposer.org/)
 - MySQL or MariaDB database
 
@@ -23,7 +23,7 @@ more. Save the position of planetary POIs to have a way to get back to them.
 2) Import the file `/sql/new-install.sql` into a database.
 3) Navigate to the `htdocs` folder.
 4) Run `composer install` to install the dependencies.
-5) Rename `config.dist.php` to `config.php`.
+5) Rename `config/config.dist.php` to `config/config.php`.
 6) Edit the configuration settings as needed.
 7) Point your browser to the `htdocs` folder.
 
