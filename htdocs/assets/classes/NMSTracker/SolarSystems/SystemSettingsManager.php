@@ -48,9 +48,16 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
         $this->formHelper = new FormHelper($this);
     }
 
-    protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
+    protected function processPostCreateSettings(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
     {
+    }
 
+    protected function getCreateData(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
+    {
+    }
+
+    protected function updateRecord(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
+    {
     }
 
     protected function _afterSave(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $data) : void
@@ -70,15 +77,6 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
         }
 
         $system->save();
-    }
-
-    protected function getCreateData(array $formValues) : array
-    {
-        return $formValues;
-    }
-
-    protected function updateRecord(array $values) : void
-    {
     }
 
     // region: Settings
@@ -266,6 +264,6 @@ class SystemSettingsManager extends Application_Formable_RecordSettings_Extended
 
     public function isUserAllowedEditing() : bool
     {
-        return $this->getUser()->canCreateSolarSystems();
+        return ClassFactory::createUser()->canCreateSolarSystems();
     }
 }

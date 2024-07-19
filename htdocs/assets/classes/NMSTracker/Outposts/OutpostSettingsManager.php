@@ -48,19 +48,18 @@ class OutpostSettingsManager extends Application_Formable_RecordSettings_Extende
         $this->setDefaultsUseStorageNames(true);
     }
 
-    protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
+    protected function processPostCreateSettings(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues) : void
     {
     }
 
-    protected function getCreateData(array $formValues) : array
+    protected function getCreateData(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues) : void
     {
-        return $formValues;
     }
 
-    protected function updateRecord(array $values) : void
+    protected function updateRecord(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues) : void
     {
         ClassHelper::requireObjectInstanceOf(OutpostRecord::class, $this->record)
-            ->updateServicesFromForm($values[self::SETTING_SERVICES]);
+            ->updateServicesFromForm((array)$internalValues[self::SETTING_SERVICES]);
     }
 
     protected function _afterSave(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $data) : void

@@ -41,7 +41,11 @@ class SpaceStationSettingsManager extends Application_Formable_RecordSettings_Ex
         $this->setDefaultsUseStorageNames(true);
     }
 
-    protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
+    protected function processPostCreateSettings(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
+    {
+    }
+
+    protected function getCreateData(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
     {
     }
 
@@ -57,20 +61,15 @@ class SpaceStationSettingsManager extends Application_Formable_RecordSettings_Ex
             );
     }
 
-    protected function getCreateData(array $formValues) : array
-    {
-        return $formValues;
-    }
-
-    protected function updateRecord(array $values) : void
+    protected function updateRecord(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues) : void
     {
         ClassHelper::requireObjectInstanceOf(
             SpaceStationRecord::class,
             $this->record
         )
             ->updateTradeOffersFromForm(
-                $values[self::SETTING_SELL_OFFERS] ?? array(),
-                $values[self::SETTING_BUY_OFFERS] ?? array()
+                $internalValues[self::SETTING_SELL_OFFERS] ?? array(),
+                $internalValues[self::SETTING_BUY_OFFERS] ?? array()
             );
     }
 

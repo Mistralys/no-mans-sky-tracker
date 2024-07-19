@@ -46,10 +46,6 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
 
     // region: Process data
 
-    protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
-    {
-    }
-
     protected function _afterSave(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $data) : void
     {
         $planet = ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $record);
@@ -63,17 +59,20 @@ class PlanetSettingsManager extends Application_Formable_RecordSettings_Extended
         }
     }
 
-    protected function getCreateData(array $formValues) : array
+    protected function processPostCreateSettings(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
     {
-        return $formValues;
     }
 
-    protected function updateRecord(array $values) : void
+    protected function getCreateData(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
+    {
+    }
+
+    protected function updateRecord(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues) : void
     {
         $planet = ClassHelper::requireObjectInstanceOf(PlanetRecord::class, $this->record);
 
-        $this->updateResources($planet, (array)$values[self::SETTING_RESOURCES]);
-        $this->updateTags($planet, (array)$values[self::SETTING_RESOURCES]);
+        $this->updateResources($planet, (array)$internalValues[self::SETTING_RESOURCES]);
+        $this->updateTags($planet, (array)$internalValues[self::SETTING_RESOURCES]);
     }
 
     /**

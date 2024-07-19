@@ -7,6 +7,7 @@ namespace NMSTracker\PlanetTypes;
 use Application_Formable;
 use Application_Formable_RecordSettings_Extended;
 use Application_Formable_RecordSettings_Setting;
+use Application_Formable_RecordSettings_ValueSet;
 use AppUtils\NamedClosure;
 use Closure;
 use DBHelper_BaseCollection;
@@ -37,18 +38,16 @@ class PlanetTypeSettingsManager extends Application_Formable_RecordSettings_Exte
         $this->formHelper = new FormHelper($this);
     }
 
-    protected function processPostCreateSettings(DBHelper_BaseRecord $record, array $formValues) : void
+    protected function processPostCreateSettings(DBHelper_BaseRecord $record, Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
     {
     }
 
-    protected function getCreateData(array $formValues) : array
+    protected function getCreateData(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
     {
-        return $formValues;
     }
 
-    protected function updateRecord(array $values) : void
+    protected function updateRecord(Application_Formable_RecordSettings_ValueSet $recordData, Application_Formable_RecordSettings_ValueSet $internalValues): void
     {
-
     }
 
     protected function registerSettings() : void
