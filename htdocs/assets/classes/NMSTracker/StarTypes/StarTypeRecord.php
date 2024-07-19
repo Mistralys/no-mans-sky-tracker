@@ -8,6 +8,7 @@ use DBHelper_BaseRecord;
 use NMSTracker;
 use NMSTracker\CustomIcon;
 use NMSTracker\StarTypesCollection;
+use UI_Icon;
 
 class StarTypeRecord extends DBHelper_BaseRecord
 {
@@ -40,7 +41,7 @@ class StarTypeRecord extends DBHelper_BaseRecord
         return $this->getID() === StarTypesCollection::ID_GREEN;
     }
 
-    public function getIcon() : CustomIcon
+    public function getIcon() : UI_Icon
     {
         $icon = NMSTracker::icon()
             ->solarSystem()
