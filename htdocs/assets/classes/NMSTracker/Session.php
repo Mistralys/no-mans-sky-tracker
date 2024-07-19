@@ -22,4 +22,9 @@ declare(strict_types=1);
 class NMSTracker_Session extends Application_Session_Native
 {
     use Application_Session_AuthTypes_None;
+
+    protected function _getPrefix(): string
+    {
+        return 'nmstracker';
+    }
 }
