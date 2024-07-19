@@ -36,6 +36,7 @@ use NMSTracker\SolarSystemsCollection;
  * @property NMSTracker_User $user
  * @property NMSTracker_Session $session
  * @property NMSTracker_Request $request
+ * @method NMSTracker_User getUser()
  */
 class NMSTracker extends Application_Driver
 {
@@ -77,21 +78,16 @@ class NMSTracker extends Application_Driver
             NMSTracker_Area_Devel::URL_NAME => ClassHelper::getClassTypeName(NMSTracker_Area_Devel::class)
         );
     }
-    
+
+    public function areaExists(string $name): bool
+    {
+        $areas = $this->getAdminAreas();
+        return isset($areas[$name]) || in_array($name, array_values($areas));
+    }
+
     public function getRevisionableTypes() : array
     {
         return array();
-    }
-    
-    protected static ?NMSTracker_Session $session = null;
-    
-    public static function getSession() : NMSTracker_Session
-    {
-        if(!isset(self::$session)) {
-            self::$session = new NMSTracker_Session();
-        }
-        
-        return self::$session;
     }
     
     protected ?string $extendedVersion = null;
