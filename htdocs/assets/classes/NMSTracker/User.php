@@ -19,7 +19,7 @@ declare(strict_types=1);
  *
  * @template-version 1.2
  */
-class NMSTracker_User extends Application_User_Extended
+class NMSTracker_User extends Application_User
 {
     public const GROUP_MANAGE_PLANETS = 'planets';
     public const GROUP_SOLAR_SYSTEMS = 'solar_systems';
@@ -53,15 +53,54 @@ class NMSTracker_User extends Application_User_Extended
     public const RIGHT_EDIT_TAGS = 'edit_tags';
     public const RIGHT_CREATE_TAGS = 'create_tags';
 
-    public function getRightGroups(): array
+    protected function registerRightGroups(Application_User_Rights $manager): void
     {
-        return array(
-            self::GROUP_SOLAR_SYSTEMS => t('Manage solar systems'),
-            self::GROUP_MANAGE_PLANETS => t('Manage planets'),
-            self::GROUP_OUTPOSTS => t('Manage outposts'),
-            self::GROUP_SPACE_STATIONS => t('Manage space stations'),
-            self::GROUP_RESOURCES => t('Manage resources'),
-            self::GROUP_TAGS => t('Manage tags')
+        $manager->registerGroup(
+            self::GROUP_SOLAR_SYSTEMS,
+            t('Manage solar systems'),
+            function (Application_User_Rights_Group $group) {
+                $this->registerRights_solar_systems($group);
+            }
+        );
+
+        $manager->registerGroup(
+            self::GROUP_MANAGE_PLANETS,
+            t('Manage planets'),
+            function (Application_User_Rights_Group $group) {
+                $this->registerRights_planets($group);
+            }
+        );
+
+        $manager->registerGroup(
+            self::GROUP_OUTPOSTS,
+            t('Manage outposts'),
+            function (Application_User_Rights_Group $group) {
+                $this->registerRights_outposts($group);
+            }
+        );
+
+        $manager->registerGroup(
+            self::GROUP_SPACE_STATIONS,
+            t('Manage space stations'),
+            function (Application_User_Rights_Group $group) {
+                $this->registerRights_space_stations($group);
+            }
+        );
+
+        $manager->registerGroup(
+            self::GROUP_RESOURCES,
+            t('Manage resources'),
+            function (Application_User_Rights_Group $group) {
+                $this->registerRights_resources($group);
+            }
+        );
+
+        $manager->registerGroup(
+            self::GROUP_TAGS,
+            t('Manage tags'),
+            function (Application_User_Rights_Group $group) {
+                $this->registerRights_tags($group);
+            }
         );
     }
 
@@ -115,39 +154,8 @@ class NMSTracker_User extends Application_User_Extended
         $group->registerRight(self::RIGHT_CREATE_SPACE_STATIONS, t('Add space stations'));
     }
 
-    protected function registerRoles(): void
+    protected function registerRoles(Application_User_Rights $manager): void
     {
-        $manager = $this->getRightsManager();
-
-        $manager->registerRole('SuperAdmin', t('Super admin'))
-            ->addRights(
-                self::RIGHT_VIEW_PLANETS,
-                self::RIGHT_VIEW_SOLAR_SYSTEMS,
-                self::RIGHT_VIEW_OUTPOSTS,
-                self::RIGHT_VIEW_PLANET_TYPES,
-                self::RIGHT_VIEW_POIS,
-                self::RIGHT_VIEW_SPACE_STATIONS,
-                self::RIGHT_VIEW_RESOURCES,
-                self::RIGHT_VIEW_TAGS,
-
-                self::RIGHT_EDIT_PLANETS,
-                self::RIGHT_EDIT_SOLAR_SYSTEMS,
-                self::RIGHT_EDIT_OUTPOSTS,
-                self::RIGHT_EDIT_PLANET_TYPES,
-                self::RIGHT_EDIT_POIS,
-                self::RIGHT_EDIT_SPACE_STATIONS,
-                self::RIGHT_EDIT_RESOURCES,
-                self::RIGHT_EDIT_TAGS,
-
-                self::RIGHT_CREATE_PLANETS,
-                self::RIGHT_CREATE_SOLAR_SYSTEMS,
-                self::RIGHT_CREATE_OUTPOSTS,
-                self::RIGHT_CREATE_PLANET_TYPES,
-                self::RIGHT_CREATE_POIS,
-                self::RIGHT_CREATE_SPACE_STATIONS,
-                self::RIGHT_CREATE_RESOURCES,
-                self::RIGHT_CREATE_TAGS
-            );
     }
 
     // region: Check methods
