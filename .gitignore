@@ -6,4 +6,6 @@ htdocs/themes/default/js/localization/locale-de.js
 htdocs/themes/default/js/localization/cachekey.txt
 htdocs/config/config-env-local.php
 htdocs/config/config-env-test.php
-htdocs/config.php
+htdocs/config/config.php
+htdocs/tests/phpstan/result.txt
+htdocs/config/_framework-manager-config.php
