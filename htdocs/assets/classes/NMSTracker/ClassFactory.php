@@ -6,11 +6,26 @@ namespace NMSTracker;
 
 use AppUtils\ClassHelper;
 use DBHelper;
+use NMSTracker;
 use NMSTracker\Resources\ResourceTypesCollection;
 use NMSTracker\SentinelLevels\SentinelAggressionLevels;
+use NMSTracker_User;
 
 class ClassFactory
 {
+    public static function createDriver() : NMSTracker
+    {
+        return ClassHelper::requireObjectInstanceOf(
+            NMSTracker::class,
+            NMSTracker::getInstance()
+        );
+    }
+
+    public static function createUser() : NMSTracker_User
+    {
+        return self::createDriver()->getUser();
+    }
+
     public static function createSolarSystems() : SolarSystemsCollection
     {
         return ClassHelper::requireObjectInstanceOf(
